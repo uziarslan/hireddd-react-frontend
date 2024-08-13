@@ -209,12 +209,12 @@ export default function ProfilePage() {
                     </div>
                     <div className="profile-edit-title">Portfolio</div>
                     <div className="profile-edit-socials">
-                      <a href="#" className="profile-edit-social-icon">
+                      <Link to="#" className="profile-edit-social-icon">
                         <img src={socialIcon} alt="Icon " />
-                      </a>
-                      <a href="#" className="profile-edit-social-icon">
+                      </Link>
+                      <Link to="#" className="profile-edit-social-icon">
                         <img src={socialIcon1} alt="Icon " />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                   <div className="profile-edit-set">
@@ -258,15 +258,15 @@ export default function ProfilePage() {
                     </div>
                     <div className="profile-edit-title">Attach Documents</div>
                     <div className="profile-edit-socials">
-                      <a href="#" className="profile-edit-social-icon">
+                      <Link to="#" className="profile-edit-social-icon">
                         <img src={pdfIcon} alt="Icon" />
-                      </a>
-                      <a href="#" className="profile-edit-social-icon">
+                      </Link>
+                      <Link to="#" className="profile-edit-social-icon">
                         <img src={pdfIcon} alt="Icon" />
-                      </a>
-                      <a href="#" className="profile-edit-social-icon">
+                      </Link>
+                      <Link to="#" className="profile-edit-social-icon">
                         <img src={pdfIcon} alt="Icon" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                   <div className="profile-edit-set">
@@ -310,14 +310,14 @@ export default function ProfilePage() {
                     </div>
                     <div className="profile-edit-title">LinkedIn</div>
                     <div className="profile-edit-socials">
-                      <a href="#" className="profile-edit-social-icon">
+                      <Link to="#" className="profile-edit-social-icon">
                         <img src={linkedIn} alt="Icon" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
 
                   <div className="get-premium-btn">
-                    <a href="#">
+                    <Link to="#">
                       <div className="premium-btn-icon">
                         <img src={guranteeIcon} alt="Icon" />
                       </div>
@@ -327,7 +327,7 @@ export default function ProfilePage() {
                           To view more user details
                         </div>
                       </div>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -48,7 +48,7 @@ export default function DashNav({ firstName, profile, preview }) {
               <div className="profile-image">
                 <img
                   src={preview || profile || dummyProfile}
-                  alt="Profile image"
+                  alt="Profile"
                 />
               </div>
               <div className="profile-title">

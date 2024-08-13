@@ -18,12 +18,6 @@ export default function SearchPage() {
   const [skillsFilters, setSkillsFilters] = useState([]);
   const [skill, setSkill] = useState("");
   const [location, setLocation] = useState("");
-  const [industry, setIndustry] = useState({
-    development: false,
-    designing: false,
-    marketing: false,
-    others: false,
-  });
   const [badges, setBadges] = useState({
     trendingProfile: false,
     profileCompleted: false,
@@ -107,7 +101,6 @@ export default function SearchPage() {
 
     const filters = {
       location,
-      industry,
       badges,
       shortlisted,
       liked,
