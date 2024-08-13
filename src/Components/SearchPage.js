@@ -68,13 +68,6 @@ export default function SearchPage() {
     setSkill(e.target.value);
   };
 
-  const handleIndustryChange = (e) => {
-    setIndustry({
-      ...industry,
-      [e.target.id]: e.target.checked,
-    });
-  };
-
   const handleBadgesChange = (e) => {
     setBadges({
       ...badges,

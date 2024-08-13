@@ -37,7 +37,7 @@ export default function ProfilePage() {
     };
 
     fetchTalentProfile();
-  }, []);
+  }, [talentId]);
 
   if (!user || !talent || !talent.skills) return null;
 
@@ -45,6 +45,7 @@ export default function ProfilePage() {
     <>
       <DashNav firstName={user.firstName} profile={user.profile.path} />
       <Loading isLoading={isLoading} />
+      <Flash message={message} />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
           <div className="profile-body-row no-sidebar">

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import resultImage from "../Assets/images/uploads/result-image.png";
 import dummyProfile from "../Assets/images/uploads/avatar-image.jpeg";
 import timeIcon from "../Assets/images/time-icon.png";
 import likeIcon from "../Assets/images/like-icon-01.svg";
@@ -14,19 +13,10 @@ import axiosInstance from "../services/axiosInstance";
 const SearchCard = ({ data, userId }) => {
   const handleClick = async (talentId) => {
     try {
-      const response = await axiosInstance.post("/chat", {
+      await axiosInstance.post("/chat", {
         talentId,
         organizationId: userId,
       });
-
-      if (response.status === 200) {
-        const chat = response.data;
-        // Redirect to the chat page or update UI
-      } else {
-        // Handle errors appropriately
-        console.error("Failed to create chat");
-        alert("Failed to start the chat");
-      }
     } catch (error) {
       console.error("Error:", error);
       alert("Error starting chat");
