@@ -8,9 +8,11 @@ import playIcon from "../Assets/images/play-icon-round.svg";
 import Chat from "./Chat";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
+import Loading from "./Loading";
 
 export default function OrgDash() {
   const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFindTalent, setIsFindTalent] = useState(false);
   const [isProfile, setIsProfile] = useState(true);
   const [isMessages, setIsMessages] = useState(false);
@@ -40,7 +42,15 @@ export default function OrgDash() {
     setIsMessages(false);
   };
 
-  if (!user) return null;
+  if (isLoading) {
+    if (!user) {
+      return <Loading isLoading={isLoading} />;
+    } else {
+      setIsLoading(false)
+    }
+  }
+
+  if (!user) return null
 
   return (
     <>
@@ -55,9 +65,8 @@ export default function OrgDash() {
               <div className="profile-sidebar-links">
                 <Link
                   Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    isFindTalent ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${isFindTalent ? "current" : ""
+                    }`}
                   onClick={handleFindTalent}
                   to="/find/employees"
                 >
@@ -98,9 +107,8 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Find Talents</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    isProfile ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${isProfile ? "current" : ""
+                    }`}
                   onClick={handleProfileclick}
                 >
                   <div className="profile-sidebar-icon">
@@ -140,9 +148,8 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    isMessages ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${isMessages ? "current" : ""
+                    }`}
                   onClick={handleMessagesClick}
                 >
                   <div className="profile-sidebar-icon">
@@ -182,9 +189,8 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    isHiredddStatus ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${isHiredddStatus ? "current" : ""
+                    }`}
                   onClick={handleHiredddStatusClick}
                 >
                   <div className="profile-sidebar-icon">
@@ -480,9 +486,8 @@ export default function OrgDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${
-                  isHiredddStatus ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${isHiredddStatus ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">

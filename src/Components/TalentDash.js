@@ -11,9 +11,11 @@ import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
 import Chat from "./Chat";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
+import Loading from "./Loading";
 
 export default function TalentDash() {
   const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
   const [isProfile, setIsProfile] = useState(true);
   const [isMessages, setIsMessages] = useState(false);
   const [isHiredddStatus, setIsHiredddStatus] = useState(false);
@@ -76,11 +78,15 @@ export default function TalentDash() {
     setIsHired(false);
   };
 
-  // if (isLoading) {
-  //   return <Loading isLoading={isLoading} />;
-  // }
+  if (isLoading) {
+    if (!user) {
+      return <Loading isLoading={isLoading} />
+    } else {
+      setIsLoading(false)
+    }
+  }
 
-  if (!user) return null;
+  if (!user) return null
 
   return (
     <>

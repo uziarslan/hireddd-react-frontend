@@ -7,10 +7,12 @@ import axiosInstance from "../services/axiosInstance";
 import SearchCard from "./SearchCard";
 import { AuthContext } from "../Context/AuthContext";
 import Flash from "./Flash";
+import Loading from "./Loading";
 
 export default function SearchPage() {
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [isHome, setIsHome] = useState(true);
   const [isHiredddStatus, setIsHiredddStatus] = useState(false);
   const [isMessages, setIsMessages] = useState(false);
@@ -31,11 +33,12 @@ export default function SearchPage() {
   const fetchTalents = async () => {
     try {
       const { status, data } = await axiosInstance.get(`/get/talent`);
-
       if (status === 200) {
+        setIsLoading(false)
         setTalents(data);
       }
     } catch (error) {
+      setIsLoading(false)
       console.error(error);
     }
   };
@@ -137,6 +140,8 @@ export default function SearchPage() {
     setIsHome(false);
     setIsHiredddStatus(false);
   };
+
+  if (isLoading) return <Loading isLoading={isLoading} />
 
   if (!user || !talents.length || !locationFilters.length) return null;
 

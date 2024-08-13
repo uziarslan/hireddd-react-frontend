@@ -39,12 +39,19 @@ export default function ProfilePage() {
     fetchTalentProfile();
   }, [talentId]);
 
+  if (isLoading) {
+    if (!user || !talent || !talent.skills) {
+      return <Loading isLoading={isLoading} />
+    } else {
+      setIsLoading(false)
+    }
+  }
+
   if (!user || !talent || !talent.skills) return null;
 
   return (
     <>
       <DashNav firstName={user.firstName} profile={user.profile.path} />
-      <Loading isLoading={isLoading} />
       <Flash message={message} />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
