@@ -13,6 +13,7 @@ import OrgProfile from "./Components/OrgProfile";
 import OrgDash from "./Components/OrgDash";
 import SearchPage from "./Components/SearchPage";
 import ProfilePage from "./Components/ProfilePage";
+import TalentSetting from "./Components/TalentSetting";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/organization/dashboard" element={<OrgDash />} />
           <Route path="/find/employees" element={<SearchPage />} />
           <Route path="/talent/:talentId" element={<ProfilePage />} />
+          <Route path="/talent/settings" element={<TalentSetting />} />
         </Routes>
       </div>
     </Router>
