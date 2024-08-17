@@ -36,7 +36,7 @@ export default function TalentProfile() {
       setSkill(user.skills.join(", "));
       setAbout(user.about);
       if (user.video && user.video.path) {
-        setMediaBlobUrl(user.video.path)
+        setMediaBlobUrl(user.video.path);
       }
     }
     setIsLoading(false);
@@ -122,7 +122,10 @@ export default function TalentProfile() {
       setIsRecording(true);
       setMediaBlobUrl("");
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -199,15 +202,17 @@ export default function TalentProfile() {
               </div>
               <div className="profile-sidebar-links">
                 <Link
-                  className={`profile-sidebar-link profile-tab-link ${isProfile ? "current" : ""
-                    }`}
+                  className={`profile-sidebar-link profile-tab-link ${
+                    isProfile ? "current" : ""
+                  }`}
                   onClick={() => setIsProfile(true)}
                 >
                   <div className="profile-sidebar-title">Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link profile-tab-link ${!isProfile ? "current" : ""
-                    }`}
+                  className={`profile-sidebar-link profile-tab-link ${
+                    !isProfile ? "current" : ""
+                  }`}
                   onClick={() => setIsProfile(false)}
                 >
                   <div className="profile-sidebar-title">Record video</div>
@@ -217,8 +222,9 @@ export default function TalentProfile() {
             <div className="profile-form-right">
               <div
                 id="profile-form"
-                className={`profile-form profile-tabbed-content ${isProfile ? "current" : ""
-                  }`}
+                className={`profile-form profile-tabbed-content ${
+                  isProfile ? "current" : ""
+                }`}
               >
                 <form onSubmit={handleSubmit}>
                   <div className="input-set">
@@ -282,8 +288,9 @@ export default function TalentProfile() {
               </div>
               <div
                 id="record-video"
-                className={`profile-viode profile-tabbed-content ${!isProfile ? "current" : ""
-                  }`}
+                className={`profile-viode profile-tabbed-content ${
+                  !isProfile ? "current" : ""
+                }`}
               >
                 <div className="profile-record-video">
                   <h2 className="text-24 font-med">Record Video</h2>
@@ -301,7 +308,6 @@ export default function TalentProfile() {
                           className="record-video-upload-area"
                           src={mediaBlobUrl}
                           controls
-                          autoPlay
                           loop
                         />
                       )

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../Assets/Css/styles.min.css";
 import { Link } from "react-router-dom";
 import DashNav from "./DashNav";
@@ -13,44 +13,16 @@ import Loading from "./Loading";
 export default function OrgDash() {
   const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [isFindTalent, setIsFindTalent] = useState(false);
-  const [isProfile, setIsProfile] = useState(true);
-  const [isMessages, setIsMessages] = useState(false);
-  const [isHiredddStatus, setIsHiredddStatus] = useState(false);
+  const [tabName, setTabName] = useState("profile");
   const [selectedChat, setSelectedChat] = useState(null);
 
-  const handleFindTalent = () => {
-    setIsFindTalent(true);
-    setIsProfile(false);
-    setIsMessages(false);
-    setIsHiredddStatus(false);
-  };
-
-  const handleProfileclick = () => {
-    setIsProfile(true);
-    setIsMessages(false);
-    setIsHiredddStatus(false);
-  };
-  const handleMessagesClick = () => {
-    setIsMessages(true);
-    setIsProfile(false);
-    setIsHiredddStatus(false);
-  };
-  const handleHiredddStatusClick = () => {
-    setIsHiredddStatus(true);
-    setIsProfile(false);
-    setIsMessages(false);
-  };
-
-  if (isLoading) {
-    if (!user) {
-      return <Loading isLoading={isLoading} />;
-    } else {
-      setIsLoading(false)
+  useEffect(() => {
+    if (user) {
+      setIsLoading(false);
     }
-  }
+  }, [user]);
 
-  if (!user) return null
+  if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
   return (
     <>
@@ -65,9 +37,10 @@ export default function OrgDash() {
               <div className="profile-sidebar-links">
                 <Link
                   Link
-                  className={`profile-sidebar-link tab-link-main ${isFindTalent ? "current" : ""
-                    }`}
-                  onClick={handleFindTalent}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "findTalents" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("findTalents")}
                   to="/find/employees"
                 >
                   <div className="profile-sidebar-icon">
@@ -107,9 +80,10 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Find Talents</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${isProfile ? "current" : ""
-                    }`}
-                  onClick={handleProfileclick}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "profile" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("profile")}
                 >
                   <div className="profile-sidebar-icon">
                     <svg
@@ -148,9 +122,10 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${isMessages ? "current" : ""
-                    }`}
-                  onClick={handleMessagesClick}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "messages" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("messages")}
                 >
                   <div className="profile-sidebar-icon">
                     <svg
@@ -189,9 +164,10 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${isHiredddStatus ? "current" : ""
-                    }`}
-                  onClick={handleHiredddStatusClick}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "hiredddStatus" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("hiredddStatus")}
                 >
                   <div className="profile-sidebar-icon">
                     <svg
@@ -233,7 +209,9 @@ export default function OrgDash() {
             </div>
             <div className="profile-content-area">
               <div
-                className={`tabbed-content-main ${isProfile ? "current" : ""}`}
+                className={`tabbed-content-main ${
+                  tabName === "profile" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
@@ -460,7 +438,9 @@ export default function OrgDash() {
                 </div>
               </div>
               <div
-                className={`tabbed-content-main ${isMessages ? "current" : ""}`}
+                className={`tabbed-content-main ${
+                  tabName === "messages" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="user-search messages-search">
@@ -486,8 +466,9 @@ export default function OrgDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${isHiredddStatus ? "current" : ""
-                  }`}
+                className={`tabbed-content-main ${
+                  tabName === "hiredddStatus" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">

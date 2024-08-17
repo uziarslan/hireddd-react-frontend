@@ -39,13 +39,13 @@ export default function ProfilePage() {
     fetchTalentProfile();
   }, [talentId]);
 
-  if (isLoading) {
-    if (!user || !talent || !talent.skills) {
-      return <Loading isLoading={isLoading} />
-    } else {
-      setIsLoading(false)
+  useEffect(() => {
+    if (user && talent) {
+      setIsLoading(false);
     }
-  }
+  }, [user, talent]);
+
+  if (isLoading) return <Loading isLoading={isLoading} />;
 
   if (!user || !talent || !talent.skills) return null;
 

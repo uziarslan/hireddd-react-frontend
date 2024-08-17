@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../Assets/Css/styles.min.css";
 import { Link } from "react-router-dom";
 import DashNav from "./DashNav";
@@ -15,78 +15,19 @@ import Loading from "./Loading";
 
 export default function TalentDash() {
   const { user } = useContext(AuthContext);
+  const [tabName, setTabName] = useState("profile");
+  const [subTabName, setSubTabName] = useState("shortlisted");
+  const [isEditing, setIsEditing] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isProfile, setIsProfile] = useState(true);
-  const [isMessages, setIsMessages] = useState(false);
-  const [isHiredddStatus, setIsHiredddStatus] = useState(false);
-  const [isShortlisted, setIsShortlisted] = useState(true);
-  const [isInterviewed, setIsInterviewed] = useState(false);
-  const [isAssessment, setIsAssessment] = useState(false);
-  const [isHired, setIsHired] = useState(false);
-  const [isRejected, setIsRejected] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
 
-  const handleProfileClick = () => {
-    setIsProfile(true);
-    setIsMessages(false);
-    setIsHiredddStatus(false);
-  };
-  const handleMessagesClick = () => {
-    setIsMessages(true);
-    setIsProfile(false);
-    setIsHiredddStatus(false);
-  };
-  const handleHiredddStatusClick = () => {
-    setIsHiredddStatus(true);
-    setIsProfile(false);
-    setIsMessages(false);
-  };
-  const handleShortlisted = () => {
-    setIsShortlisted(true);
-    setIsInterviewed(false);
-    setIsAssessment(false);
-    setIsHired(false);
-    setIsRejected(false);
-  };
-  const handleInterviewed = () => {
-    setIsInterviewed(true);
-    setIsShortlisted(false);
-    setIsAssessment(false);
-    setIsHired(false);
-    setIsRejected(false);
-  };
-  const handleAssessment = () => {
-    setIsAssessment(true);
-    setIsShortlisted(false);
-    setIsInterviewed(false);
-    setIsHired(false);
-    setIsRejected(false);
-  };
-  const handleHired = () => {
-    setIsHired(true);
-    setIsShortlisted(false);
-    setIsInterviewed(false);
-    setIsAssessment(false);
-    setIsRejected(false);
-  };
-  const handleRejected = () => {
-    setIsRejected(true);
-    setIsShortlisted(false);
-    setIsInterviewed(false);
-    setIsAssessment(false);
-    setIsHired(false);
-  };
-
-  if (isLoading) {
-    if (!user) {
-      return <Loading isLoading={isLoading} />
-    } else {
-      setIsLoading(false)
+  useEffect(() => {
+    if (user) {
+      setIsLoading(false);
     }
-  }
+  }, [user]);
 
-  if (!user) return null
+  if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
   return (
     <>
@@ -137,9 +78,10 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Home</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${isProfile ? "current" : ""
-                    }`}
-                  onClick={handleProfileClick}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "profile" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("profile")}
                 >
                   <div className="profile-sidebar-icon">
                     <svg
@@ -178,9 +120,10 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">My Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${isMessages ? "current" : ""
-                    }`}
-                  onClick={handleMessagesClick}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "messages" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("messages")}
                 >
                   <div className="profile-sidebar-icon">
                     <svg
@@ -219,9 +162,10 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${isHiredddStatus ? "current" : ""
-                    }`}
-                  onClick={handleHiredddStatusClick}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "hiredddStatus" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("hiredddStatus")}
                 >
                   <div className="profile-sidebar-icon">
                     <svg
@@ -263,7 +207,9 @@ export default function TalentDash() {
             </div>
             <div className="profile-content-area">
               <div
-                className={`tabbed-content-main ${isProfile ? "current" : ""}`}
+                className={`tabbed-content-main ${
+                  tabName === "profile" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
@@ -325,7 +271,49 @@ export default function TalentDash() {
                   </div>
                   <div className="profile-edit-options">
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      {isEditing === "summary" && (
+                        <button
+                          onClick={() => setIsEditing("")}
+                          class="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setIsEditing("summary")}
+                        className="edit-button"
+                      >
                         <svg
                           width="27"
                           height="27"
@@ -362,10 +350,61 @@ export default function TalentDash() {
                       <div className="profile-edit-title">Summary</div>
                       <div className="profile-edit-text">
                         <p>{user.about}</p>
+                        <div
+                          class={`profile-summry-edit ${
+                            isEditing === "summary" ? "current" : ""
+                          }`}
+                        >
+                          <textarea placeholder="Summary">
+                            {user.about}
+                          </textarea>
+                        </div>
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      {isEditing === "topSkills" && (
+                        <button
+                          onClick={() => setIsEditing("")}
+                          class="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setIsEditing("topSkills")}
+                        className="edit-button"
+                      >
                         <svg
                           width="27"
                           height="27"
@@ -406,11 +445,53 @@ export default function TalentDash() {
                             {skill}
                           </div>
                         ))}
-                        {/* <div className="profile-edit-tag">Skill</div> */}
+                        {/* Edit Input for Skills */}
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      {isEditing === "contactDetails" && (
+                        <button
+                          onClick={() => setIsEditing("")}
+                          class="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setIsEditing("contactDetails")}
+                        className="edit-button"
+                      >
                         <svg
                           width="27"
                           height="27"
@@ -447,12 +528,13 @@ export default function TalentDash() {
                       <div className="profile-edit-title">Contact Details</div>
                       <div className="profile-edit-text">
                         <p>
-                          <strong>Phone</strong>+921234567
+                          <strong>Phone</strong>+92XXXXXX
                         </p>
                         <p>
                           <strong>Email</strong>
                           {user.username}
                         </p>
+                        {/* Edit input for contact only */}
                       </div>
                     </div>
                     <div className="profile-edit-set">
@@ -594,7 +676,9 @@ export default function TalentDash() {
                 </div>
               </div>
               <div
-                className={`tabbed-content-main ${isMessages ? "current" : ""}`}
+                className={`tabbed-content-main ${
+                  tabName === "messages" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="user-search messages-search">
@@ -620,8 +704,9 @@ export default function TalentDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${isHiredddStatus ? "current" : ""
-                  }`}
+                className={`tabbed-content-main ${
+                  tabName === "hiredddStatus" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">
@@ -629,44 +714,50 @@ export default function TalentDash() {
                       <ul>
                         <li>
                           <Link
-                            className={`tab-link ${isShortlisted ? "current" : ""
-                              }`}
-                            onClick={handleShortlisted}
+                            className={`tab-link ${
+                              subTabName === "shortlisted" ? "current" : ""
+                            }`}
+                            onClick={() => setSubTabName("shortlisted")}
                           >
                             Shortlisted
                           </Link>
                         </li>
                         <li>
                           <Link
-                            className={`tab-link ${isInterviewed ? "current" : ""
-                              }`}
-                            onClick={handleInterviewed}
+                            className={`tab-link ${
+                              subTabName === "interviewed" ? "current" : ""
+                            }`}
+                            onClick={() => setSubTabName("interviewed")}
                           >
                             Interviewed
                           </Link>
                         </li>
                         <li>
                           <Link
-                            className={`tab-link ${isAssessment ? "current" : ""
-                              }`}
-                            onClick={handleAssessment}
+                            className={`tab-link ${
+                              subTabName === "assessment" ? "current" : ""
+                            }`}
+                            onClick={() => setSubTabName("assessment")}
                           >
                             Assessment
                           </Link>
                         </li>
                         <li>
                           <Link
-                            className={`tab-link ${isHired ? "current" : ""}`}
-                            onClick={handleHired}
+                            className={`tab-link ${
+                              subTabName === "hired" ? "current" : ""
+                            }`}
+                            onClick={() => setSubTabName("hired")}
                           >
                             Hired
                           </Link>
                         </li>
                         <li>
                           <Link
-                            className={`tab-link ${isRejected ? "current" : ""
-                              }`}
-                            onClick={handleRejected}
+                            className={`tab-link ${
+                              subTabName === "rejected" ? "current" : ""
+                            }`}
+                            onClick={() => setSubTabName("rejected")}
                           >
                             Rejected
                           </Link>
@@ -675,8 +766,9 @@ export default function TalentDash() {
                     </div>
                     <div className="shortlisted-tabs-content-area">
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${isShortlisted ? "current" : ""
-                          }`}
+                        className={`shortlisted-tabs-content tabbed-content ${
+                          subTabName === "shortlisted" ? "current" : ""
+                        }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">
@@ -1018,8 +1110,9 @@ export default function TalentDash() {
                         </div>
                       </div>
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${isInterviewed ? "current" : ""
-                          }`}
+                        className={`shortlisted-tabs-content tabbed-content ${
+                          subTabName === "interviewed" ? "current" : ""
+                        }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">
@@ -1257,8 +1350,9 @@ export default function TalentDash() {
                         </div>
                       </div>
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${isAssessment ? "current" : ""
-                          }`}
+                        className={`shortlisted-tabs-content tabbed-content ${
+                          subTabName === "assessment" ? "current" : ""
+                        }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">
@@ -1496,8 +1590,9 @@ export default function TalentDash() {
                         </div>
                       </div>
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${isHired ? "current" : ""
-                          }`}
+                        className={`shortlisted-tabs-content tabbed-content ${
+                          subTabName === "hired" ? "current" : ""
+                        }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">
@@ -1735,8 +1830,9 @@ export default function TalentDash() {
                         </div>
                       </div>
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${isRejected ? "current" : ""
-                          }`}
+                        className={`shortlisted-tabs-content tabbed-content ${
+                          subTabName === "rejected" ? "current" : ""
+                        }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">

@@ -7,11 +7,11 @@ import DashNav from "./DashNav";
 export default function TalentSetting() {
   const { user } = useContext(AuthContext);
   const [tabName, setTabName] = useState("accountPreferences");
-  const [message, setMessage] = useState({});
   const [privateAccount, setPrivateAccount] = useState(false);
   const [hideLikesAndShortlisted, setHideLikesAndShortlisted] = useState(false);
   const [hideBadges, setHideBadges] = useState(false);
   const [hideLocation, setHideLocation] = useState(false);
+  const [availability, setAvailability] = useState(false);
   const [likedNotification, setLikedNotification] = useState(false);
   const [shortlistedNotification, setShortlistedNotification] = useState(false);
 
@@ -21,6 +21,7 @@ export default function TalentSetting() {
       setHideLikesAndShortlisted(user.hideLikesAndShortlisted);
       setHideBadges(user.hideBadges);
       setHideLocation(user.hideLocation);
+      setAvailability(user.availability);
       setLikedNotification(user.likedNotification);
       setShortlistedNotification(user.shortlistedNotification);
     }
@@ -35,13 +36,13 @@ export default function TalentSetting() {
         hideLocation,
         likedNotification,
         shortlistedNotification,
+        availability,
       };
 
       try {
         axiosInstance.post("/talent/setting", formData);
       } catch (error) {
         console.error(error);
-        setMessage(error.response.data);
       }
     }
   }, [
@@ -51,25 +52,27 @@ export default function TalentSetting() {
     hideLocation,
     likedNotification,
     shortlistedNotification,
+    availability,
+    user,
   ]);
 
-  if (!user || !user.role === "talent") return null;
+  if (!user || user.role !== "talent") return null;
   return (
     <>
       <DashNav firstName={user.firstName} profile={user.profile.path} />
-      <main id="main-section" class="main-section">
-        <div class="wrapper wide-1230">
-          <div class="profile-body-row account-setting-row-main">
-            <div class="profile-sidebar-area account-setting-tabs">
-              <div class="account-setting-sidebar-title">Settings</div>
-              <div class="profile-sidebar-links">
+      <main id="main-section" className="main-section">
+        <div className="wrapper wide-1230">
+          <div className="profile-body-row account-setting-row-main">
+            <div className="profile-sidebar-area account-setting-tabs">
+              <div className="account-setting-sidebar-title">Settings</div>
+              <div className="profile-sidebar-links">
                 <Link
                   onClick={() => setTabName("accountPreferences")}
-                  class={`profile-sidebar-link tab-link-main ${
+                  className={`profile-sidebar-link tab-link-main ${
                     tabName === "accountPreferences" ? "current" : ""
                   }`}
                 >
-                  <div className="profile-sidebar-icon">
+                  <div classNameName="profile-sidebar-icon">
                     <svg
                       width="32"
                       height="32"
@@ -103,17 +106,17 @@ export default function TalentSetting() {
                       </defs>
                     </svg>
                   </div>
-                  <div className="profile-sidebar-title">
+                  <div classNameName="profile-sidebar-title">
                     Account Preferences
                   </div>
                 </Link>
                 <Link
                   onClick={() => setTabName("loginSecurity")}
-                  class={`profile-sidebar-link tab-link-main ${
+                  className={`profile-sidebar-link tab-link-main ${
                     tabName === "loginSecurity" ? "current" : ""
                   }`}
                 >
-                  <div class="profile-sidebar-icon">
+                  <div className="profile-sidebar-icon">
                     <svg
                       width="32"
                       height="32"
@@ -147,15 +150,17 @@ export default function TalentSetting() {
                       </defs>
                     </svg>
                   </div>
-                  <div class="profile-sidebar-title">Login and Security</div>
+                  <div className="profile-sidebar-title">
+                    Login and Security
+                  </div>
                 </Link>
                 <Link
                   onClick={() => setTabName("notifications")}
-                  class={`profile-sidebar-link tab-link-main ${
+                  className={`profile-sidebar-link tab-link-main ${
                     tabName === "notifications" ? "current" : ""
                   }`}
                 >
-                  <div class="profile-sidebar-icon">
+                  <div className="profile-sidebar-icon">
                     <svg
                       width="32"
                       height="32"
@@ -189,24 +194,26 @@ export default function TalentSetting() {
                       </defs>
                     </svg>
                   </div>
-                  <div class="profile-sidebar-title">Notifications</div>
+                  <div className="profile-sidebar-title">Notifications</div>
                 </Link>
               </div>
             </div>
-            <div class="profile-content-area account-setting-tabs-content">
+            <div className="profile-content-area account-setting-tabs-content">
               <div
-                class={`tabbed-content-main ${
+                className={`tabbed-content-main ${
                   tabName === "accountPreferences" ? "current" : ""
                 }`}
               >
-                <div class="account-setting-row">
-                  <div class="account-setting-left ">
-                    <div class="account-setting-title">Display Language</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left ">
+                    <div className="account-setting-title">
+                      Display Language
+                    </div>
                     <p>Select your language you want to display.</p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           checked
                           name="language"
@@ -218,17 +225,17 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Private account</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">Private account</div>
                     <p>
                       When your account is public, your profile, video resume
                       and can be seen by anyone, on or off hireddd.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="private-account"
                           type="checkbox"
@@ -241,9 +248,9 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">
                       Hide likes and shortlisted
                     </div>
                     <p>
@@ -251,9 +258,9 @@ export default function TalentSetting() {
                       will be hidden from other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="private-account2"
                           type="checkbox"
@@ -268,17 +275,17 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Hide badges</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">Hide badges</div>
                     <p>
                       The earned badges on your profile will be hidden from
                       other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="private-account3"
                           type="checkbox"
@@ -291,16 +298,16 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Hide Location</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">Hide Location</div>
                     <p>
                       The location on your profile will be hidden from other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="private-account4"
                           type="checkbox"
@@ -313,23 +320,50 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">
+                      Able to start right away
+                    </div>
+                    <p>
+                      The availability badge on your profile will be turned on
+                      your profile.
+                    </p>
+                  </div>
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
+                        <input
+                          name="private-account5"
+                          type="checkbox"
+                          id="private-account5"
+                          checked={availability}
+                          onChange={(e) => setAvailability(e.target.checked)}
+                        />
+                        <label for="private-account5"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div
-                class={`tabbed-content-main ${
+                className={`tabbed-content-main ${
                   tabName === "loginSecurity" ? "current" : ""
                 }`}
               >
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Liked notification</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">
+                      Liked notification
+                    </div>
                     <p>
                       When your account is public, your profile, video resume
                       and can be seen by anyone, on or off hireddd.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="liked-notification"
                           type="checkbox"
@@ -344,9 +378,9 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">
                       Shortlisted notifications
                     </div>
                     <p>
@@ -354,9 +388,9 @@ export default function TalentSetting() {
                       will be hidden from other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="shortlisted-notification"
                           type="checkbox"
@@ -371,17 +405,17 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Message badges</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">Message badges</div>
                     <p>
                       The earned badges on your profile will be hidden from
                       other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="message-badges"
                           type="checkbox"
@@ -394,30 +428,32 @@ export default function TalentSetting() {
                 </div>
               </div>
               <div
-                class={`tabbed-content-main ${
+                className={`tabbed-content-main ${
                   tabName === "notifications" ? "current" : ""
                 }`}
               >
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Liked notification</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">
+                      Liked notification
+                    </div>
                     <p>
                       When your account is public, your profile, video resume
                       and can be seen by anyone, on or off hireddd.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input name="2" type="checkbox" id="2" />
                         <label for="2"></label>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">
                       Shortlisted notifications
                     </div>
                     <p>
@@ -425,9 +461,9 @@ export default function TalentSetting() {
                       will be hidden from other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="shortlisted-notification2"
                           type="checkbox"
@@ -438,17 +474,17 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
-                <div class="account-setting-row">
-                  <div class="account-setting-left">
-                    <div class="account-setting-title">Message badges</div>
+                <div className="account-setting-row">
+                  <div className="account-setting-left">
+                    <div className="account-setting-title">Message badges</div>
                     <p>
                       The earned badges on your profile will be hidden from
                       other.
                     </p>
                   </div>
-                  <div class="account-setting-right">
-                    <div class="input-sets">
-                      <div class="input-set">
+                  <div className="account-setting-right">
+                    <div className="input-sets">
+                      <div className="input-set">
                         <input
                           name="message-badges2"
                           type="checkbox"

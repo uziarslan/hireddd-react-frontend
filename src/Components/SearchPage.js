@@ -13,9 +13,7 @@ export default function SearchPage() {
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isHome, setIsHome] = useState(true);
-  const [isHiredddStatus, setIsHiredddStatus] = useState(false);
-  const [isMessages, setIsMessages] = useState(false);
+  const [tabName, setTabName] = useState("home");
   const [locationFilters, setLocationFilters] = useState([]);
   const [skillsFilters, setSkillsFilters] = useState([]);
   const [skill, setSkill] = useState("");
@@ -30,15 +28,21 @@ export default function SearchPage() {
   const [uploaded, setUploaded] = useState("");
   const [talents, setTalents] = useState([]);
 
+  const labelToKeyMap = {
+    "Trending Profile": "trendingProfile",
+    "Profile Completed": "profileCompleted",
+    "Able to start right away": "ableToStartRightAway",
+  };
+
   const fetchTalents = async () => {
     try {
       const { status, data } = await axiosInstance.get(`/get/talent`);
       if (status === 200) {
-        setIsLoading(false)
+        setIsLoading(false);
         setTalents(data);
       }
     } catch (error) {
-      setIsLoading(false)
+      setIsLoading(false);
       console.error(error);
     }
   };
@@ -66,10 +70,17 @@ export default function SearchPage() {
   };
 
   const handleBadgesChange = (e) => {
-    setBadges({
-      ...badges,
-      [e.target.id]: e.target.checked,
-    });
+    const labelToKeyMap = {
+      "Trending Profile": "trendingProfile",
+      "Profile Completed": "profileCompleted",
+      "Able to start right away": "ableToStartRightAway",
+    };
+
+    const key = labelToKeyMap[e.target.id];
+    setBadges((prevBadges) => ({
+      ...prevBadges,
+      [key]: e.target.checked,
+    }));
   };
 
   const handleShortlistedChange = (e) => {
@@ -125,23 +136,7 @@ export default function SearchPage() {
     }
   };
 
-  const handleHomeClick = () => {
-    setIsHome(true);
-    setIsHiredddStatus(false);
-    setIsMessages(false);
-  };
-  const handleHiredddStatusClick = () => {
-    setIsHiredddStatus(true);
-    setIsHome(false);
-    setIsMessages(false);
-  };
-  const handleMessagesClick = () => {
-    setIsMessages(true);
-    setIsHome(false);
-    setIsHiredddStatus(false);
-  };
-
-  if (isLoading) return <Loading isLoading={isLoading} />
+  if (isLoading) return <Loading isLoading={isLoading} />;
 
   if (!user || !talents.length || !locationFilters.length) return null;
 
@@ -200,7 +195,7 @@ export default function SearchPage() {
                     <input
                       id={item}
                       type="checkbox"
-                      checked={badges[item]}
+                      checked={badges[labelToKeyMap[item]]}
                       onChange={handleBadgesChange}
                     />
                     <label htmlFor={item}>{item}</label>
@@ -267,24 +262,30 @@ export default function SearchPage() {
                 <ul>
                   <li>
                     <Link
-                      className={`tab-link ${isHome ? "current" : ""}`}
-                      onClick={handleHomeClick}
+                      className={`tab-link ${
+                        tabName === "home" ? "current" : ""
+                      }`}
+                      onClick={() => setTabName("home")}
                     >
                       Home
                     </Link>
                   </li>
                   <li>
                     <Link
-                      className={`tab-link ${isHiredddStatus ? "current" : ""}`}
-                      onClick={handleHiredddStatusClick}
+                      className={`tab-link ${
+                        tabName === "hiredddStatus" ? "current" : ""
+                      }`}
+                      onClick={() => setTabName("hiredddStatus")}
                     >
                       Hireddd Status
                     </Link>
                   </li>
                   <li>
                     <Link
-                      className={`tab-link ${isMessages ? "current" : ""}`}
-                      onClick={handleMessagesClick}
+                      className={`tab-link ${
+                        tabName === "messages" ? "current" : ""
+                      }`}
+                      onClick={() => setTabName("messages")}
                     >
                       Message
                     </Link>
