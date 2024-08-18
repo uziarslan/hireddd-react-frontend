@@ -50,7 +50,7 @@ const Chat = ({ userId, selectChat, userType }) => {
             </div>
             <div className="message-avatar-text">
               {userType === "talent"
-                ? chat.organization.location
+                ? chat.organization.companyName
                 : chat.talent.location}
             </div>
           </div>
