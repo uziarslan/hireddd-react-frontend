@@ -40,7 +40,7 @@ export default function TalentDash() {
           <div className="profile-body-row">
             <div className="profile-sidebar-area">
               <div className="profile-sidebar-links">
-                <Link to="#" className="profile-sidebar-link tab-link-main">
+                {/* <Link to="#" className="profile-sidebar-link tab-link-main">
                   <div className="profile-sidebar-icon">
                     <svg
                       width="32"
@@ -76,7 +76,7 @@ export default function TalentDash() {
                     </svg>
                   </div>
                   <div className="profile-sidebar-title">Home</div>
-                </Link>
+                </Link> */}
                 <Link
                   className={`profile-sidebar-link tab-link-main ${
                     tabName === "profile" ? "current" : ""
@@ -202,6 +202,49 @@ export default function TalentDash() {
                     </svg>
                   </div>
                   <div className="profile-sidebar-title">Hireddd Status</div>
+                </Link>
+                <Link
+                  to="/talent/settings"
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "settings" ? "current" : ""
+                  }`}
+                  onClick={() => setTabName("settings")}
+                >
+                  <div className="profile-sidebar-icon">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        width="32"
+                        height="32"
+                        fill="url(#pattern0_1516_2788)"
+                      />
+                      <defs>
+                        <pattern
+                          id="pattern0_1516_2788"
+                          patternContentUnits="objectBoundingBox"
+                          width="1"
+                          height="1"
+                        >
+                          <use
+                            href="#image0_1516_2788"
+                            transform="scale(0.0111111)"
+                          />
+                        </pattern>
+                        <image
+                          id="image0_1516_2788"
+                          width="90"
+                          height="90"
+                          href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFA0lEQVR4nO2dTYgcVRCAn4K/0YOe/EEhJxX/QdSLv6gX9eBFPMgeJLoqGC9qPKgLopiwjjNVXdXLkOBA1CxW7YIIivhziGiMEoPByxrJwZ8swRgTknXNuoSRmh0libOzs7Pd/bqn3wd12e3trvp48/rte2+6nQsEAoFAIBAIBAKBwInU6/XTEGU1sNyGLENI+iKwAJC8hSwfIMlXSDqFJHuA9A8LZJ1B1mY7Zv77OckeOxZYt9nf2jnsXHZOO3frGiir7ZpuEKlslPMx1luQZBhINyDrOLB8gaS/Iuux46RlFcfs2pYDsGxp5UQybDlari7vVCpyFsSTN0esjwNrBKSfIes+DyKbK4x9lrvVYLVUSW+y2rzKbTQaZwLLU0D6NbLM50BSM52QeST5JmJ52mrOVHJlTC5Gkl3+JWi2QbLLas9EMsCHZwDLd96LZj9htZuD1EXbR8h3seg7SNemLtr6K++Fsu+Q7amLBpI//ReqvmMmddE5KLKZhwiiOYhu+m6FoUVzdwnA+jFEsqYay2Wjo5tXWSBOXI6kjwLJJ0H0ClsRsP5QpYlbl7xB26QRye7QorkfybI1jt85r9ebjk0KAcnnoevg5bXk5Ug+QTbrj6GP5l5FT9zR7/BpYX473Aybvdz43ApBlk/DqIOXEB3Jmk7yRkROb0/UTwPrXiRZbz/r2KpjeSyI5u6ibQjXsZWSrO/Q+l/reKwN/cI4WruKJpJzFhE9/b/jSaY7HWvnCKK5u+jF+91kjk8qXNr4KgCD6CA6FUKL1tB1HE/oozn00T2R2B4O0jlkeS6KtlzkUsauAbGuW7hmEvcUmU87Z3fS/re+A2Jd5zKmJTuJ3FmPpJ4skh5IItkog5Z8MnbNhD6N+1NPNqlpSOeJhERPpZ5oazdoyUUDy9YsEtWyi0aWd9NPtMMsWtlEA8urqScKpI+UXTSyDKWf6JjcWHbRUaQ3pJ6obVlFlqNlFQ2kfy22spNCsrK9tKJZt2WWLLC8XF7Rkv6N8F+sjyqr6GoPO6cSo9lsntL+Clu5RJMeyPy7ikAyVjrRrBszTxhY7ymd6HjirswTbncfU6URTbJ7ZGTkVD9Jk64tjWiWJ33l7DZseu9cID1UlPnoin0RtT/JBxfb2JMZSFopygoLkjzfV66srzvftFvJ8pe3SOdMdt7XDG3ZysenryPA8lL/fZ/mO0hecHnBHrWApD95l8JJh/xSr79/tssTyPqwfzGaaNQiecjlDRtX225933IwoQCWj6wml0daNx2W331LwpUG6f436pMXujxTi+SBwrdm0gddEQDWRoElv+mKgj17qPU4tRyIw+UE6Y7cjTKWgkguANKfC9OSWfdm9rykpIFYr09qUySmK/kI4uS1rsjYHC6yzvqW2SVmMZY73SAQRXK3LdPnQGqnPdr3ukEiivS+JPaDJBdy1HJyg0gU6e39zl8n25LlsC3FuUGGSK/0Ohohma6SXOfKQK0ulwLLtx765B3M45e4MtGwh8iSbspQ9NuF+2ckSYDkiZSHf7P2iGLfdeaCKo9fgSQ7U+iPv6+xXuO7vlwBth2Y9BUg/TuBvnjONmJmtr22iESRXL3wrP6+W/GXtXjyKt91FAbgiftbL0noUfDCkFGGcrsqkv/uRJ61FY8ukn8D1mcyeXj2oDM6unmVjU7ar/842HotSOvtFzJsv/OdXyAQCAQCgUAgEAi4IvMPPa08rYTN1OMAAAAASUVORK5CYII="
+                        />
+                      </defs>
+                    </svg>
+                  </div>
+                  <div className="profile-sidebar-title">Settings</div>
                 </Link>
               </div>
             </div>
