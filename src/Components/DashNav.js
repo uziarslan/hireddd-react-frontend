@@ -14,6 +14,11 @@ export default function DashNav({ firstName, profile, preview }) {
             <img className="logo-white" src={logoWhite} alt="Site Logo" />
             <img className="logo-purple" src={logoPurple} alt="Site Logo" />
           </Link>
+          <div class="menu-btn">
+            <span class="top"></span>
+            <span class="middle"></span>
+            <span class="bottom"></span>
+          </div>
         </div>
         <div className="profile-bar">
           <div className="user-search">
