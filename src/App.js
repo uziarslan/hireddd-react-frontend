@@ -14,6 +14,9 @@ import OrgDash from "./Components/OrgDash";
 import SearchPage from "./Components/SearchPage";
 import ProfilePage from "./Components/ProfilePage";
 import TalentSetting from "./Components/TalentSetting";
+import Blog from "./Components/Blog";
+import Contact from "./Components/ContactUs";
+import Plans from "./Components/Plans";
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/blogs" element={<Blog />} />
+          <Route path="/contact-us" element={<Contact />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<Registration />} />
           <Route path="/forgot/password" element={<ForgotPassword />} />

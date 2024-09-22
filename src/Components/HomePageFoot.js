@@ -58,10 +58,10 @@ export default function HomePageFoot() {
                     <Link to="#">Find Employees</Link>
                   </li>
                   <li>
-                    <Link to="#">About Us</Link>
+                    <Link to="/plans">Pricing</Link>
                   </li>
                   <li>
-                    <Link to="#">Blog</Link>
+                    <Link to="/blogs">Blog</Link>
                   </li>
                 </ul>
               </div>
@@ -90,7 +90,7 @@ export default function HomePageFoot() {
               <div className="footer-nav">
                 <ul>
                   <li>
-                    <Link to="#">Help center</Link>
+                    <Link to="/contact-us">Help center</Link>
                   </li>
                   <li>
                     <Link to="#">Community</Link>
