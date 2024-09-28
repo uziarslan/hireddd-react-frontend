@@ -20,10 +20,12 @@ export default function TalentDash() {
   const [isEditing, setIsEditing] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [about, setAbout] = useState("");
 
   useEffect(() => {
     if (user) {
       setIsLoading(false);
+      setAbout(user.about);
     }
   }, [user]);
 
@@ -317,7 +319,7 @@ export default function TalentDash() {
                       {isEditing === "summary" && (
                         <button
                           onClick={() => setIsEditing("")}
-                          class="edit-button profile-summry-close-button"
+                          className="edit-button profile-summry-close-button"
                         >
                           <svg
                             width="27"
@@ -394,13 +396,15 @@ export default function TalentDash() {
                       <div className="profile-edit-text">
                         <p>{user.about}</p>
                         <div
-                          class={`profile-summry-edit ${
+                          className={`profile-summry-edit ${
                             isEditing === "summary" ? "current" : ""
                           }`}
                         >
-                          <textarea placeholder="Summary">
-                            {user.about}
-                          </textarea>
+                          <textarea
+                            value={about}
+                            placeholder="Summary"
+                            onChange={(e) => setAbout(e.target.value)}
+                          ></textarea>
                         </div>
                       </div>
                     </div>
@@ -408,7 +412,7 @@ export default function TalentDash() {
                       {isEditing === "topSkills" && (
                         <button
                           onClick={() => setIsEditing("")}
-                          class="edit-button profile-summry-close-button"
+                          className="edit-button profile-summry-close-button"
                         >
                           <svg
                             width="27"
@@ -495,7 +499,7 @@ export default function TalentDash() {
                       {isEditing === "contactDetails" && (
                         <button
                           onClick={() => setIsEditing("")}
-                          class="edit-button profile-summry-close-button"
+                          className="edit-button profile-summry-close-button"
                         >
                           <svg
                             width="27"

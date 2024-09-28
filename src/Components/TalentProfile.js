@@ -333,7 +333,7 @@ export default function TalentProfile() {
                 </div>
                 {uploadPopup && (
                   <>
-                    <div class="mfp-bg mfp-ready"></div>
+                    <div className="mfp-bg mfp-ready"></div>
                     <div
                       className="mfp-wrap mfp-close-btn-in mfp-auto-cursor mfp-ready"
                       tabIndex="-1"

@@ -14,10 +14,10 @@ export default function DashNav({ firstName, profile, preview }) {
             <img className="logo-white" src={logoWhite} alt="Site Logo" />
             <img className="logo-purple" src={logoPurple} alt="Site Logo" />
           </Link>
-          <div class="menu-btn">
-            <span class="top"></span>
-            <span class="middle"></span>
-            <span class="bottom"></span>
+          <div className="menu-btn">
+            <span className="top"></span>
+            <span className="middle"></span>
+            <span className="bottom"></span>
           </div>
         </div>
         <div className="profile-bar">
@@ -51,10 +51,7 @@ export default function DashNav({ firstName, profile, preview }) {
             </div>
             <Link to="#" className="user-profile">
               <div className="profile-image">
-                <img
-                  src={preview || profile || dummyProfile}
-                  alt="Profile"
-                />
+                <img src={preview || profile || dummyProfile} alt="Profile" />
               </div>
               <div className="profile-title">
                 {firstName ? firstName.split(" ")[0] : ""}

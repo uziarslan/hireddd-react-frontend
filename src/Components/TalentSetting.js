@@ -72,7 +72,7 @@ export default function TalentSetting() {
                     tabName === "accountPreferences" ? "current" : ""
                   }`}
                 >
-                  <div classNameName="profile-sidebar-icon">
+                  <div className="profile-sidebar-icon">
                     <svg
                       width="32"
                       height="32"
@@ -106,7 +106,7 @@ export default function TalentSetting() {
                       </defs>
                     </svg>
                   </div>
-                  <div classNameName="profile-sidebar-title">
+                  <div className="profile-sidebar-title">
                     Account Preferences
                   </div>
                 </Link>
