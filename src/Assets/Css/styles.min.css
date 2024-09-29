@@ -3989,6 +3989,10 @@ button.resume-btn.fill-btn {
   font-weight: 400;
   font-style: normal;
   transition: all 0.4s ease-in-out;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .profile-head-title {
@@ -4876,7 +4880,7 @@ a.back-link-arrow:visited {
   border-color: var(--hr_purple);
   font-size: 18px;
   padding-left: 50px;
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDE1IDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNy41IDcuNUwxNCAxIiBzdHJva2U9IiM3QjY4RUUiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K);
+  background-image: url(../images/location-pin.png), url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDE1IDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNy41IDcuNUwxNCAxIiBzdHJva2U9IiM3QjY4RUUiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K);
   background-position: center left 14px, center right 20px;
   background-size: 28px, 16px;
   height: 45px;
@@ -6012,7 +6016,7 @@ a.social-link:visited {
   }
   .nav-overlay .header-nav ul li {
     padding: 0;
-    margin: 0 0 10px;
+    margin: 0 0 30px;
     position: relative;
     display: block;
     opacity: 1;
@@ -6025,6 +6029,7 @@ a.social-link:visited {
     display: inline-block;
     border-bottom: none;
     position: relative;
+    font-size: 24px;
   }
   .nav-overlay .header-nav ul li.current-menu-item > a, .nav-overlay .header-nav ul li.current-menu-parent > a,
   .nav-overlay .header-nav ul li a:hover {
@@ -6068,12 +6073,12 @@ a.social-link:visited {
   }
   .nav-overlay {
     position: fixed;
-    background-color: var(--hr_nav_overlay_bgcolor);
-    top: 65px;
+    background-color: var(--hr_white);
+    top: 101px;
     left: 0;
     width: 100%;
     height: 100%;
-    height: 100vh;
+    height: calc(100vh - 101px);
     opacity: 0;
     visibility: hidden;
     overflow: visible;
@@ -6170,7 +6175,7 @@ a.social-link:visited {
     transition: all 0.3s ease-in-out;
   }
   .menu-btn.active span:first-child {
-    transform: translateY(10px -1) translateX(0) rotate(-45deg);
+    transform: translateY(9px) translateX(0) rotate(-45deg);
   }
   .menu-btn.active span:last-child {
     transform: translateY(-9px) translateX(0) rotate(45deg);
