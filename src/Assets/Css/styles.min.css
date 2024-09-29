@@ -8569,3 +8569,13 @@ picture img.loaded {
   font-weight: normal;
   src: url(../Fonts/BakbakOne-Regular.woff2) format("woff2");
 }
+
+.header-section:has(.right-header):after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background-color: var(--hr_white);
+}
