@@ -72,10 +72,19 @@ const AuthProvider = ({ children }) => {
     window.location.href = "/";
   };
 
+  const updateUser = (updatedFields) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      ...updatedFields,
+    }));
+  };
+  
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        updateUser,
         login,
         register,
         logout,

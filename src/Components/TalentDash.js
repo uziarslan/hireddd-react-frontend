@@ -80,9 +80,8 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Home</div>
                 </Link> */}
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "profile" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "profile" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("profile")}
                 >
                   <div className="profile-sidebar-icon">
@@ -122,9 +121,8 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">My Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "messages" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "messages" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("messages")}
                 >
                   <div className="profile-sidebar-icon">
@@ -164,9 +162,8 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "hiredddStatus" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "hiredddStatus" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("hiredddStatus")}
                 >
                   <div className="profile-sidebar-icon">
@@ -207,9 +204,8 @@ export default function TalentDash() {
                 </Link>
                 <Link
                   to="/talent/settings"
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "settings" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "settings" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("settings")}
                 >
                   <div className="profile-sidebar-icon">
@@ -252,9 +248,8 @@ export default function TalentDash() {
             </div>
             <div className="profile-content-area">
               <div
-                className={`tabbed-content-main ${
-                  tabName === "profile" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "profile" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
@@ -396,9 +391,8 @@ export default function TalentDash() {
                       <div className="profile-edit-text">
                         <p>{user.about}</p>
                         <div
-                          className={`profile-summry-edit ${
-                            isEditing === "summary" ? "current" : ""
-                          }`}
+                          className={`profile-summry-edit ${isEditing === "summary" ? "current" : ""
+                            }`}
                         >
                           <textarea
                             value={about}
@@ -406,7 +400,7 @@ export default function TalentDash() {
                             onChange={(e) => setAbout(e.target.value)}
                           ></textarea>
                         </div>
-                      </div>
+                      </div>  
                     </div>
                     <div className="profile-edit-set">
                       {isEditing === "topSkills" && (
@@ -723,9 +717,8 @@ export default function TalentDash() {
                 </div>
               </div>
               <div
-                className={`tabbed-content-main ${
-                  tabName === "messages" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "messages" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="user-search messages-search">
@@ -751,9 +744,8 @@ export default function TalentDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${
-                  tabName === "hiredddStatus" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "hiredddStatus" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">
@@ -761,9 +753,8 @@ export default function TalentDash() {
                       <ul>
                         <li>
                           <Link
-                            className={`tab-link ${
-                              subTabName === "shortlisted" ? "current" : ""
-                            }`}
+                            className={`tab-link ${subTabName === "shortlisted" ? "current" : ""
+                              }`}
                             onClick={() => setSubTabName("shortlisted")}
                           >
                             Shortlisted
@@ -773,9 +764,8 @@ export default function TalentDash() {
                     </div>
                     <div className="shortlisted-tabs-content-area">
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${
-                          subTabName === "shortlisted" ? "current" : ""
-                        }`}
+                        className={`shortlisted-tabs-content tabbed-content ${subTabName === "shortlisted" ? "current" : ""
+                          }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">

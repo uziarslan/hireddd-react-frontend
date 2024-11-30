@@ -9,18 +9,81 @@ import Chat from "./Chat";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
 import Loading from "./Loading";
+import axiosInstance from "../services/axiosInstance";
 
 export default function OrgDash() {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
+
   const [tabName, setTabName] = useState("profile");
   const [selectedChat, setSelectedChat] = useState(null);
 
+
+// organization properties
+const [about, setAbout] = useState("");
+const [industry, setIndustry] = useState("");
+const [isEditing, setIsEditing] = useState("");
+
+
+// edit profile
+const [userFields, setUserFields] = useState({
+  about: user?.about || "",
+  website: user?.website || "",
+  industry: user?.industry || "",
+});
+
+
+// sending a change to the user object, in the backend, 
   useEffect(() => {
     if (user) {
       setIsLoading(false);
+      setAbout(user.about || "");
     }
   }, [user]);
+
+const handleFieldChange = (field, value) =>
+{
+  setUserFields((prev) => ({ ...prev, [field]: value }));
+}
+
+const handleCloseEdit = () => {
+  setIsEditing("");
+  handleProfileEdit();
+};
+
+const handleProfileEdit = async () => {
+  console.log({...userFields});
+  try {
+    const { data, status } = await axiosInstance.post(
+      "/org/profile/edit",
+      { ...userFields },
+      {
+        headers: {
+          "Content-Type": "application/json",  
+        },
+      }
+    );
+
+    if (status === 200) {
+      console.log("user updated");
+      // updateUser((prevUser) => ({
+      //   ...prevUser,
+      //   ...data.org, // Merge updated data into user context
+      // }));
+
+      console.log(user.about);
+      console.log(data);
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      console.log("Failed to update user field.");
+      console.log(error.response);
+      console.log(error.response.data);
+      console.log( error.response.data.error);
+    }
+  }
+}
+
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
@@ -37,9 +100,8 @@ export default function OrgDash() {
               <div className="profile-sidebar-links">
                 <Link
                   Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "findTalents" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "findTalents" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("findTalents")}
                   to="/find/employees"
                 >
@@ -80,9 +142,8 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Find Talents</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "profile" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "profile" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("profile")}
                 >
                   <div className="profile-sidebar-icon">
@@ -122,9 +183,8 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "messages" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "messages" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("messages")}
                 >
                   <div className="profile-sidebar-icon">
@@ -164,9 +224,8 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "hiredddStatus" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "hiredddStatus" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("hiredddStatus")}
                 >
                   <div className="profile-sidebar-icon">
@@ -209,9 +268,8 @@ export default function OrgDash() {
             </div>
             <div className="profile-content-area">
               <div
-                className={`tabbed-content-main ${
-                  tabName === "profile" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "profile" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
@@ -234,8 +292,53 @@ export default function OrgDash() {
                     </div>
                   </div>
                   <div className="profile-edit-options">
+                    {/* about company section */}
+
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      {/* Close edit button */}
+                      {isEditing === "about" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button className="edit-button" onClick={() => setIsEditing("about")}>
                         <svg
                           width="27"
                           height="27"
@@ -271,9 +374,28 @@ export default function OrgDash() {
                       </button>
                       <div className="profile-edit-title">About Company</div>
                       <div className="profile-edit-text">
-                        <p>{user.about}</p>
+                        <p>{ about }</p>
+                        {/* profile-hidden */}
+                        <div
+                          className={`profile-about-edit ${isEditing === "about" ? "" : "profile-summry-edit"
+                            }`}
+                        >
+                          <textarea
+                            value={about}
+                            placeholder=""
+                            
+                            onChange={(e) => {
+                              setAbout(e.target.value);
+                              handleFieldChange("about", e.target.value)}}
+                          ></textarea>
+                        </div>
                       </div>
                     </div>
+                    {/* about company section end*/}
+
+
+
+
                     <div className="profile-edit-set">
                       <button className="edit-button">
                         <svg
@@ -438,9 +560,8 @@ export default function OrgDash() {
                 </div>
               </div>
               <div
-                className={`tabbed-content-main ${
-                  tabName === "messages" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "messages" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="user-search messages-search">
@@ -466,9 +587,8 @@ export default function OrgDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${
-                  tabName === "hiredddStatus" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "hiredddStatus" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">
