@@ -22,6 +22,97 @@ export default function TalentDash() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [about, setAbout] = useState("");
 
+  //Load documents from DB -- DYLAN
+  const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
+  const [isEditingDocuments, setIsEditingDocuments] = useState(false); // To toggle edit mode
+
+  useEffect(() => {
+    if (user?.documents) {
+      setDocuments(user.documents); // Update documents when user is loaded
+    }
+  }, [user]); 
+
+  //method for deleting docs on profile -- DYLAN
+  const handleDeleteDocument = async (docId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/talent/delete-document/${user._id}/${docId}`,
+        { method: "DELETE" }
+      );
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        alert("Document deleted successfully!");
+        // Update the documents array in state
+        setDocuments((prevDocuments) =>
+          prevDocuments.filter((doc) => doc._id !== docId)
+        );
+      } else {
+        alert("Failed to delete the document. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      alert("An error occurred while deleting the document.");
+    }
+  };
+
+  //method for uploading docs on profile -DYLAN
+  const handleUploadDocument = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".pdf";//accept only pdf's for now
+  
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+  
+      if (file) {
+        // Read the file as a Base64 string
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const base64File = event.target.result;
+          try {
+            const response = await fetch(
+              `http://localhost:4000/api/v1/talent/upload-document/${user._id}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                  document: base64File,
+                  fileName: file.name,
+                 }),
+              }
+            );
+  
+            const result = await response.json();
+  
+            if (result.success) {
+              alert("Document uploaded successfully!");
+              console.log("Upload result:", result); // Debugging the backend response
+  
+              // Add the new document to the state
+              setDocuments((prevDocuments) => [
+                ...prevDocuments,
+                ...result.talent.documents.slice(-1), // Add the last document from the backend response
+              ]);
+            } else {
+              alert("Failed to upload the document. Please try again.");
+            }
+          } catch (error) {
+            console.error("Error uploading document:", error);
+            alert("An error occurred while uploading the document.");
+          }
+        };
+  
+        reader.readAsDataURL(file); // Converts the file to a Base64 string
+      }
+    };
+    input.click(); // Trigger the file picker
+  };
+  
+  
+  
+
   useEffect(() => {
     if (user) {
       setIsLoading(false);
@@ -624,7 +715,9 @@ export default function TalentDash() {
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      <button className="edit-button"
+                      onClick={() => setIsEditingDocuments((prev) => !prev)}>
+                        {isEditingDocuments ? "Done" : "Edit"}
                         <svg
                           width="27"
                           height="27"
@@ -660,19 +753,46 @@ export default function TalentDash() {
                       </button>
                       <div className="profile-edit-title">Attach Documents</div>
                       <div className="profile-edit-socials">
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={pdfIcon} alt="Icon " />
-                        </Link>
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={pdfIcon} alt="Icon " />
-                        </Link>
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={pdfIcon} alt="Icon " />
-                        </Link>
+
+                      <div className="profile-edit-documents">
+                      {documents.map((doc, index) => {
+                          if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
+
+                          return (
+                            <div key={index} className="document-item">
+                              <a 
+                                href={doc.fileData} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                download={doc.fileName}>
+                                <img src={pdfIcon} alt={`Document ${index + 1}`} />
+                              </a>
+                              <div className="document-name">{doc.fileName}</div> 
+                              {isEditingDocuments && (
+                                <button
+                                  className="delete-button"
+                                  onClick={() => handleDeleteDocument(doc._id)}
+                                >
+                                  -
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      {isEditingDocuments && (
+                        <button
+                         className="add-button" 
+                         onClick={handleUploadDocument}>
+                          +
+                        </button>
+                      )}
+                        </div>
+
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      <button 
+                        className="edit-button">
                         <svg
                           width="27"
                           height="27"
