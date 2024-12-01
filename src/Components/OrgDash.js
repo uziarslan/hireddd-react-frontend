@@ -19,70 +19,81 @@ export default function OrgDash() {
   const [selectedChat, setSelectedChat] = useState(null);
 
 
-// organization properties
-const [about, setAbout] = useState("");
-const [industry, setIndustry] = useState("");
-const [isEditing, setIsEditing] = useState("");
+  // organization properties
+  const [about, setAbout] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [website, setWebsite] = useState("");
+  const [companySize, setCompanySize] = useState("");
+  const [location, setLocation] = useState("");
 
 
-// edit profile
-const [userFields, setUserFields] = useState({
-  about: user?.about || "",
-  website: user?.website || "",
-  industry: user?.industry || "",
-});
+  const [isEditing, setIsEditing] = useState("");
 
 
-// sending a change to the user object, in the backend, 
+  // edit profile
+  const [userFields, setUserFields] = useState({
+    about: user?.about || "",
+    website: user?.website || "",
+    industry: user?.industry || "",
+    companySize: user?.companySize || "",
+    location: user?.location || "",
+  });
+
+
+  // sending a change to the user object, in the backend, 
   useEffect(() => {
     if (user) {
       setIsLoading(false);
       setAbout(user.about || "");
+      setWebsite(user.website || "");
+      setIndustry(user.industry || "");
+      setCompanySize(user.companySize || "");
+      setLocation(user.location || "");
+
+
     }
   }, [user]);
 
-const handleFieldChange = (field, value) =>
-{
-  setUserFields((prev) => ({ ...prev, [field]: value }));
-}
+  const handleFieldChange = (field, value) => {
+    setUserFields((prev) => ({ ...prev, [field]: value }));
+  }
 
-const handleCloseEdit = () => {
-  setIsEditing("");
-  handleProfileEdit();
-};
+  const handleCloseEdit = () => {
+    setIsEditing("");
+    handleProfileEdit();
+  };
 
-const handleProfileEdit = async () => {
-  console.log({...userFields});
-  try {
-    const { data, status } = await axiosInstance.post(
-      "/org/profile/edit",
-      { ...userFields },
-      {
-        headers: {
-          "Content-Type": "application/json",  
-        },
+  const handleProfileEdit = async () => {
+    console.log({ ...userFields });
+    try {
+      const { data, status } = await axiosInstance.post(
+        "/org/profile/edit",
+        { ...userFields },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (status === 200) {
+        console.log("user updated");
+        // updateUser((prevUser) => ({
+        //   ...prevUser,
+        //   ...data.org, // Merge updated data into user context
+        // }));
+
+        console.log(data);
       }
-    );
-
-    if (status === 200) {
-      console.log("user updated");
-      // updateUser((prevUser) => ({
-      //   ...prevUser,
-      //   ...data.org, // Merge updated data into user context
-      // }));
-
-      console.log(user.about);
-      console.log(data);
-    }
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      console.log("Failed to update user field.");
-      console.log(error.response);
-      console.log(error.response.data);
-      console.log( error.response.data.error);
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        console.log("Failed to update user field.");
+        console.log(error.response);
+        console.log(error.response.data);
+        console.log(error.response.data.error);
+      }
     }
   }
-}
 
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
@@ -374,7 +385,8 @@ const handleProfileEdit = async () => {
                       </button>
                       <div className="profile-edit-title">About Company</div>
                       <div className="profile-edit-text">
-                        <p>{ about }</p>
+                        <p className={`${isEditing === "about" ? "profile-summry-edit" : ""
+                          }`}>{about}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "about" ? "" : "profile-summry-edit"
@@ -383,21 +395,63 @@ const handleProfileEdit = async () => {
                           <textarea
                             value={about}
                             placeholder=""
-                            
                             onChange={(e) => {
                               setAbout(e.target.value);
-                              handleFieldChange("about", e.target.value)}}
+                              handleFieldChange("about", e.target.value)
+                            }}
                           ></textarea>
                         </div>
                       </div>
                     </div>
-                    {/* about company section end*/}
+                    {/* */}
 
 
 
-
+                    {/* website */}
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                      {isEditing === "website" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button className="edit-button" onClick={() => setIsEditing("website")}>
                         <svg
                           width="27"
                           height="27"
@@ -432,12 +486,74 @@ const handleProfileEdit = async () => {
                         </svg>
                       </button>
                       <div className="profile-edit-title">Website</div>
+                      {/* {user.website.split("https://")} */}
                       <div className="profile-edit-text">
-                        <p>{user.website.split("https://")}</p>
+                        <p className={`${isEditing === "website" ? "profile-summry-edit" : ""
+                          }`}>{website}</p>
+
+                        <div className={`profile-about-edit ${isEditing === "website" ? "" : "profile-summry-edit"
+                          }`}>
+
+                          <textarea
+                            value={website}
+                            placeholder=""
+                            onChange={(e) => {
+                              setWebsite(e.target.value);
+                              handleFieldChange("website", e.target.value)
+                            }}
+                          ></textarea>
+                        </div>
+
                       </div>
                     </div>
+                    {/**/}
+
+                    {/* industry */}
+                    
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                    {isEditing === "industry" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button className="edit-button" onClick={() => setIsEditing("industry")}>
                         <svg
                           width="27"
                           height="27"
@@ -473,11 +589,73 @@ const handleProfileEdit = async () => {
                       </button>
                       <div className="profile-edit-title">Industry</div>
                       <div className="profile-edit-text">
-                        <p>{user.industry}</p>
+
+                      <p className={`${isEditing === "industry" ? "profile-summry-edit" : ""
+                          }`}>{industry}</p>
+                        {/* profile-hidden */}
+                        <div
+                          className={`profile-about-edit ${isEditing === "industry" ? "" : "profile-summry-edit"
+                            }`}
+                        >
+                          <textarea
+                            value={industry}
+                            placeholder=""
+                            onChange={(e) => {
+                              setIndustry(e.target.value);
+                              handleFieldChange("industry", e.target.value)
+                            }}
+                          ></textarea>
+                        </div>
+
+
                       </div>
                     </div>
+                    {/*  */}
+                    {/* company Size */}
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                    {isEditing === "companySize" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button className="edit-button" onClick={() => setIsEditing("companySize")}>
                         <svg
                           width="27"
                           height="27"
@@ -513,11 +691,71 @@ const handleProfileEdit = async () => {
                       </button>
                       <div className="profile-edit-title">Company Size</div>
                       <div className="profile-edit-text">
-                        <p>5,001-10,000 employees</p>
+                      
+                      <p className={`${isEditing === "companySize" ? "profile-summry-edit" : ""
+                          }`}>{companySize}</p>
+                        {/* profile-hidden */}
+                        <div
+                          className={`profile-about-edit ${isEditing === "companySize" ? "" : "profile-summry-edit"
+                            }`}
+                        >
+                          <textarea
+                            value={companySize}
+                            placeholder=""
+                            onChange={(e) => {
+                              setCompanySize(e.target.value);
+                              handleFieldChange("companySize", e.target.value)
+                            }}
+                          ></textarea>
+                        </div>
+
                       </div>
                     </div>
+                    {/* location */}
                     <div className="profile-edit-set">
-                      <button className="edit-button">
+                    {isEditing === "location" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
+                      <button className="edit-button" onClick={() => setIsEditing("location")}>
                         <svg
                           width="27"
                           height="27"
@@ -552,10 +790,29 @@ const handleProfileEdit = async () => {
                         </svg>
                       </button>
                       <div className="profile-edit-title">Headquarters</div>
+                      
                       <div className="profile-edit-text">
-                        <p>Lahore,Punjab</p>
+
+                      <p className={`${isEditing === "location" ? "profile-summry-edit" : ""
+                          }`}>{location}</p>
+                        {/* profile-hidden */}
+                        <div
+                          className={`profile-about-edit ${isEditing === "location" ? "" : "profile-summry-edit"
+                            }`}
+                        >
+                          <textarea
+                            value={location}
+                            placeholder="Lahore,Punjab"
+                            onChange={(e) => {
+                              setLocation(e.target.value);
+                              handleFieldChange("location", e.target.value)
+                            }}
+                          ></textarea>
+                        </div>
+
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>
