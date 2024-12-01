@@ -8581,7 +8581,7 @@ picture img.loaded {
 }
 
 
-/* styles for upload / deete documents Talet Dash  - DYLAN*/
+/* styles for upload / delete documents Talent Dash  - DYLAN*/
 .delete-button {
   background-color: red;
   color: white;
@@ -8615,4 +8615,28 @@ picture img.loaded {
   display: flex;
   gap: 10px; 
   flex-wrap: wrap; 
+}
+
+
+/* Styles for editing icons - EGBAIYELO */
+/* check mark icon */
+.profile-summry-done {
+  position: absolute;
+  /* top: -20px; */
+  left: 0;
+  right: 40px;
+}
+/* I made it so the pencil icon disappears when editing, moving close to right */
+button.edit-button.profile-summry-close-button {
+  right: 0px;
+}
+/* Want it to be same size as summary */
+.profile-edit-tags textarea {
+  margin: 0;
+  width: 45em;
+  /* the width 100% doesnt work for some reason //++ */
+}
+/* A little higlight */
+.profile-edit-set textarea{
+  border: .15em solid grey;
 }

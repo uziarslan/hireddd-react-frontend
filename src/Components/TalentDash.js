@@ -14,30 +14,33 @@ import { AuthContext } from "../Context/AuthContext";
 import Loading from "./Loading";
 
 export default function TalentDash() {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const [tabName, setTabName] = useState("profile");
   const [subTabName, setSubTabName] = useState("shortlisted");
   const [isEditing, setIsEditing] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [about, setAbout] = useState("");
 
-  // -- DYLAN
+  // -- MONTE
+  const [about, setAbout] = useState("");
+  const [skillsString, setSkills] = useState(""); // Not to be confused with the skills array
+
+  // -- DYLAN 
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
-  const [isEditingDocuments, setIsEditingDocuments] = useState(false); // toggles edit mode
+  const [isEditingDocuments, setIsEditingDocuments] = useState(false); // toggles edit mode //e rempve these
   const [isEditingContact, setIsEditingContact] = useState(false); // toggles contact editing mode
   const [contactDetails, setContactDetails] = useState({
     phone: "",
     email: "",
   }); // Initialize contact details to empty strings
 
-//update user data once user is loaded
+//update user data once user is loaded  
   useEffect(() => {
     if (user) {
       setIsLoading(false);
-      setAbout(user.about);
-    }
-    if (user) {
+      setAbout(user.about);       // Skills in db is list but here is string - Monte
+      setSkills(user.skills.join(', '));  
+
       if (user.documents) {
         setDocuments(user.documents); 
       }
@@ -129,36 +132,133 @@ export default function TalentDash() {
     input.click(); // Trigger the file picker
   };
 
-  //editing contact details
-// Editing contact details
-const handleSaveContactDetails = async () => {
-  try {
-    const response = await fetch(
-      `http://localhost:4000/api/v1/talent/update-contact-details/${user._id}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          phone: contactDetails.phone, 
-          email: contactDetails.email 
-        }),
-      }
-    );
-    const result = await response.json();
+  //editing contact details 
+  // Editing contact details
+  const handleSaveContactDetails = async () => {
 
-    if (result.success) {
-      alert("Contact details updated successfully!");
-      setIsEditingContact(false); // Exit editing mode
-    } else {
-      alert("Failed to update contact details. Please try again.");
+    // Format handling -- MONTE
+    // No agreed format
+    // Phone and email regex data, it's global format
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const phoneRegex = /^[+]?[1-9]\d{1,14}$/; 
+
+    // Standardize phone data, no brackets but replace dashes with spacess
+    contactDetails.phone = contactDetails.phone
+    .replace(/[()]/g, '')  // Remove brackets
+    .replace(/-/g, ' ')    // Replace dashes with spaces
+    .replace(/\s+/g, ' ')  // After the dash replace spaces?
+    .trim();               // Trim trailings
+    // Format in database should be +1 234 567 8910 or so
+
+    // Validate phone number
+    if (!phoneRegex.test(contactDetails.phone)) {
+      alert("Please enter a valid phone number.");
+      return;
     }
-  } catch (error) {
-    console.error("Error updating contact details:", error);
-    alert("An error occurred while updating contact details.");
-  }
-};
+    
+    // Validate email
+    if (!emailRegex.test(contactDetails.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/talent/update-contact-details/${user._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            phone: contactDetails.phone, 
+            email: contactDetails.email 
+          }),
+        }
+      );
+      const result = await response.json();
 
+      if (result.success) {
+        alert("Contact details updated successfully!");
+        updateUser({ about: result.talent.about }); // Update the user state
+        setIsEditingContact(false); // Exit editing mode
+      } else {
+        alert("Failed to update contact details. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating contact details:", error);
+      alert("An error occurred while updating contact details.");
+    }
+  };
+
+  // Handling the sumamry and the skills
+  // Handling the Summaries
+  const handleSaveAbout = async () => {
+    if (!about.trim()) {  // Just to remove spaces before null checking
+      alert("About section cannot be empty!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/talent/edit-about/${user._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ about: about }), 
+        }
+      );
   
+      const result = await response.json();
+  
+      if (result.success) {
+        alert("About section updated successfully!");
+  
+        setAbout(result.talent.about); // Update the state with new about (using backend filtered text)
+        updateUser({ about: result.talent.about }); // Update the user state
+        setIsEditing(""); // Exiting edit mode
+      } else {
+        alert("Failed to update the About section. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating About section:", error);
+      alert("An error occurred while updating the About section.");
+    }
+
+  };
+
+  // Handling the skills
+  const handleSaveSkills = async () => {
+    if (!skillsString.trim()) {
+      alert("Skills section cannot be empty!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/talent/edit-skills/${user._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rawSkills: skillsString }), // Skills are sent as a string
+        }
+      );
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        alert("Skills section updated successfully!");
+  
+        setSkills(result.talent.skills.join(', ')); // Updating the skills form the backend (using backend filters)
+        updateUser({ skills: result.talent.skills }); // Update the user state
+        setIsEditing(""); // Exit edit mode
+      } else {
+        alert("Failed to update the Skills section. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating Skills section:", error);
+      alert("An error occurred while updating the Skills section.");
+    }
+
+  };
 
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
@@ -450,6 +550,27 @@ const handleSaveContactDetails = async () => {
                     <div className="profile-edit-set">
                       {isEditing === "summary" && (
                         <button
+                          onClick={() =>  handleSaveAbout() }
+                          className="edit-button profile-summry-done"
+                        >
+                          <svg 
+                            width="24" 
+                            height="24" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path 
+                              d="M20 6L9 17L4 12" 
+                              stroke="black" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      )}
+                      {isEditing === "summary" && (
+                        <button
                           onClick={() => setIsEditing("")}
                           className="edit-button profile-summry-close-button"
                         >
@@ -486,48 +607,62 @@ const handleSaveContactDetails = async () => {
                             </defs>
                           </svg>
                         </button>
-                      )}
-                      <button
-                        onClick={() => setIsEditing("summary")}
-                        className="edit-button"
-                      >
-                        <svg
-                          width="27"
-                          height="27"
-                          viewBox="0 0 27 27"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                      )} 
+                      {!(isEditing === "summary") && (
+                        <button
+                          onClick={() => setIsEditing("summary")}
+                          className="edit-button"
                         >
-                          <rect
+                          <svg
                             width="27"
                             height="27"
-                            fill="url(#pattern0_1475_1863)"
-                          />
-                          <defs>
-                            <pattern
-                              id="pattern0_1475_1863"
-                              patternContentUnits="objectBoundingBox"
-                              width="1"
-                              height="1"
-                            >
-                              <use
-                                href="#image0_1475_1863"
-                                transform="scale(0.0111111)"
-                              />
-                            </pattern>
-                            <image
-                              id="image0_1475_1863"
-                              width="90"
-                              height="90"
-                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1475_1863)"
                             />
-                          </defs>
-                        </svg>
-                      </button>
+                            <defs>
+                              <pattern
+                                id="pattern0_1475_1863"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1475_1863"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1475_1863"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
                       <div className="profile-edit-title">Summary</div>
                       <div className="profile-edit-text">
-                        <p>{user.about}</p>
-                        <div
+                      {isEditing === "summary" ? (
+                        <div>
+                          <textarea
+                            value={about}
+                            placeholder="Summary"
+                            onChange={(e) => setAbout(e.target.value)}
+                          ></textarea>
+                        </div>
+                      ) : (
+                        <div>
+                          <p>{user.about}</p>
+                        </div>
+                      )}
+                        {/* <div
                           className={`profile-summry-edit ${
                             isEditing === "summary" ? "current" : ""
                           }`}
@@ -537,10 +672,31 @@ const handleSaveContactDetails = async () => {
                             placeholder="Summary"
                             onChange={(e) => setAbout(e.target.value)}
                           ></textarea>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="profile-edit-set">
+                      {isEditing === "topSkills" && (
+                        <button
+                          onClick={() =>  handleSaveSkills()}
+                          className="edit-button profile-summry-done"
+                        >
+                          <svg 
+                            width="24" 
+                            height="24" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path 
+                              d="M20 6L9 17L4 12" 
+                              stroke="black" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      )}
                       {isEditing === "topSkills" && (
                         <button
                           onClick={() => setIsEditing("")}
@@ -580,50 +736,64 @@ const handleSaveContactDetails = async () => {
                           </svg>
                         </button>
                       )}
-                      <button
-                        onClick={() => setIsEditing("topSkills")}
-                        className="edit-button"
-                      >
-                        <svg
-                          width="27"
-                          height="27"
-                          viewBox="0 0 27 27"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                      {!(isEditing === "topSkills") && (
+                        <button
+                          onClick={() => setIsEditing("topSkills")}
+                          className="edit-button"
                         >
-                          <rect
+                          <svg
                             width="27"
                             height="27"
-                            fill="url(#pattern0_1475_1863)"
-                          />
-                          <defs>
-                            <pattern
-                              id="pattern0_1475_1863"
-                              patternContentUnits="objectBoundingBox"
-                              width="1"
-                              height="1"
-                            >
-                              <use
-                                href="#image0_1475_1863"
-                                transform="scale(0.0111111)"
-                              />
-                            </pattern>
-                            <image
-                              id="image0_1475_1863"
-                              width="90"
-                              height="90"
-                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1475_1863)"
                             />
-                          </defs>
-                        </svg>
-                      </button>
+                            <defs>
+                              <pattern
+                                id="pattern0_1475_1863"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1475_1863"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1475_1863"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+                      )}
                       <div className="profile-edit-title">Top Skills</div>
                       <div className="profile-edit-tags">
-                        {user.skills.map((skill, index) => (
-                          <div key={index} className="profile-edit-tag">
-                            {skill}
+                        {isEditing === "topSkills" ? (
+                          <div>
+                            <textarea
+                              value={skillsString}
+                              placeholder="skills"
+                              onChange={(e) => setSkills(e.target.value)}
+                            ></textarea>
+                            <p>Separate skills with Commas</p>
                           </div>
-                        ))}
+                        ) : (
+                          console.log(user),
+                          user.skills.map((skill, index) => (
+                            <div key={index} className="profile-edit-tag">
+                              {skill}
+                            </div>
+                          ))
+                        )}
                         {/* Edit Input for Skills */}
                       </div>
                     </div>
@@ -703,7 +873,7 @@ const handleSaveContactDetails = async () => {
                             />
                           </defs>
                         </svg>
-                      </button>
+                      </button> 
                       <div className="profile-edit-title">Contact Details</div>
                       <div className="profile-edit-text">
                       {isEditingContact ? (
@@ -902,7 +1072,7 @@ const handleSaveContactDetails = async () => {
                           </defs>
                         </svg>
                       </button>
-                      <div className="profile-edit-title">LinkedIn</div>
+                      <div className="profile-edit-title">Social Media</div>
                       <div className="profile-edit-socials">
                         <Link to="#" className="profile-edit-social-icon">
                           <img src={linkedIn} alt="Icon " />
