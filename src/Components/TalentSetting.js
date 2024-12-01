@@ -14,6 +14,7 @@ export default function TalentSetting() {
   const [availability, setAvailability] = useState(false);
   const [likedNotification, setLikedNotification] = useState(false);
   const [shortlistedNotification, setShortlistedNotification] = useState(false);
+  const [saveTriggered, setSaveTriggered] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -27,7 +28,7 @@ export default function TalentSetting() {
     }
   }, [user]);
 
-  useEffect(() => {
+  const saveSettings = async () => {
     if (user) {
       const formData = {
         privateAccount,
@@ -38,28 +39,23 @@ export default function TalentSetting() {
         shortlistedNotification,
         availability,
       };
-
+  
       try {
-        axiosInstance.post("/talent/setting", formData);
+        await axiosInstance.post("/talent/setting", formData);
+        alert("Settings saved successfully!");
       } catch (error) {
-        console.error(error);
+        console.error("Failed to save settings:", error);
+        alert("Failed to save settings. Please try again.");
       }
     }
-  }, [
-    privateAccount,
-    hideLikesAndShortlisted,
-    hideBadges,
-    hideLocation,
-    likedNotification,
-    shortlistedNotification,
-    availability,
-    user,
-  ]);
+  };
+  
+ 
 
   if (!user || user.role !== "talent") return null;
   return (
     <>
-      <DashNav firstName={user.firstName} profile={user.profile.path} />
+      <DashNav firstName={user?.firstName || "Guest"} profile={user?.profile?.path || ""} />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
           <div className="profile-body-row account-setting-row-main">
@@ -345,6 +341,11 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
+                <div className="settings-save-button">
+                  <button onClick={saveSettings} className="save-button">
+                    Save Changes
+                  </button>
+                </div>
               </div>
               <div
                 className={`tabbed-content-main ${
@@ -426,6 +427,11 @@ export default function TalentSetting() {
                     </div>
                   </div>
                 </div>
+                <div className="settings-save-button">
+                  <button onClick={saveSettings} className="save-button">
+                    Save Changes
+                  </button>
+                </div>
               </div>
               <div
                 className={`tabbed-content-main ${
@@ -494,6 +500,11 @@ export default function TalentSetting() {
                       </div>
                     </div>
                   </div>
+                </div>
+                <div className="settings-save-button">
+                  <button onClick={saveSettings} className="save-button">
+                    Save Changes
+                  </button>
                 </div>
               </div>
             </div>
