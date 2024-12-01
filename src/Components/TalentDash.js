@@ -22,13 +22,32 @@ export default function TalentDash() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [about, setAbout] = useState("");
 
-  //Load documents from DB -- DYLAN
+  // -- DYLAN
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
-  const [isEditingDocuments, setIsEditingDocuments] = useState(false); // To toggle edit mode
+  const [isEditingDocuments, setIsEditingDocuments] = useState(false); // toggles edit mode
+  const [isEditingContact, setIsEditingContact] = useState(false); // toggles contact editing mode
+  const [contactDetails, setContactDetails] = useState({
+    phone: "",
+    email: "",
+  }); // Initialize contact details to empty strings
 
+//update user data once user is loaded
   useEffect(() => {
-    if (user?.documents) {
-      setDocuments(user.documents); // Update documents when user is loaded
+    if (user) {
+      setIsLoading(false);
+      setAbout(user.about);
+    }
+    if (user) {
+      if (user.documents) {
+        setDocuments(user.documents); 
+      }
+      if (user.phone || user.email) {
+        setContactDetails({
+          phone: user.phone || "",
+          email: user.username || "",
+        }); 
+      
+      }
     }
   }, [user]); 
 
@@ -109,16 +128,38 @@ export default function TalentDash() {
     };
     input.click(); // Trigger the file picker
   };
-  
-  
+
+  //editing contact details
+// Editing contact details
+const handleSaveContactDetails = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:4000/api/v1/talent/update-contact-details/${user._id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          phone: contactDetails.phone, 
+          email: contactDetails.email 
+        }),
+      }
+    );
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Contact details updated successfully!");
+      setIsEditingContact(false); // Exit editing mode
+    } else {
+      alert("Failed to update contact details. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error updating contact details:", error);
+    alert("An error occurred while updating contact details.");
+  }
+};
+
   
 
-  useEffect(() => {
-    if (user) {
-      setIsLoading(false);
-      setAbout(user.about);
-    }
-  }, [user]);
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
@@ -171,8 +212,9 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Home</div>
                 </Link> */}
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${tabName === "profile" ? "current" : ""
-                    }`}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "profile" ? "current" : ""
+                  }`}
                   onClick={() => setTabName("profile")}
                 >
                   <div className="profile-sidebar-icon">
@@ -212,8 +254,9 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">My Profile</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${tabName === "messages" ? "current" : ""
-                    }`}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "messages" ? "current" : ""
+                  }`}
                   onClick={() => setTabName("messages")}
                 >
                   <div className="profile-sidebar-icon">
@@ -253,8 +296,9 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${tabName === "hiredddStatus" ? "current" : ""
-                    }`}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "hiredddStatus" ? "current" : ""
+                  }`}
                   onClick={() => setTabName("hiredddStatus")}
                 >
                   <div className="profile-sidebar-icon">
@@ -295,8 +339,9 @@ export default function TalentDash() {
                 </Link>
                 <Link
                   to="/talent/settings"
-                  className={`profile-sidebar-link tab-link-main ${tabName === "settings" ? "current" : ""
-                    }`}
+                  className={`profile-sidebar-link tab-link-main ${
+                    tabName === "settings" ? "current" : ""
+                  }`}
                   onClick={() => setTabName("settings")}
                 >
                   <div className="profile-sidebar-icon">
@@ -339,8 +384,9 @@ export default function TalentDash() {
             </div>
             <div className="profile-content-area">
               <div
-                className={`tabbed-content-main ${tabName === "profile" ? "current" : ""
-                  }`}
+                className={`tabbed-content-main ${
+                  tabName === "profile" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
@@ -482,8 +528,9 @@ export default function TalentDash() {
                       <div className="profile-edit-text">
                         <p>{user.about}</p>
                         <div
-                          className={`profile-summry-edit ${isEditing === "summary" ? "current" : ""
-                            }`}
+                          className={`profile-summry-edit ${
+                            isEditing === "summary" ? "current" : ""
+                          }`}
                         >
                           <textarea
                             value={about}
@@ -491,7 +538,7 @@ export default function TalentDash() {
                             onChange={(e) => setAbout(e.target.value)}
                           ></textarea>
                         </div>
-                      </div>  
+                      </div>
                     </div>
                     <div className="profile-edit-set">
                       {isEditing === "topSkills" && (
@@ -621,7 +668,7 @@ export default function TalentDash() {
                         </button>
                       )}
                       <button
-                        onClick={() => setIsEditing("contactDetails")}
+                        onClick={() => setIsEditingContact((prev) => !prev)} // Toggles edit mode
                         className="edit-button"
                       >
                         <svg
@@ -659,15 +706,44 @@ export default function TalentDash() {
                       </button>
                       <div className="profile-edit-title">Contact Details</div>
                       <div className="profile-edit-text">
-                        <p>
-                          <strong>Phone</strong>+92XXXXXX
-                        </p>
-                        <p>
-                          <strong>Email</strong>
-                          {user.username}
-                        </p>
-                        {/* Edit input for contact only */}
-                      </div>
+                      {isEditingContact ? (
+                        <div>
+                          <label>
+                            <strong>Phone:</strong>
+                            <input
+                              type="text"
+                              value={contactDetails.phone || ""}
+                              placeholder={"+92XXXXXX"}
+                              onChange={(e) => {
+                                setContactDetails({ ...contactDetails, phone: e.target.value });
+                              }}
+                            />
+                          </label>
+                          <label>
+                            <strong>Email:</strong>
+                            <input
+                              type="email"
+                              value={contactDetails.email || ""}
+                              placeholder={"johndoe@example.com"}
+                              onChange={(e) => {
+                                setContactDetails({ ...contactDetails, email: e.target.value });
+                              }}
+                            />
+                          </label>
+                          <button onClick={handleSaveContactDetails}>Save</button>
+                        </div>
+                      ) : (
+                        <div>
+                          <p>
+                            <strong>Phone:</strong> {contactDetails.phone || "Not provided"}
+                          </p>
+                          <p>
+                            <strong>Email:</strong> {contactDetails.email || "Not provided"}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
                     </div>
                     <div className="profile-edit-set">
                       <button className="edit-button">
@@ -837,8 +913,9 @@ export default function TalentDash() {
                 </div>
               </div>
               <div
-                className={`tabbed-content-main ${tabName === "messages" ? "current" : ""
-                  }`}
+                className={`tabbed-content-main ${
+                  tabName === "messages" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="user-search messages-search">
@@ -864,8 +941,9 @@ export default function TalentDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${tabName === "hiredddStatus" ? "current" : ""
-                  }`}
+                className={`tabbed-content-main ${
+                  tabName === "hiredddStatus" ? "current" : ""
+                }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">
@@ -873,8 +951,9 @@ export default function TalentDash() {
                       <ul>
                         <li>
                           <Link
-                            className={`tab-link ${subTabName === "shortlisted" ? "current" : ""
-                              }`}
+                            className={`tab-link ${
+                              subTabName === "shortlisted" ? "current" : ""
+                            }`}
                             onClick={() => setSubTabName("shortlisted")}
                           >
                             Shortlisted
@@ -884,8 +963,9 @@ export default function TalentDash() {
                     </div>
                     <div className="shortlisted-tabs-content-area">
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${subTabName === "shortlisted" ? "current" : ""
-                          }`}
+                        className={`shortlisted-tabs-content tabbed-content ${
+                          subTabName === "shortlisted" ? "current" : ""
+                        }`}
                       >
                         <div className="three-columns">
                           <div className="single-shortlist-column">
