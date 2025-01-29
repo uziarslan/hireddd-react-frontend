@@ -26,6 +26,7 @@ export default function TalentDash() {
   const [skillsString, setSkills] = useState(""); // Not to be confused with the skills array
 
   // -- DYLAN 
+  const [uploadStatus, setUploadStatus] = useState(""); //video upload status
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
   const [isEditingDocuments, setIsEditingDocuments] = useState(false); // toggles edit mode //e rempve these
   const [isEditingContact, setIsEditingContact] = useState(false); // toggles contact editing mode
@@ -54,6 +55,53 @@ export default function TalentDash() {
     }
   }, [user]); 
 
+  //method for uploading resume
+  const handleUploadResume = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "video/mp4,video/avi,video/mov,video/mkv,video/webm"; // Accept only videos
+  
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+  
+      if (file) {
+        setUploadStatus("Uploading... ⏳"); // ✅ Show uploading message
+  
+        const formData = new FormData();
+        formData.append("video", file);
+  
+        try {
+          const response = await fetch(
+            `http://localhost:4000/api/v1/talent/upload-resume/${user._id}`,
+            {
+              method: "PUT",
+              body: formData,
+            }
+          );
+  
+          const result = await response.json();
+  
+          if (!response.ok) {
+            throw new Error(result.error || "Failed to upload resume video.");
+          }
+  
+          setUploadStatus("Upload Successful! ✅"); // ✅ Show success message
+  
+          // Update the user state to reflect the new resume video
+          updateUser({ video: { path: result.videoUrl } });
+  
+          setTimeout(() => setUploadStatus(""), 3000); // ✅ Clear message after 3 seconds
+        } catch (error) {
+          console.error("Error uploading resume video:", error);
+          setUploadStatus("Upload Failed ❌"); // ✅ Show error message
+        }
+      }
+    };
+  
+    input.click();
+  };
+  
+  
   //method for deleting docs on profile -- DYLAN
   const handleDeleteDocument = async (docId) => {
     try {
@@ -83,7 +131,7 @@ export default function TalentDash() {
   const handleUploadDocument = () => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".pdf";//accept only pdf's for now
+    input.accept = ".pdf"; // Accept only PDFs
   
     input.onchange = async (e) => {
       const file = e.target.files[0];
@@ -99,30 +147,31 @@ export default function TalentDash() {
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                   document: base64File,
                   fileName: file.name,
-                 }),
+                }),
               }
             );
   
             const result = await response.json();
   
-            if (result.success) {
-              alert("Document uploaded successfully!");
-              console.log("Upload result:", result); // Debugging the backend response
-  
-              // Add the new document to the state
-              setDocuments((prevDocuments) => [
-                ...prevDocuments,
-                ...result.talent.documents.slice(-1), // Add the last document from the backend response
-              ]);
-            } else {
-              alert("Failed to upload the document. Please try again.");
+            if (!response.ok) {
+              console.error("Upload Error:", result); // Log the full error response
+              throw new Error(result.error || result.message || "Failed to upload the document.");
             }
+  
+            alert("Document uploaded successfully!");
+            console.log("Upload result:", result);
+  
+            // Add the new document to the state
+            setDocuments((prevDocuments) => [
+              ...prevDocuments,
+              ...result.talent.documents.slice(-1),
+            ]);
           } catch (error) {
             console.error("Error uploading document:", error);
-            alert("An error occurred while uploading the document.");
+            alert(error.message); 
           }
         };
   
@@ -541,9 +590,11 @@ export default function TalentDash() {
                         </div>
                         View resume
                       </Link>
-                      <button className="resume-btn fill-btn">
-                        Change resume
+                      <button className="resume-btn fill-btn" onClick={handleUploadResume}>
+                        Upload resume
                       </button>
+                      {uploadStatus && <p style={{ color: uploadStatus.includes("Failed") ? "red" : "green" }}>{uploadStatus}</p>}
+
                     </div>
                   </div>
                   <div className="profile-edit-options">
