@@ -65,7 +65,7 @@ export default function TalentDash() {
       const file = e.target.files[0];
   
       if (file) {
-        setUploadStatus("Uploading... ⏳"); // ✅ Show uploading message
+        setUploadStatus("Uploading... ⏳"); 
   
         const formData = new FormData();
         formData.append("video", file);
@@ -85,15 +85,15 @@ export default function TalentDash() {
             throw new Error(result.error || "Failed to upload resume video.");
           }
   
-          setUploadStatus("Upload Successful! ✅"); // ✅ Show success message
+          setUploadStatus("Upload Successful! ✅"); 
   
           // Update the user state to reflect the new resume video
           updateUser({ video: { path: result.videoUrl } });
   
-          setTimeout(() => setUploadStatus(""), 3000); // ✅ Clear message after 3 seconds
+          setTimeout(() => setUploadStatus(""), 3000); 
         } catch (error) {
           console.error("Error uploading resume video:", error);
-          setUploadStatus("Upload Failed ❌"); // ✅ Show error message
+          setUploadStatus("Upload Failed ❌");
         }
       }
     };
