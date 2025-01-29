@@ -249,11 +249,11 @@ export default function TalentDash() {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/talent/edit-about/${user._id}`,
+        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ about: about }), 
+          body: JSON.stringify({ data: about, userType: "talent", dataField: "about"  }), 
         }
       );
   
@@ -262,8 +262,8 @@ export default function TalentDash() {
       if (result.success) {
         alert("About section updated successfully!");
   
-        setAbout(result.talent.about); // Update the state with new about (using backend filtered text)
-        updateUser({ about: result.talent.about }); // Update the user state
+        setAbout(result.user.about); // Update the state with new about (using backend filtered text)
+        updateUser({ about: result.user.about }); // Update the user state
         setIsEditing(""); // Exiting edit mode
       } else {
         alert("Failed to update the About section. Please try again.");
