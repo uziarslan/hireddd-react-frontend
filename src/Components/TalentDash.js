@@ -198,6 +198,7 @@ export default function TalentDash() {
     .replace(/\s+/g, ' ')  // After the dash replace spaces?
     .trim();               // Trim trailings
     // Format in database should be +1 234 567 8910 or so
+    // --
 
     // Validate phone number
     if (!phoneRegex.test(contactDetails.phone)) {
@@ -238,7 +239,7 @@ export default function TalentDash() {
     }
   };
 
-  // Handling the sumamry and the skills
+  // Handling the sumamry and the skills -- MONTE
   // Handling the Summaries
   const handleSaveAbout = async () => {
     if (!about.trim()) {  // Just to remove spaces before null checking
@@ -602,7 +603,7 @@ export default function TalentDash() {
                       {isEditing === "summary" && (
                         <button
                           onClick={() =>  handleSaveAbout() }
-                          className="edit-button profile-summry-done"
+                          className="edit-button profile-txtbx-done"
                         >
                           <svg 
                             width="24" 
@@ -730,7 +731,7 @@ export default function TalentDash() {
                       {isEditing === "topSkills" && (
                         <button
                           onClick={() =>  handleSaveSkills()}
-                          className="edit-button profile-summry-done"
+                          className="edit-button profile-txtbx-done"
                         >
                           <svg 
                             width="24" 

@@ -8649,3 +8649,8 @@ button.edit-button.profile-summry-close-button {
   align-items: center; 
   height: 100%;
 }
+.profile-txtbx-link{
+  text-decoration: none;
+  /* Till i get the color convention */
+  color: #7a7c8d; 
+}

@@ -6,6 +6,7 @@ import dummyProfile from "../Assets/images/uploads/user-avatar.png";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 
+// EGBAIYELO - Logout button icon data
 const logoutSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
