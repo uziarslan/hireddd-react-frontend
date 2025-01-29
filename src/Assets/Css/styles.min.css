@@ -8571,7 +8571,8 @@ picture img.loaded {
 }
 
 .header-section:has(.right-header):after {
-  content: '';
+  /* EGBAIYELO - Temporarily removing this because it causes weird blank bar */
+  /* content: ''; */
   position: absolute;
   top: 0;
   right: 0;
@@ -8619,8 +8620,8 @@ picture img.loaded {
 
 
 /* Styles for editing icons - EGBAIYELO */
-/* check mark icon */
-.profile-summry-done {
+/* check mark icon, could be a check or a bookmark so (done) */
+.profile-txtbx-done {
   position: absolute;
   /* top: -20px; */
   left: 0;
@@ -8639,4 +8640,12 @@ button.edit-button.profile-summry-close-button {
 /* A little higlight */
 .profile-edit-set textarea{
   border: .15em solid grey;
+}
+/* For centering the logout button */
+.logout-button{
+  margin-left: 0;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  height: 100%;
 }
