@@ -45,7 +45,7 @@ export default function TalentDash() {
       if (user.documents) {
         setDocuments(user.documents); 
       }
-      if (user.phone || user.email) {
+      if (user.phone && user.username) {
         setContactDetails({
           phone: user.phone || "",
           email: user.username || "",
@@ -228,7 +228,12 @@ export default function TalentDash() {
 
       if (result.success) {
         alert("Contact details updated successfully!");
-        updateUser({ about: result.talent.about }); // Update the user state
+        updateUser({ 
+          ...user, // Keep existing user data
+          about: result.talent.about, 
+          phone: result.talent.phone, 
+          username: result.talent.username // Ensure email updates correctly
+        });
         setIsEditingContact(false); // Exit editing mode
       } else {
         alert("Failed to update contact details. Please try again.");
@@ -945,7 +950,7 @@ export default function TalentDash() {
                             <strong>Email:</strong>
                             <input
                               type="email"
-                              value={contactDetails.email || ""}
+                              value={isEditingContact ? contactDetails.email || user.username : user.username || ""}
                               placeholder={"johndoe@example.com"}
                               onChange={(e) => {
                                 setContactDetails({ ...contactDetails, email: e.target.value });
@@ -957,10 +962,10 @@ export default function TalentDash() {
                       ) : (
                         <div>
                           <p>
-                            <strong>Phone:</strong> {contactDetails.phone || "Not provided"}
+                            <strong>Phone:</strong> {contactDetails.phone || user.phone || "Not provided"}
                           </p>
                           <p>
-                            <strong>Email:</strong> {contactDetails.email || "Not provided"}
+                            <strong>Email:</strong> {contactDetails.email || user.username || "Not provided"}
                           </p>
                         </div>
                       )}
