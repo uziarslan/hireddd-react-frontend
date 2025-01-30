@@ -8570,15 +8570,18 @@ picture img.loaded {
   src: url(../Fonts/BakbakOne-Regular.woff2) format("woff2");
 }
 
-.header-section:has(.right-header):after {
-  /* EGBAIYELO - Temporarily removing this because it causes weird blank bar */
-  /* content: ''; */
+/* EGBAIYELO - This {:has()} isnt supported by some popular browsers */
+/* .header-section:has(.right-header):after {  */
+.header-right-background:after {
+  content: '';
   position: absolute;
   top: 0;
   right: 0;
   width: 50%;
   height: 100%;
   background-color: var(--hr_white);
+  /* It used to cover two links */
+  z-index: -1;
 }
 
 
@@ -8654,3 +8657,7 @@ button.edit-button.profile-summry-close-button {
   /* Till i get the color convention */
   color: #7a7c8d; 
 }
+.header-right-background{
+
+}
+

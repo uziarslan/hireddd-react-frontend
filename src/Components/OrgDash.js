@@ -14,20 +14,6 @@ import axiosInstance from "../services/axiosInstance";
 // EGBAIYELO - SVGs
 // These are constants and they are not all intelligeable so i declare them as components
 // So they dont clog up document
-const saveSVG = () => (
-  <svg
-    width="27"
-    height="27"
-    viewBox="0 0 27 27"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M18 0H9C7.34315 0 6 1.34315 6 3V24L13.5 19.5L21 24V3C21 1.34315 19.6569 0 18 0Z"
-      fill="currentColor"
-    />
-  </svg>
-);
 const pencilSVG = () => (
   <svg
     width="27"
@@ -171,7 +157,6 @@ export default function OrgDash() {
     
   });
 
-
   // sending a change to the user object, in the backend, 
   useEffect(() => {
     if (user) {
@@ -183,7 +168,6 @@ export default function OrgDash() {
       setLocation(user.location || "");
 
     }
-    
   }, [user]);
 
   const handleFieldChange = (field, value) => {
@@ -407,16 +391,19 @@ export default function OrgDash() {
     }
 
   }
-  
-  
 
+  const logging = async () => {
+    console.log("I tried to reload")
+  }
+  
+  
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
   return (
     <>
       <DashNav
         profile={user?.profile?.path || dummyProfile}
-        firstName={user.firstName}
+        firstName={user?.firstName}
       />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
@@ -601,7 +588,7 @@ export default function OrgDash() {
                     <div className="profile-head-left">
                       <div className="profile-head-image">
                         <img
-                          src={user.profile ? user.profile.path : dummyProfile}
+                          src={user?.profile?.path || dummyProfile}
                           alt="Avatar"
                         />
                       </div>
