@@ -20,12 +20,16 @@ export default function TalentDash() {
   const [isEditing, setIsEditing] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
-
+  // -- RAUNAK
+  const [isEditingPortfolio, setIsEditingPortfolio] = useState(false);
+  const [portfolios, setPortfolios] = useState([]);
+  const [newLink, setNewLink] = useState({ icon: "", href: "" });
+  const [loading, setLoading] = useState(true);
   // -- MONTE
   const [about, setAbout] = useState("");
   const [skillsString, setSkills] = useState(""); // Not to be confused with the skills array
 
-  // -- DYLAN 
+  // -- DYLAN
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
   const [isEditingDocuments, setIsEditingDocuments] = useState(false); // toggles edit mode //e rempve these
   const [isEditingContact, setIsEditingContact] = useState(false); // toggles contact editing mode
@@ -34,25 +38,39 @@ export default function TalentDash() {
     email: "",
   }); // Initialize contact details to empty strings
 
-//update user data once user is loaded  
+  //update user data once user is loaded
   useEffect(() => {
     if (user) {
       setIsLoading(false);
-      setAbout(user.about);       // Skills in db is list but here is string - Monte
-      setSkills(user.skills.join(', '));  
+      setAbout(user.about); // Skills in db is list but here is string - Monte
+      setSkills(user.skills.join(", "));
 
-      if (user.documents) {
-        setDocuments(user.documents); 
-      }
+      
+        if (user.documents) {
+          setDocuments(user.documents);
+        }
+      
       if (user.phone || user.email) {
         setContactDetails({
           phone: user.phone || "",
           email: user.username || "",
-        }); 
-      
+        });
       }
     }
-  }, [user]); 
+
+    // Set the portfolio if available
+    if (user &&user.portfolios) {
+      setPortfolios(user.portfolios|| ""); // Assuming user.portfolios is an array of objects containing 'icon' and 'href'
+    }
+
+    setLoading(false);
+  }, [user]);
+  if (!user) {
+    return <div>Loading user data...</div>; // Handle the case when user is not available
+  }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   //method for deleting docs on profile -- DYLAN
   const handleDeleteDocument = async (docId) => {
@@ -61,9 +79,9 @@ export default function TalentDash() {
         `http://localhost:4000/api/v1/talent/delete-document/${user._id}/${docId}`,
         { method: "DELETE" }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("Document deleted successfully!");
         // Update the documents array in state
@@ -83,11 +101,11 @@ export default function TalentDash() {
   const handleUploadDocument = () => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".pdf";//accept only pdf's for now
-  
+    input.accept = ".pdf"; //accept only pdf's for now
+
     input.onchange = async (e) => {
       const file = e.target.files[0];
-  
+
       if (file) {
         // Read the file as a Base64 string
         const reader = new FileReader();
@@ -99,19 +117,19 @@ export default function TalentDash() {
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                   document: base64File,
                   fileName: file.name,
-                 }),
+                }),
               }
             );
-  
+
             const result = await response.json();
-  
+
             if (result.success) {
               alert("Document uploaded successfully!");
               console.log("Upload result:", result); // Debugging the backend response
-  
+
               // Add the new document to the state
               setDocuments((prevDocuments) => [
                 ...prevDocuments,
@@ -125,29 +143,28 @@ export default function TalentDash() {
             alert("An error occurred while uploading the document.");
           }
         };
-  
+
         reader.readAsDataURL(file); // Converts the file to a Base64 string
       }
     };
     input.click(); // Trigger the file picker
   };
 
-  //editing contact details 
+  //editing contact details
   // Editing contact details
   const handleSaveContactDetails = async () => {
-
     // Format handling -- MONTE
     // No agreed format
     // Phone and email regex data, it's global format
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const phoneRegex = /^[+]?[1-9]\d{1,14}$/; 
+    const phoneRegex = /^[+]?[1-9]\d{1,14}$/;
 
     // Standardize phone data, no brackets but replace dashes with spacess
     contactDetails.phone = contactDetails.phone
-    .replace(/[()]/g, '')  // Remove brackets
-    .replace(/-/g, ' ')    // Replace dashes with spaces
-    .replace(/\s+/g, ' ')  // After the dash replace spaces?
-    .trim();               // Trim trailings
+      .replace(/[()]/g, "") // Remove brackets
+      .replace(/-/g, " ") // Replace dashes with spaces
+      .replace(/\s+/g, " ") // After the dash replace spaces?
+      .trim(); // Trim trailings
     // Format in database should be +1 234 567 8910 or so
 
     // Validate phone number
@@ -155,22 +172,22 @@ export default function TalentDash() {
       alert("Please enter a valid phone number.");
       return;
     }
-    
+
     // Validate email
     if (!emailRegex.test(contactDetails.email)) {
       alert("Please enter a valid email address.");
       return;
     }
-    
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/talent/update-contact-details/${user._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            phone: contactDetails.phone, 
-            email: contactDetails.email 
+          body: JSON.stringify({
+            phone: contactDetails.phone,
+            email: contactDetails.email,
           }),
         }
       );
@@ -189,10 +206,47 @@ export default function TalentDash() {
     }
   };
 
+  // RAUNAK
+  const handleEditPortfolio = () => {
+    setIsEditingPortfolio(true);
+    if (portfolios.length === 0) {
+      setPortfolios([{ href: "" }]); // Initialize with an empty editable link
+    }
+  };
+  
+  const handleSavePortfolio = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `http://localhost:4000/api/v1/talent/edit-portfolio/${user._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ href:portfolios.href }),
+        }
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        alert("Portfolio section updated successfully!");
+        setIsEditingPortfolio(false);
+      } else {
+        console.error("Failed to update portfolio:", result.message);
+      }
+    } catch (error) {
+      console.error("Error updating Portfolio section:", error);
+      alert("An error occurred while updating the Portfolio section.");
+    }
+  };
   // Handling the sumamry and the skills
   // Handling the Summaries
   const handleSaveAbout = async () => {
-    if (!about.trim()) {  // Just to remove spaces before null checking
+    if (!about.trim()) {
+      // Just to remove spaces before null checking
       alert("About section cannot be empty!");
       return;
     }
@@ -203,15 +257,15 @@ export default function TalentDash() {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ about: about }), 
+          body: JSON.stringify({ about: about }),
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("About section updated successfully!");
-  
+
         setAbout(result.talent.about); // Update the state with new about (using backend filtered text)
         updateUser({ about: result.talent.about }); // Update the user state
         setIsEditing(""); // Exiting edit mode
@@ -222,7 +276,6 @@ export default function TalentDash() {
       console.error("Error updating About section:", error);
       alert("An error occurred while updating the About section.");
     }
-
   };
 
   // Handling the skills
@@ -241,13 +294,13 @@ export default function TalentDash() {
           body: JSON.stringify({ rawSkills: skillsString }), // Skills are sent as a string
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("Skills section updated successfully!");
-  
-        setSkills(result.talent.skills.join(', ')); // Updating the skills form the backend (using backend filters)
+
+        setSkills(result.talent.skills.join(", ")); // Updating the skills form the backend (using backend filters)
         updateUser({ skills: result.talent.skills }); // Update the user state
         setIsEditing(""); // Exit edit mode
       } else {
@@ -257,9 +310,7 @@ export default function TalentDash() {
       console.error("Error updating Skills section:", error);
       alert("An error occurred while updating the Skills section.");
     }
-
   };
-
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
@@ -550,22 +601,23 @@ export default function TalentDash() {
                     <div className="profile-edit-set">
                       {isEditing === "summary" && (
                         <button
-                          onClick={() =>  handleSaveAbout() }
+                          onClick={() => handleSaveAbout()}
                           className="edit-button profile-summry-done"
                         >
-                          <svg 
-                            width="24" 
-                            height="24" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
-                            <path 
-                              d="M20 6L9 17L4 12" 
-                              stroke="black" 
-                              strokeWidth="2" 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round"/>
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="black"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </svg>
                         </button>
                       )}
@@ -607,7 +659,7 @@ export default function TalentDash() {
                             </defs>
                           </svg>
                         </button>
-                      )} 
+                      )}
                       {!(isEditing === "summary") && (
                         <button
                           onClick={() => setIsEditing("summary")}
@@ -637,31 +689,26 @@ export default function TalentDash() {
                                   transform="scale(0.0111111)"
                                 />
                               </pattern>
-                              <image
-                                id="image0_1475_1863"
-                                width="90"
-                                height="90"
-                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
-                              />
+                              \
                             </defs>
                           </svg>
                         </button>
                       )}
                       <div className="profile-edit-title">Summary</div>
                       <div className="profile-edit-text">
-                      {isEditing === "summary" ? (
-                        <div>
-                          <textarea
-                            value={about}
-                            placeholder="Summary"
-                            onChange={(e) => setAbout(e.target.value)}
-                          ></textarea>
-                        </div>
-                      ) : (
-                        <div>
-                          <p>{user.about}</p>
-                        </div>
-                      )}
+                        {isEditing === "summary" ? (
+                          <div>
+                            <textarea
+                              value={about}
+                              placeholder="Summary"
+                              onChange={(e) => setAbout(e.target.value)}
+                            ></textarea>
+                          </div>
+                        ) : (
+                          <div>
+                            <p>{user.about}</p>
+                          </div>
+                        )}
                         {/* <div
                           className={`profile-summry-edit ${
                             isEditing === "summary" ? "current" : ""
@@ -678,22 +725,23 @@ export default function TalentDash() {
                     <div className="profile-edit-set">
                       {isEditing === "topSkills" && (
                         <button
-                          onClick={() =>  handleSaveSkills()}
+                          onClick={() => handleSaveSkills()}
                           className="edit-button profile-summry-done"
                         >
-                          <svg 
-                            width="24" 
-                            height="24" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
-                            <path 
-                              d="M20 6L9 17L4 12" 
-                              stroke="black" 
-                              strokeWidth="2" 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round"/>
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="black"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </svg>
                         </button>
                       )}
@@ -787,12 +835,12 @@ export default function TalentDash() {
                             <p>Separate skills with Commas</p>
                           </div>
                         ) : (
-                          console.log(user),
+                          (console.log(user),
                           user.skills.map((skill, index) => (
                             <div key={index} className="profile-edit-tag">
                               {skill}
                             </div>
-                          ))
+                          )))
                         )}
                         {/* Edit Input for Skills */}
                       </div>
@@ -873,47 +921,56 @@ export default function TalentDash() {
                             />
                           </defs>
                         </svg>
-                      </button> 
+                      </button>
                       <div className="profile-edit-title">Contact Details</div>
                       <div className="profile-edit-text">
-                      {isEditingContact ? (
-                        <div>
-                          <label>
-                            <strong>Phone:</strong>
-                            <input
-                              type="text"
-                              value={contactDetails.phone || ""}
-                              placeholder={"+92XXXXXX"}
-                              onChange={(e) => {
-                                setContactDetails({ ...contactDetails, phone: e.target.value });
-                              }}
-                            />
-                          </label>
-                          <label>
-                            <strong>Email:</strong>
-                            <input
-                              type="email"
-                              value={contactDetails.email || ""}
-                              placeholder={"johndoe@example.com"}
-                              onChange={(e) => {
-                                setContactDetails({ ...contactDetails, email: e.target.value });
-                              }}
-                            />
-                          </label>
-                          <button onClick={handleSaveContactDetails}>Save</button>
-                        </div>
-                      ) : (
-                        <div>
-                          <p>
-                            <strong>Phone:</strong> {contactDetails.phone || "Not provided"}
-                          </p>
-                          <p>
-                            <strong>Email:</strong> {contactDetails.email || "Not provided"}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
+                        {isEditingContact ? (
+                          <div>
+                            <label>
+                              <strong>Phone:</strong>
+                              <input
+                                type="text"
+                                value={contactDetails.phone || ""}
+                                placeholder={"+92XXXXXX"}
+                                onChange={(e) => {
+                                  setContactDetails({
+                                    ...contactDetails,
+                                    phone: e.target.value,
+                                  });
+                                }}
+                              />
+                            </label>
+                            <label>
+                              <strong>Email:</strong>
+                              <input
+                                type="email"
+                                value={contactDetails.email || ""}
+                                placeholder={"johndoe@example.com"}
+                                onChange={(e) => {
+                                  setContactDetails({
+                                    ...contactDetails,
+                                    email: e.target.value,
+                                  });
+                                }}
+                              />
+                            </label>
+                            <button onClick={handleSaveContactDetails}>
+                              Save
+                            </button>
+                          </div>
+                        ) : (
+                          <div>
+                            <p>
+                              <strong>Phone:</strong>{" "}
+                              {contactDetails.phone || "Not provided"}
+                            </p>
+                            <p>
+                              <strong>Email:</strong>{" "}
+                              {contactDetails.email || "Not provided"}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="profile-edit-set">
                       <button className="edit-button">
@@ -950,19 +1007,156 @@ export default function TalentDash() {
                           </defs>
                         </svg>
                       </button>
+
                       <div className="profile-edit-title">Portfolio</div>
-                      <div className="profile-edit-socials">
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={socialIcon} alt="Icon" />
-                        </Link>
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={socialIcon1} alt="Icon" />
-                        </Link>
-                      </div>
-                    </div>
+
+<div>
+  <button
+    onClick={() => setIsEditingPortfolio((prev) => !prev)}
+    className="edit-button"
+    style={{ cursor: "pointer", border: "none", background: "transparent" }}
+  >
+    <svg
+      width="27"
+      height="27"
+      viewBox="0 0 27 27"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="27" height="27" fill="url(#pattern0_1475_1863)" />
+      <defs>
+        <pattern
+          id="pattern0_1475_1863"
+          patternContentUnits="objectBoundingBox"
+          width="1"
+          height="1"
+        >
+          <use href="#image0_1475_1863" transform="scale(0.0111111)" />
+        </pattern>
+        <image
+          id="image0_1475_1863"
+          width="90"
+          height="90"
+          href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+        />
+      </defs>
+    </svg>
+  </button>
+
+  {isEditingPortfolio ? (
+    <div>
+      {/* Only render portfolio boxes from index 1 onward */}
+      {portfolios.slice(1).map((portfolio, i) => {
+        // Calculate the actual index in the portfolios array
+        const actualIndex = i + 1;
+        return (
+          <div
+            key={portfolio._id || actualIndex}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "8px",
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Portfolio Link"
+              value={portfolio.href}
+              onChange={(e) => {
+                const updatedPortfolios = [...portfolios];
+                updatedPortfolios[actualIndex] = {
+                  ...updatedPortfolios[actualIndex],
+                  href: e.target.value,
+                };
+                
+                setPortfolios(updatedPortfolios);
+              }}
+              style={{
+                width: "80%",
+                marginRight: "10px",
+                padding: "5px",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+              }}
+            />
+            {/* Remove button with a cross icon */}
+            <button
+              onClick={() => {
+                setPortfolios(
+                  portfolios.filter((_, index) => index !== actualIndex)
+                );
+              }}
+              className="remove-button"
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M1 1L15 15" stroke="red" strokeWidth="2" />
+                <path d="M15 1L1 15" stroke="red" strokeWidth="2" />
+              </svg>
+            </button>
+            
+          </div>
+        );
+      })}
+     
+      <button
+        onClick={() => {
+          setPortfolios([...portfolios, newLink]);
+          setNewLink({ href: "" });
+          <input
+          type="text"
+          placeholder="Add new portfolio link"
+          value={newLink.href}
+          onChange={(e) =>
+            setNewLink({ ...newLink, href: e.target.value })
+          }
+        />
+        }}
+      >
+        Add Link
+      </button>
+      <button onClick={handleSavePortfolio}>Save Portfolio</button>
+    </div>
+  ) : (
+    <div>
+      {/* When not editing, only show portfolio links from index 1 onward */}
+      {portfolios.slice(1).length > 0 ? (
+        portfolios.slice(1).map((portfolio, index) => (
+          <div key={portfolio._id || index}>
+            <a
+              href={portfolio.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {portfolio.href}
+            </a>
+          </div>
+        ))
+      ) : (
+        <p>No portfolio links provided</p>
+      )}
+    </div>
+  )}
+</div>
+</div>
+
+
                     <div className="profile-edit-set">
-                      <button className="edit-button"
-                      onClick={() => setIsEditingDocuments((prev) => !prev)}>
+                      <button
+                        className="edit-button"
+                        onClick={() => setIsEditingDocuments((prev) => !prev)}
+                      >
                         {isEditingDocuments ? "Done" : "Edit"}
                         <svg
                           width="27"
@@ -999,46 +1193,53 @@ export default function TalentDash() {
                       </button>
                       <div className="profile-edit-title">Attach Documents</div>
                       <div className="profile-edit-socials">
+                        <div className="profile-edit-documents">
+                          {documents.map((doc, index) => {
+                            if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
+                            
 
-                      <div className="profile-edit-documents">
-                      {documents.map((doc, index) => {
-                          if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
-
-                          return (
-                            <div key={index} className="document-item">
-                              <a 
-                                href={doc.fileData} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                download={doc.fileName}>
-                                <img src={pdfIcon} alt={`Document ${index + 1}`} />
-                              </a>
-                              <div className="document-name">{doc.fileName}</div> 
-                              {isEditingDocuments && (
-                                <button
-                                  className="delete-button"
-                                  onClick={() => handleDeleteDocument(doc._id)}
+                            return (
+                              <div key={index} className="document-item">
+                                <a
+                                  href={doc.fileData}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download={doc.fileName}
                                 >
-                                  -
-                                </button>
-                              )}
-                            </div>
-                          );
-                        })}
-                      {isEditingDocuments && (
-                        <button
-                         className="add-button" 
-                         onClick={handleUploadDocument}>
-                          +
-                        </button>
-                      )}
+                                  <img
+                                    src={pdfIcon}
+                                    alt={`Document ${index + 1}`}
+                                  />
+                                </a>
+                                <div className="document-name">
+                                  {doc.fileName}
+                                </div>
+                                {isEditingDocuments && (
+                                  <button
+                                    className="delete-button"
+                                    onClick={() =>
+                                      handleDeleteDocument(doc._id)
+                                    }
+                                  >
+                                    -
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {isEditingDocuments && (
+                            <button
+                              className="add-button"
+                              onClick={handleUploadDocument}
+                            >
+                              +
+                            </button>
+                          )}
                         </div>
-
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button 
-                        className="edit-button">
+                      <button className="edit-button">
                         <svg
                           width="27"
                           height="27"
