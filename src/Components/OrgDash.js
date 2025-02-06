@@ -11,123 +11,6 @@ import { AuthContext } from "../Context/AuthContext";
 import Loading from "./Loading";
 import axiosInstance from "../services/axiosInstance";
 
-// EGBAIYELO - SVGs
-// These are constants and they are not all intelligeable so i declare them as components
-// So they dont clog up document
-const pencilSVG = () => (
-  <svg
-    width="27"
-    height="27"
-    viewBox="0 0 27 27"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect
-      width="27"
-      height="27"
-      fill="url(#pattern0_1475_1863)"
-    />
-    <defs>
-      <pattern
-        id="pattern0_1475_1863"
-        patternContentUnits="objectBoundingBox"
-        width="1"
-        height="1"
-      >
-        <use
-          href="#image0_1475_1863"
-          transform="scale(0.0111111)"
-        />
-      </pattern>
-      <image
-        id="image0_1475_1863"
-        width="90"
-        height="90"
-        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
-      />
-    </defs>
-  </svg>
-);
-const closeSVG = () => (
-  <svg
-    width="27"
-    height="27"
-    viewBox="0 0 27 27"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect
-      width="27"
-      height="27"
-      fill="url(#pattern0_1846_11491)"
-    />
-    <defs>
-      <pattern
-        id="pattern0_1846_11491"
-        patternContentUnits="objectBoundingBox"
-        width="1"
-        height="1"
-      >
-        <use
-          href="#image0_1846_11491"
-          transform="scale(0.0111111)"
-        />
-      </pattern>
-      <image
-        id="image0_1846_11491"
-        width="90"
-        height="90"
-        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
-      />
-    </defs>
-  </svg>
-);
-const checkSVG = () => {
-  <svg
-    width="27"
-    height="27"
-    viewBox="0 0 27 27"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect
-      width="27"
-      height="27"
-      fill="url(#pattern0_1846_11491)"
-    />
-    <defs>
-      <pattern
-        id="pattern0_1846_11491"
-        patternContentUnits="objectBoundingBox"
-        width="1"
-        height="1"
-      >
-        <use
-          href="#image0_1846_11491"
-          transform="scale(0.0111111)"
-        />
-      </pattern>
-      <image
-        id="image0_1846_11491"
-        width="90"
-        height="90"
-        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
-      />
-    </defs>
-  </svg>
-}
-const bookmarkSVG = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width="24"
-    height="24"
-    fill="black" // Ensures the entire bookmark is filled
-  >
-    <path d="M6 2H18C19.1 2 20 2.9 20 4V20C20 20.8 19.2 21.3 18.5 20.9L12 17.6L5.5 20.9C4.8 21.3 4 20.8 4 20V4C4 2.9 4.9 2 6 2Z" />
-  </svg>
-);
-
 export default function OrgDash() {
   const { user, updateUser } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -154,8 +37,8 @@ export default function OrgDash() {
     industry: user?.industry || "",
     companySize: user?.companySize || "",
     location: user?.location || "",
-    
   });
+
 
   // sending a change to the user object, in the backend, 
   useEffect(() => {
@@ -167,6 +50,7 @@ export default function OrgDash() {
       setCompanySize(user.companySize || "");
       setLocation(user.location || "");
 
+
     }
   }, [user]);
 
@@ -176,12 +60,10 @@ export default function OrgDash() {
 
   const handleCloseEdit = () => {
     setIsEditing("");
-    // To cancel an edit  -- MONTE
-    // handleProfileEdit();
+    handleProfileEdit();
   };
 
   const handleProfileEdit = async () => {
-    // Make it so that it calls other fields and just gets them to error check and submit
     console.log({ ...userFields });
     try {
       const { data, status } = await axiosInstance.post(
@@ -213,197 +95,14 @@ export default function OrgDash() {
     }
   }
 
-  // Handling the Summaries -- MONTE
-  const handleSaveAbout = async () => {
-    if (!about.trim()) {  // Just to remove spaces before null checking
-      alert("About section cannot be empty!");
-      return;
-    }
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: about, userType: "organization", dataField: "about" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("About section updated successfully!");
-  
-        setAbout(result.user.about); // Update the state with new about (using backend filtered text)
-        updateUser({ about: result.user.about }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the About section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating About section:", error);
-      alert("An error occurred while updating the About section.");
-    }
-
-  };
-
-  //- Better way to do this to make location link to google maps location
-  // let googleLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
-
-  const handleSaveWebsite = async () => {
-    if (!website.trim()) {  // Just to remove spaces before null checking
-      alert("Website section cannot be empty!");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: website, userType: "organization", dataField: "website" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Website section updated successfully!");
-  
-        setWebsite(result.user.website); // Update the state with new website (using backend filtered text)
-        updateUser({ website: result.user.website }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the Website section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating Website section:", error);
-      alert("An error occurred while updating the Website section.");
-    }
-  }
-
-  const handleSaveIndustry = async () => {
-    if (!industry.trim()) {  // Just to remove spaces before null checking
-      alert("Industry section cannot be empty!");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: industry, userType: "organization", dataField: "industry" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Industry section updated successfully! fr");
-  
-        setIndustry(result.user.industry); // Update the state with new industry (using backend filtered text)
-        updateUser({ industry: result.user.industry }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the Industry section. Please try again. fr");
-      }
-    } catch (error) {
-      console.error("Error updating Industry section: fr", error);
-      alert("An error occurred while updating the Industry section. fr");
-    }
-  }
-
-  const handleSaveCompanySize = async () => {
-    if (!companySize.trim()) {  // Just to remove spaces before null checking
-      alert("company size section cannot be empty!");
-      return;
-    }
-
-    // Validate company size format using regex
-    const companySizeRegex = /^\d+(-\d+)?$/;
-
-    if (!companySizeRegex.test(companySize)) {
-      alert("Invalid company size format! It should only include numbers and optionally a hyphen (e.g., 100-500).");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: companySize, userType: "organization", dataField: "companySize" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Company size section updated successfully!");
-  
-        setCompanySize(result.user.companySize); // Update the state with new CompanySize (using backend filtered text)
-        updateUser({ companySize: result.user.companySize }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the company size section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating company size section:", error);
-      alert("An error occurred while updating the company size section.");
-    }
-  }
-
-  const handleSaveLocation = async () => {
-    if (!location.trim()) {  // Just to remove spaces before null checking
-      alert("Location section cannot be empty!");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: location, userType: "organization", dataField: "location" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Location section updated successfully!");
-  
-        setLocation(result.user.location); // Update the state with new location (using backend filtered text)
-        updateUser({ location: result.user.location }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the Location section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating Location section:", error);
-      alert("An error occurred while updating the Location section.");
-    }
-
-  }
-
-  const logging = async () => {
-    console.log("I tried to reload")
-  }
-  
-  
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
 
   return (
     <>
       <DashNav
-        profile={user?.profile?.path || dummyProfile}
-        firstName={user?.firstName}
+        profile={user.profile ? user.profile.path : dummyProfile}
+        firstName={user.firstName}
       />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
@@ -588,7 +287,7 @@ export default function OrgDash() {
                     <div className="profile-head-left">
                       <div className="profile-head-image">
                         <img
-                          src={user?.profile?.path || dummyProfile}
+                          src={user.profile ? user.profile.path : dummyProfile}
                           alt="Avatar"
                         />
                       </div>
@@ -604,41 +303,90 @@ export default function OrgDash() {
                     </div>
                   </div>
                   <div className="profile-edit-options">
-                    
                     {/* about company section */}
 
                     <div className="profile-edit-set">
-
-                      {/* EGBAIYELO - Making the logic more compact */}
-                      {isEditing === "about" ? (
-                        <>
-                          {/* Close edit button */}
-                          <button
-                            onClick={() => { handleCloseEdit(); }}
-                            className="edit-button profile-summry-close-button"
+                      {/* Close edit button */}
+                      {isEditing === "about" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            { closeSVG() }
-                          </button>
-
-                          {/* Save edit button */}
-                          <button
-                            onClick={() => { handleSaveAbout(); }}
-                            className="edit-button profile-txtbx-done"
-                          >
-                            { bookmarkSVG() }
-                          </button>
-                        </>
-                      ) : (
-                        // (pencil) edit button
-                        <button className="edit-button" onClick={() => setIsEditing("about")}>
-                        { pencilSVG() }
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
                         </button>
                       )}
-
+                      <button className="edit-button" onClick={() => setIsEditing("about")}>
+                        <svg
+                          width="27"
+                          height="27"
+                          viewBox="0 0 27 27"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            width="27"
+                            height="27"
+                            fill="url(#pattern0_1475_1863)"
+                          />
+                          <defs>
+                            <pattern
+                              id="pattern0_1475_1863"
+                              patternContentUnits="objectBoundingBox"
+                              width="1"
+                              height="1"
+                            >
+                              <use
+                                href="#image0_1475_1863"
+                                transform="scale(0.0111111)"
+                              />
+                            </pattern>
+                            <image
+                              id="image0_1475_1863"
+                              width="90"
+                              height="90"
+                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            />
+                          </defs>
+                        </svg>
+                      </button>
                       <div className="profile-edit-title">About Company</div>
                       <div className="profile-edit-text">
                         <p className={`${isEditing === "about" ? "profile-summry-edit" : ""
-                          }`}>{user.about}</p>
+                          }`}>{about}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "about" ? "" : "profile-summry-edit"
@@ -658,41 +406,90 @@ export default function OrgDash() {
                     {/* */}
 
 
+
                     {/* website */}
-
                     <div className="profile-edit-set">
-
-                      {/* EGBAIYELO - Making the logic more compact */}
-                      {isEditing === "website" ? (
-                          <>
-                            {/* Close edit button */}
-                            <button
-                              onClick={() => { handleCloseEdit(); }}
-                              className="edit-button profile-summry-close-button"
-                            >
-                              { closeSVG() }
-                            </button>
-
-                            {/* Save edit button */}
-                            <button
-                              onClick={() => { handleSaveWebsite(); }}
-                              className="edit-button profile-txtbx-done"
-                            >
-                              { bookmarkSVG() }
-                            </button>
-                          </>
-                      ) : (
-                        // (pencil) edit button
-                        <button className="edit-button" onClick={() => setIsEditing("website")}>
-                        { pencilSVG() }
+                      {isEditing === "website" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
                         </button>
                       )}
-
+                      <button className="edit-button" onClick={() => setIsEditing("website")}>
+                        <svg
+                          width="27"
+                          height="27"
+                          viewBox="0 0 27 27"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            width="27"
+                            height="27"
+                            fill="url(#pattern0_1475_1863)"
+                          />
+                          <defs>
+                            <pattern
+                              id="pattern0_1475_1863"
+                              patternContentUnits="objectBoundingBox"
+                              width="1"
+                              height="1"
+                            >
+                              <use
+                                href="#image0_1475_1863"
+                                transform="scale(0.0111111)"
+                              />
+                            </pattern>
+                            <image
+                              id="image0_1475_1863"
+                              width="90"
+                              height="90"
+                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            />
+                          </defs>
+                        </svg>
+                      </button>
                       <div className="profile-edit-title">Website</div>
                       {/* {user.website.split("https://")} */}
                       <div className="profile-edit-text">
-                        <a href={website} className={`${isEditing === "website" ? "profile-summry-edit" : "profile-txtbx-link"
-                          }`}>{user.website} </a>
+                        <p className={`${isEditing === "website" ? "profile-summry-edit" : ""
+                          }`}>{website}</p>
 
                         <div className={`profile-about-edit ${isEditing === "website" ? "" : "profile-summry-edit"
                           }`}>
@@ -709,43 +506,92 @@ export default function OrgDash() {
 
                       </div>
                     </div>
-                    {/* */}
-
+                    {/**/}
 
                     {/* industry */}
-                  
+                    
                     <div className="profile-edit-set">
-                      {/* EGBAIYELO - Making the logic more compact */}
-                      {isEditing === "industry" ? (
-                        <>
-                          {/* Close edit button */}
-                          <button
-                            onClick={() => { handleCloseEdit(); }}
-                            className="edit-button profile-summry-close-button"
+                    {isEditing === "industry" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            { closeSVG() }
-                          </button>
-
-                          {/* Save edit button */}
-                          <button
-                            onClick={() => { handleSaveIndustry(); }}
-                            className="edit-button profile-txtbx-done"
-                          >
-                            { bookmarkSVG() }
-                          </button>
-                        </>
-                      ) : (
-                        // (pencil) edit button
-                        <button className="edit-button" onClick={() => setIsEditing("industry")}>
-                        { pencilSVG() }
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
                         </button>
                       )}
-
+                      <button className="edit-button" onClick={() => setIsEditing("industry")}>
+                        <svg
+                          width="27"
+                          height="27"
+                          viewBox="0 0 27 27"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            width="27"
+                            height="27"
+                            fill="url(#pattern0_1475_1863)"
+                          />
+                          <defs>
+                            <pattern
+                              id="pattern0_1475_1863"
+                              patternContentUnits="objectBoundingBox"
+                              width="1"
+                              height="1"
+                            >
+                              <use
+                                href="#image0_1475_1863"
+                                transform="scale(0.0111111)"
+                              />
+                            </pattern>
+                            <image
+                              id="image0_1475_1863"
+                              width="90"
+                              height="90"
+                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            />
+                          </defs>
+                        </svg>
+                      </button>
                       <div className="profile-edit-title">Industry</div>
                       <div className="profile-edit-text">
 
                       <p className={`${isEditing === "industry" ? "profile-summry-edit" : ""
-                          }`}>{user.industry}</p>
+                          }`}>{industry}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "industry" ? "" : "profile-summry-edit"
@@ -765,42 +611,89 @@ export default function OrgDash() {
                       </div>
                     </div>
                     {/*  */}
-
-
                     {/* company Size */}
-
                     <div className="profile-edit-set">
-                      {/* EGBAIYELO - Making the logic more compact */}
-                      {isEditing === "companySize" ? (
-                        <>
-                          {/* Close edit button */}
-                          <button
-                            onClick={() => { handleCloseEdit(); }}
-                            className="edit-button profile-summry-close-button"
+                    {isEditing === "companySize" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            { closeSVG() }
-                          </button>
-
-                          {/* Save edit button */}
-                          <button
-                            onClick={() => { handleSaveCompanySize(); }}
-                            className="edit-button profile-txtbx-done"
-                          >
-                            { bookmarkSVG() }
-                          </button>
-                        </>
-                      ) : (
-                        // (pencil) edit button
-                        <button className="edit-button" onClick={() => setIsEditing("companySize")}>
-                        { pencilSVG() }
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
                         </button>
                       )}
-
+                      <button className="edit-button" onClick={() => setIsEditing("companySize")}>
+                        <svg
+                          width="27"
+                          height="27"
+                          viewBox="0 0 27 27"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            width="27"
+                            height="27"
+                            fill="url(#pattern0_1475_1863)"
+                          />
+                          <defs>
+                            <pattern
+                              id="pattern0_1475_1863"
+                              patternContentUnits="objectBoundingBox"
+                              width="1"
+                              height="1"
+                            >
+                              <use
+                                href="#image0_1475_1863"
+                                transform="scale(0.0111111)"
+                              />
+                            </pattern>
+                            <image
+                              id="image0_1475_1863"
+                              width="90"
+                              height="90"
+                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            />
+                          </defs>
+                        </svg>
+                      </button>
                       <div className="profile-edit-title">Company Size</div>
                       <div className="profile-edit-text">
                       
                       <p className={`${isEditing === "companySize" ? "profile-summry-edit" : ""
-                          }`}>{user.companySize}</p>
+                          }`}>{companySize}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "companySize" ? "" : "profile-summry-edit"
@@ -818,43 +711,90 @@ export default function OrgDash() {
 
                       </div>
                     </div>
-
-
                     {/* location */}
-                    
                     <div className="profile-edit-set">
-                      {/* EGBAIYELO - Making the logic more compact */}
-                      {isEditing === "location" ? (
-                        <>
-                          {/* Close edit button */}
-                          <button
-                            onClick={() => { handleCloseEdit(); }}
-                            className="edit-button profile-summry-close-button"
+                    {isEditing === "location" && (
+                        <button
+                          onClick={() => {
+                            handleCloseEdit();
+                          }
+                          }
+                          className="edit-button profile-summry-close-button"
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            { closeSVG() }
-                          </button>
-
-                          {/* Save edit button */}
-                          <button
-                            onClick={() => { handleSaveLocation(); }}
-                            className="edit-button profile-txtbx-done"
-                          >
-                            { bookmarkSVG() }
-                          </button>
-                        </>
-                      ) : (
-                        // (pencil) edit button
-                        <button className="edit-button" onClick={() => setIsEditing("location")}>
-                        { pencilSVG() }
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1846_11491)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1846_11491"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1846_11491"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1846_11491"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
                         </button>
                       )}
-
+                      <button className="edit-button" onClick={() => setIsEditing("location")}>
+                        <svg
+                          width="27"
+                          height="27"
+                          viewBox="0 0 27 27"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            width="27"
+                            height="27"
+                            fill="url(#pattern0_1475_1863)"
+                          />
+                          <defs>
+                            <pattern
+                              id="pattern0_1475_1863"
+                              patternContentUnits="objectBoundingBox"
+                              width="1"
+                              height="1"
+                            >
+                              <use
+                                href="#image0_1475_1863"
+                                transform="scale(0.0111111)"
+                              />
+                            </pattern>
+                            <image
+                              id="image0_1475_1863"
+                              width="90"
+                              height="90"
+                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                            />
+                          </defs>
+                        </svg>
+                      </button>
                       <div className="profile-edit-title">Headquarters</div>
                       
                       <div className="profile-edit-text">
-                      <p
-                          className={`${isEditing === "location" ? "profile-summry-edit" : "profile-txtbx-link"
-                          }`}>{user.location}</p>
+
+                      <p className={`${isEditing === "location" ? "profile-summry-edit" : ""
+                          }`}>{location}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "location" ? "" : "profile-summry-edit"

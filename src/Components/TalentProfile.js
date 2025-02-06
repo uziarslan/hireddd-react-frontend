@@ -261,7 +261,7 @@ export default function TalentProfile() {
                     />
                   </div>
                   <div className="input-set">
-                    <label htmlFor="skill">Skills</label>
+                    <label htmlFor="skill">Skill</label>
                     <input
                       value={skill}
                       onChange={(e) => setSkill(e.target.value)}
@@ -270,7 +270,6 @@ export default function TalentProfile() {
                       type="text"
                       placeholder="Designer, Developer, Editor"
                     />
-                    <div>Separate skills with commas</div>
                   </div>
                   <div className="input-set input-set-full">
                     <label htmlFor="about">About</label>

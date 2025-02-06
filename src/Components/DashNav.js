@@ -1,33 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import "../Assets/Css/styles.min.css";
 import logoWhite from "../Assets/images/site-logo.svg";
 import logoPurple from "../Assets/images/site-logo.svg";
 import dummyProfile from "../Assets/images/uploads/user-avatar.png";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../Context/AuthContext";
-
-// EGBAIYELO - Logout button icon data
-const logoutSVG = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width="28"
-    height="28"
-    fill="black"
-  >
-    <path d="M14 16L18 12L14 8V11H8V13H14V16Z" />
-    <path d="M3 3H12V5H5V19H12V21H3V3Z" />
-  </svg>
-);
-
 
 export default function DashNav({ firstName, profile, preview }) {
-  const { user, logout } = useContext(AuthContext); 
-
-  const handleLogout = () => {
-    logout();
-  };
-  
   return (
     <>
       <header className="header-section header-section-profile">
@@ -71,12 +49,7 @@ export default function DashNav({ firstName, profile, preview }) {
                 />
               </svg>
             </div>
-            {/* EGBAIYELO - so when we click icon we go to profile (dash) */}
-            <Link to={{ pathname: user.role === "talent"
-                          ? "/talent/dashboard"
-                          : "/organization/dashboard",
-                        state: { tab: "findTalents" }
-                      }} className="user-profile">
+            <Link to="#" className="user-profile">
               <div className="profile-image">
                 <img src={preview || profile || dummyProfile} alt="Profile" />
               </div>
@@ -84,11 +57,6 @@ export default function DashNav({ firstName, profile, preview }) {
                 {firstName ? firstName.split(" ")[0] : ""}
               </div>
             </Link>
-            {/* EGBAIYELO - Logout button, feel free to put better icon, i might move it to settings */}
-            <Link onClick={ handleLogout } className="logout-button">
-              { logoutSVG() }
-            </Link>
-            
           </div>
         </div>
       </header>

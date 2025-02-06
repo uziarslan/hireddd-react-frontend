@@ -14,7 +14,7 @@ export default function AuthNav() {
             <img className="logo-purple" src={logoPurple} alt="Site Logo" />
           </Link>
         </div>
-        <div className="header-right-background right-header header-navigation header">
+        <div className="right-header header-navigation">
           <div className="nav-overlay">
             <div className="nav-container">
               <div className="header-nav">

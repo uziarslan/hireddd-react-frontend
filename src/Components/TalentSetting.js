@@ -205,8 +205,7 @@ export default function TalentSetting() {
                     <div className="account-setting-title">
                       Display Language
                     </div>
-                    <p>Select the language you want to display.</p>
-                    {/* Multiple languages? */}
+                    <p>Select your language you want to display.</p>
                   </div>
                   <div className="account-setting-right">
                     <div className="input-sets">
@@ -226,8 +225,8 @@ export default function TalentSetting() {
                   <div className="account-setting-left">
                     <div className="account-setting-title">Private account</div>
                     <p>
-                      When your account is public, your profile and video resume
-                      can be seen by anyone, on or off hireddd.
+                      When your account is public, your profile, video resume
+                      and can be seen by anyone, on or off hireddd.
                     </p>
                   </div>
                   <div className="account-setting-right">
@@ -252,7 +251,7 @@ export default function TalentSetting() {
                     </div>
                     <p>
                       The number of likes and shortlisted on your video resume
-                      will be hidden from others.
+                      will be hidden from other.
                     </p>
                   </div>
                   <div className="account-setting-right">
@@ -277,7 +276,7 @@ export default function TalentSetting() {
                     <div className="account-setting-title">Hide badges</div>
                     <p>
                       The earned badges on your profile will be hidden from
-                      others.
+                      other.
                     </p>
                   </div>
                   <div className="account-setting-right">
@@ -299,7 +298,7 @@ export default function TalentSetting() {
                   <div className="account-setting-left">
                     <div className="account-setting-title">Hide Location</div>
                     <p>
-                      The location on your profile will be hidden from others.
+                      The location on your profile will be hidden from other.
                     </p>
                   </div>
                   <div className="account-setting-right">
@@ -323,7 +322,8 @@ export default function TalentSetting() {
                       Able to start right away
                     </div>
                     <p>
-                      The availability badge on your profile will be turned on.
+                      The availability badge on your profile will be turned on
+                      your profile.
                     </p>
                   </div>
                   <div className="account-setting-right">
