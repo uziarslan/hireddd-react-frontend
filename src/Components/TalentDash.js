@@ -207,11 +207,17 @@ export default function TalentDash() {
   };
 
   // RAUNAK
+  const handleEditPortfolio = () => {
+    setIsEditingPortfolio(true);
+    if (portfolios.length === 0) {
+      setPortfolios([{ href: "" }]); // Initialize with an empty editable link
+    }
+  };
+  
   const handleSavePortfolio = async () => {
     try {
       const token = localStorage.getItem("token");
-      
-      // Send the correct data structure
+
       const response = await fetch(
         `http://localhost:4000/api/v1/talent/edit-portfolio/${user._id}`,
         {
@@ -220,11 +226,10 @@ export default function TalentDash() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          // Assuming your API expects an array of portfolio links:
-          body: JSON.stringify({ portfolios }),
+          body: JSON.stringify({ href:portfolios.href }),
         }
       );
-      
+
       const result = await response.json();
       if (result.success) {
         alert("Portfolio section updated successfully!");
@@ -237,7 +242,6 @@ export default function TalentDash() {
       alert("An error occurred while updating the Portfolio section.");
     }
   };
-  
   // Handling the sumamry and the skills
   // Handling the Summaries
   const handleSaveAbout = async () => {
