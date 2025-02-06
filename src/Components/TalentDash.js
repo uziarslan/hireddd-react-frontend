@@ -12,6 +12,8 @@ import Chat from "./Chat";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
 import Loading from "./Loading";
+import DocumentUploadModal from "./DocumentUploadModal"; // -Dylan
+
 
 export default function TalentDash() {
   const { user, updateUser } = useContext(AuthContext);
@@ -26,8 +28,9 @@ export default function TalentDash() {
   const [skillsString, setSkills] = useState(""); // Not to be confused with the skills array
 
   // -- DYLAN 
+  const [uploadStatus, setUploadStatus] = useState(""); //video upload status
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
-  const [isEditingDocuments, setIsEditingDocuments] = useState(false); // toggles edit mode //e rempve these
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false);
   const [isEditingContact, setIsEditingContact] = useState(false); // toggles contact editing mode
   const [contactDetails, setContactDetails] = useState({
     phone: "",
@@ -44,7 +47,7 @@ export default function TalentDash() {
       if (user.documents) {
         setDocuments(user.documents); 
       }
-      if (user.phone || user.email) {
+      if (user.phone && user.username) {
         setContactDetails({
           phone: user.phone || "",
           email: user.username || "",
@@ -54,6 +57,53 @@ export default function TalentDash() {
     }
   }, [user]); 
 
+  //method for uploading resume
+  const handleUploadResume = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "video/mp4,video/avi,video/mov,video/mkv,video/webm"; // Accept only videos
+  
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+  
+      if (file) {
+        setUploadStatus("Uploading... ⏳"); 
+  
+        const formData = new FormData();
+        formData.append("video", file);
+  
+        try {
+          const response = await fetch(
+            `http://localhost:4000/api/v1/talent/upload-resume/${user._id}`,
+            {
+              method: "PUT",
+              body: formData,
+            }
+          );
+  
+          const result = await response.json();
+  
+          if (!response.ok) {
+            throw new Error(result.error || "Failed to upload resume video.");
+          }
+  
+          setUploadStatus("Upload Successful! ✅"); 
+  
+          // Update the user state to reflect the new resume video
+          updateUser({ video: { path: result.videoUrl } });
+  
+          setTimeout(() => setUploadStatus(""), 3000); 
+        } catch (error) {
+          console.error("Error uploading resume video:", error);
+          setUploadStatus("Upload Failed ❌");
+        }
+      }
+    };
+  
+    input.click();
+  };
+  
+  
   //method for deleting docs on profile -- DYLAN
   const handleDeleteDocument = async (docId) => {
     try {
@@ -80,56 +130,50 @@ export default function TalentDash() {
   };
 
   //method for uploading docs on profile -DYLAN
-  const handleUploadDocument = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".pdf";//accept only pdf's for now
+  const handleUploadDocument = async (certificateName, file) => {
+    if (!file) {
+      alert("No file selected.");
+      return;
+    }
   
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-  
-      if (file) {
-        // Read the file as a Base64 string
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-          const base64File = event.target.result;
-          try {
-            const response = await fetch(
-              `http://localhost:4000/api/v1/talent/upload-document/${user._id}`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                  document: base64File,
-                  fileName: file.name,
-                 }),
-              }
-            );
-  
-            const result = await response.json();
-  
-            if (result.success) {
-              alert("Document uploaded successfully!");
-              console.log("Upload result:", result); // Debugging the backend response
-  
-              // Add the new document to the state
-              setDocuments((prevDocuments) => [
-                ...prevDocuments,
-                ...result.talent.documents.slice(-1), // Add the last document from the backend response
-              ]);
-            } else {
-              alert("Failed to upload the document. Please try again.");
-            }
-          } catch (error) {
-            console.error("Error uploading document:", error);
-            alert("An error occurred while uploading the document.");
+    // Read the file as a Base64 string
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64File = event.target.result;
+      try {
+        const response = await fetch(
+          `http://localhost:4000/api/v1/talent/upload-document/${user._id}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              document: base64File,
+              fileName: certificateName || file.name, 
+            }),
           }
-        };
+        );
   
-        reader.readAsDataURL(file); // Converts the file to a Base64 string
+        const result = await response.json();
+  
+        if (!response.ok) {
+          console.error("Upload Error:", result);
+          throw new Error(result.error || result.message || "Failed to upload the document.");
+        }
+  
+        alert("Document uploaded successfully!");
+        console.log("Upload result:", result);
+  
+        // Add the new document to the state
+        setDocuments(result.talent.documents);
+        
+        
+      } catch (error) {
+        console.error("Error uploading document:", error);
+        alert(error.message);
       }
     };
-    input.click(); // Trigger the file picker
+  
+    reader.readAsDataURL(file); 
   };
 
   //editing contact details 
@@ -149,6 +193,7 @@ export default function TalentDash() {
     .replace(/\s+/g, ' ')  // After the dash replace spaces?
     .trim();               // Trim trailings
     // Format in database should be +1 234 567 8910 or so
+    // --
 
     // Validate phone number
     if (!phoneRegex.test(contactDetails.phone)) {
@@ -178,7 +223,11 @@ export default function TalentDash() {
 
       if (result.success) {
         alert("Contact details updated successfully!");
-        updateUser({ about: result.talent.about }); // Update the user state
+        updateUser({ 
+          ...user, // Keep existing user data
+          phone: result.talent.phone, 
+          username: result.talent.username // Ensure email updates correctly
+        });
         setIsEditingContact(false); // Exit editing mode
       } else {
         alert("Failed to update contact details. Please try again.");
@@ -189,7 +238,7 @@ export default function TalentDash() {
     }
   };
 
-  // Handling the sumamry and the skills
+  // Handling the sumamry and the skills -- MONTE
   // Handling the Summaries
   const handleSaveAbout = async () => {
     if (!about.trim()) {  // Just to remove spaces before null checking
@@ -199,11 +248,11 @@ export default function TalentDash() {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/talent/edit-about/${user._id}`,
+        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ about: about }), 
+          body: JSON.stringify({ data: about, userType: "talent", dataField: "about"  }), 
         }
       );
   
@@ -212,8 +261,8 @@ export default function TalentDash() {
       if (result.success) {
         alert("About section updated successfully!");
   
-        setAbout(result.talent.about); // Update the state with new about (using backend filtered text)
-        updateUser({ about: result.talent.about }); // Update the user state
+        setAbout(result.user.about); // Update the state with new about (using backend filtered text)
+        updateUser({ about: result.user.about }); // Update the user state
         setIsEditing(""); // Exiting edit mode
       } else {
         alert("Failed to update the About section. Please try again.");
@@ -541,9 +590,11 @@ export default function TalentDash() {
                         </div>
                         View resume
                       </Link>
-                      <button className="resume-btn fill-btn">
-                        Change resume
+                      <button className="resume-btn fill-btn" onClick={handleUploadResume}>
+                        Upload resume
                       </button>
+                      {uploadStatus && <p style={{ color: uploadStatus.includes("Failed") ? "red" : "green" }}>{uploadStatus}</p>}
+
                     </div>
                   </div>
                   <div className="profile-edit-options">
@@ -551,7 +602,7 @@ export default function TalentDash() {
                       {isEditing === "summary" && (
                         <button
                           onClick={() =>  handleSaveAbout() }
-                          className="edit-button profile-summry-done"
+                          className="edit-button profile-txtbx-done"
                         >
                           <svg 
                             width="24" 
@@ -659,7 +710,7 @@ export default function TalentDash() {
                         </div>
                       ) : (
                         <div>
-                          <p>{user.about}</p>
+                          <p>{about}</p>
                         </div>
                       )}
                         {/* <div
@@ -679,7 +730,7 @@ export default function TalentDash() {
                       {isEditing === "topSkills" && (
                         <button
                           onClick={() =>  handleSaveSkills()}
-                          className="edit-button profile-summry-done"
+                          className="edit-button profile-txtbx-done"
                         >
                           <svg 
                             width="24" 
@@ -893,7 +944,7 @@ export default function TalentDash() {
                             <strong>Email:</strong>
                             <input
                               type="email"
-                              value={contactDetails.email || ""}
+                              value={isEditingContact ? contactDetails.email || user.username : user.username || ""}
                               placeholder={"johndoe@example.com"}
                               onChange={(e) => {
                                 setContactDetails({ ...contactDetails, email: e.target.value });
@@ -905,10 +956,10 @@ export default function TalentDash() {
                       ) : (
                         <div>
                           <p>
-                            <strong>Phone:</strong> {contactDetails.phone || "Not provided"}
+                            <strong>Phone:</strong> {contactDetails.phone || user.phone || "Not provided"}
                           </p>
                           <p>
-                            <strong>Email:</strong> {contactDetails.email || "Not provided"}
+                            <strong>Email:</strong> {contactDetails.email || user.username || "Not provided"}
                           </p>
                         </div>
                       )}
@@ -962,8 +1013,8 @@ export default function TalentDash() {
                     </div>
                     <div className="profile-edit-set">
                       <button className="edit-button"
-                      onClick={() => setIsEditingDocuments((prev) => !prev)}>
-                        {isEditingDocuments ? "Done" : "Edit"}
+                      onClick={() => setIsDocModalOpen((prev) => !prev)}>
+                        {"Edit"}
                         <svg
                           width="27"
                           height="27"
@@ -1013,25 +1064,11 @@ export default function TalentDash() {
                                 download={doc.fileName}>
                                 <img src={pdfIcon} alt={`Document ${index + 1}`} />
                               </a>
-                              <div className="document-name">{doc.fileName}</div> 
-                              {isEditingDocuments && (
-                                <button
-                                  className="delete-button"
-                                  onClick={() => handleDeleteDocument(doc._id)}
-                                >
-                                  -
-                                </button>
-                              )}
+                              <div className="document-name">{doc.fileName}</div>
                             </div>
                           );
                         })}
-                      {isEditingDocuments && (
-                        <button
-                         className="add-button" 
-                         onClick={handleUploadDocument}>
-                          +
-                        </button>
-                      )}
+                      
                         </div>
 
                       </div>
@@ -1484,6 +1521,13 @@ export default function TalentDash() {
           </div>
         </div>
       </main>
+      <DocumentUploadModal
+      isOpen={isDocModalOpen}  
+      onClose={() => setIsDocModalOpen(false)} 
+      onUpload={handleUploadDocument}
+      onDelete={handleDeleteDocument}
+      documents={documents}
+    />
     </>
   );
 }
