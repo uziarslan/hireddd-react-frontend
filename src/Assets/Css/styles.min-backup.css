@@ -5850,10 +5850,6 @@ button.change-status-button {
   display: none;
 }
 
-.profile-hidden {
-  display: none;
-}
-
 .profile-summry-edit textarea {
   background-color: var(--hr_white);
   height: 105px;
