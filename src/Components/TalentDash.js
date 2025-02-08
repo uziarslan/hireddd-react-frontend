@@ -11,11 +11,138 @@ import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
 import Chat from "./Chat";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
+// import { JobContext } from "../Context/JobContext";
+import jobService from "../services/jobService";
 import Loading from "./Loading";
 import DocumentUploadModal from "./DocumentUploadModal"; // -Dylan
 
 
+// --EGBAIYELO
+const closeSVG = () => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      width="40"
+      height="40"
+      fill="url(#pattern0_1510_2048)"
+    />
+    <defs>
+      <pattern
+        id="pattern0_1510_2048"
+        patternContentUnits="objectBoundingBox"
+        width="1"
+        height="1"
+      >
+        <use
+          href="#image0_1510_2048"
+          transform="scale(0.0111111)"
+        />
+      </pattern>
+      <image
+        id="image0_1510_2048"
+        width="90"
+        height="90"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFdElEQVR4nO2dS28cRRDHWyK8FARHAkECBHyBACdARIiHckDAYUEiRjxipnrsWGAsZE+3o+FG4BRF4mvwyiEIPgAIBYWQCxceQoDjeKpmc4ojJR5Us7ZEHK+zzlZ3z+z2XyrJste93b/trX5V1ygVFRUVFRUVFRUVFRUVNZg6neqmI+nK4xaKQxboU6vxS6PpFwv4mwUko/ESG//Mv6v/1nvNJ/w/Juk+xmUM+HbjpXyyuM/o8n0DeMIAXbCaqiGtazV+vQj0noFirxpnzc7+dbvV9IYB+s4AXhGA28fwstX0bZbSRP7mH7epcVE+tXxHr6fRP+7g9jHA8xbwo/mE7lKjqiSpbjYaPzQa0TvgTcZ1yDTOcZ3UKCnT9JQFOhsa8DXAgX61afGsarvYJ1qNn1mNa6Gh9jdcMxqPz8xUt6o2ah7KB4ymH8KDpEGB/7Qw1X1YtUn8dRSaplWerWt1+YxqgwyUrxhNFxsArboRqxdDCb6mmiyTYuJ2Tkx+YHMbAN9VTdRiWr68vjgIDsoKwc4AX1VNEvs1C7gaGo514UbS4nnVBC3ChUdaOvBVA1rXJt2HgkLmuSdPixoAo3LaswFPBZ1n9xYj4UFYH7A1Hg+3rG70io+EDdeylJ72CjnPq10W8Ez4xpNfAzrrdSOKd+GCN1qHsUUoZr3tJ1vAInSDbbBejQUzcA7apDgfvLE6rPFeto/jp3MSlTV8yJrifD61vIet/gAlFz2Aq5vLrxcgMuX/6/RYjM/4pECYFOc3l280HhCBzZA1Htii/gtyHyQddAaaD1KlKppPLe/Z8j00vjDM7l/9TUnoxa3Kzg6du1uso2g66QhysVdy0yjvA3oY2NtBZuXTK/eKgQa84iSUgeMuxL52uraF7d9vh26kj7u4qkygTLINBuiwPGjAE6KgYQAwg8KWLGtnvfoLUcgcYmUAS+EeXV3vqz6IG5EoYwjQpWj4WR0LJ1xJK9EbA/Xk/9uRtPuoGGijcdIZaH1jvTJkT77K0vJtMdC9qE6HldU7A9cYyL0B8WMx0AbwK9cVtjtwBaHdhbMB0euWKFwfdlMgr9f3tBhoA/int4rrwdxISHexqa6/y4EOEAFqdgg7BOT1eq5Igpba9apcwA4FuTbA1Qhatw90dB3ah+uIg2HlZTCM0zvyM73je3y+/J1p2YLFavxcDnRcgldeluD1LVaHvcK0eFPJQPmWGOi4TUr9QSflPjHQceOf/Gz8s/hudYiBzzb4KEt0INwQXysW9W3ptXEdQ4EZALZoXEfPpsVB947q2x1ukAnGdTCL7dowlDhLQJsDaHLJuA5XATQsTsXgMq7DOA4Jk4zryDS97jTI0QAtyfQI5K3XBZOcv4et9p/CQY6by5fa7uUUGM5zf4xzELrdsAQ/UK41N7G0m7cGgzdWj3ggOosDsYM3WIcxnuYqn5eFjMafx683k9/LQiyb0JPx+psn8SXH4L1M+zGj8ZgKJb62y9d3Rx4y0I95p7pFhRRfSO9lbhlVyFjayfJB1QRZKPe3OeuM7QdZ46UMiudUk2SAXhq1xCg2xY5qojg9ziik+rEaL3NMuGqyOOVPq90I4GrjUvxsm/qnhQOk4YEPyv2qTbJTdL8F+r5FkE8FT+kz1Dy7XtRg01NmHgs+TxZbrkMDE6kAnskAn1CjpDyvdnFSkSZssXIdeBeO66RGVXMTS7vXT9T/9g4YcJkTdeczxZ1qXJRzymOggxboG7cLHZ4T00k+4xur1PNbqT7XAzrMV8nqp1EM73upLkvTtLOQgLarw/fOk3Kf0cU7FugoRwNxDHLvUSCIG48HqW8h9B4Zcrr3GjrKt1j5f+PjQaKioqKioqKioqKiotTg+g/jhnWGqOgW+gAAAABJRU5ErkJggg=="
+      />
+    </defs>
+  </svg>
+);
+
+const magSVG = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="100"
+    height="100"
+    viewBox="0 0 100 100"
+    fill="none"
+  >
+    {/* Magnifying Glass Handle */}
+    <line
+      x1="70"
+      y1="70"
+      x2="100"
+      y2="100"
+      stroke="black"
+      strokeWidth="6"
+    />
+
+    {/* Magnifying Glass Lens */}
+    <circle
+      cx="40"
+      cy="40"
+      r="30"
+      stroke="black"
+      strokeWidth="7"
+      fill="white"
+    />
+
+    {/* Glare Effect */}
+    <circle
+      cx="30"
+      cy="30"
+      r="10"
+      fill="white"
+      opacity="0.4"
+    />
+
+    {/* Optional shadow to make it look more realistic */}
+    <circle
+      cx="40"
+      cy="40"
+      r="30"
+      fill="white"
+      opacity="0.1"
+    />
+  </svg>
+);
+
+
+
 export default function TalentDash() {
+  // const userJobs = [
+  //   {
+  //     id: 1,
+  //     title: "UI UX Designer",
+  //     company: "Company Name",
+  //     location: "Pakistan remote",
+  //     logo: "companyLogo", // Assuming you have a variable or URL for the logo
+  //     description:
+  //       "Experienced UI/UX designer specializing in crafting intuitive and visually appealing interfaces.",
+  //     responsibilities: [
+  //       "Experienced UI/UX designer specializing in crafting intuitive.",
+  //       "Experienced UI/UX designer specializing in crafting intuitive.",
+  //       "Experienced UI/UX designer specializing in crafting intuitive.",
+  //       "Experienced UI/UX designer specializing in crafting intuitive."
+  //     ],
+  //     skills: ["User research", "Prototyping", "Usability Testing"],
+  //     companySize: "100-150",
+  //     salary: "PKR 150,000 to PKR 20,0000",
+  //     jobType: "Permanent"
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Frontend Developer",
+  //     company: "Another Company",
+  //     location: "Remote",
+  //     logo: "anotherLogo",
+  //     description: "Skilled frontend developer with expertise in React and UI design.",
+  //     responsibilities: [
+  //       "Develop UI components.",
+  //       "Collaborate with the team.",
+  //       "Implement designs into React."
+  //     ],
+  //     skills: ["React", "JavaScript", "CSS"],
+  //     companySize: "50-100",
+  //     salary: "PKR 100,000 to PKR 150,000",
+  //     jobType: "Contract"
+  //   }
+  // ];
+
   const { user, updateUser } = useContext(AuthContext);
   const [tabName, setTabName] = useState("profile");
   const [subTabName, setSubTabName] = useState("shortlisted");
@@ -26,7 +153,43 @@ export default function TalentDash() {
   // -- MONTE
   const [about, setAbout] = useState("");
   const [skillsString, setSkills] = useState(""); // Not to be confused with the skills array
+  // -- Jobs
+  const [userJobs, setUserJobs] = useState([]);
+  const [currentJobPage, setCurrentJobPage] = useState(1); 
+  const [jobsPerPage] = useState(9);  
+  const [currentJobs, setCurrentJobs] = useState([]);
+  const [pageNumbers, setPageNumbers] = useState(1);
 
+  const getJobs = async () => {
+    const jobs = await jobService.getJobsForTalent(user._id);
+    console.log("here are jobs", jobs);
+
+      const updatedJobs = jobs.map((job) => {
+        return {
+          key: job.jobId._id,
+          status: job.status, 
+          ...job.jobId,  
+        };
+      });
+
+    await setUserJobs(updatedJobs)
+    return updatedJobs;  // Return the updated array with status and job details
+  }
+
+  const handleJobSplice = async () => {
+    // userJobs.length === 0
+    // Job align
+    console.log("these are the jobs i got", userJobs)
+    const totalPages = Math.ceil(userJobs.length / jobsPerPage); 
+    setPageNumbers(totalPages);
+
+    const indexOfLastJob = currentJobPage * jobsPerPage;
+    const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+    const currentJobs = userJobs.slice(indexOfFirstJob, indexOfLastJob);
+    setCurrentJobs(currentJobs);
+  }
+
+ 
   // -- DYLAN 
   const [uploadStatus, setUploadStatus] = useState(""); //video upload status
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
@@ -54,8 +217,24 @@ export default function TalentDash() {
         }); 
       
       }
+
+      getJobs();
+      // const fetchJobs = async () => {
+      //   const jobs = await getJobs();
+      //   console.log("here are", jobs);
+      //   handleJobSplice();
+      // }
+  
+      // fetchJobs();
     }
+
   }, [user]); 
+
+  useEffect(() => {
+    if (userJobs.length > 0) {
+      handleJobSplice();  
+    }
+  }, [userJobs, currentJobPage]);  
 
   //method for uploading resume
   const handleUploadResume = () => {
@@ -309,8 +488,8 @@ export default function TalentDash() {
 
   };
 
-
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
+
 
   return (
     <>
@@ -1175,343 +1354,145 @@ export default function TalentDash() {
                         }`}
                       >
                         <div className="three-columns">
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link
-                                  to="#job-popup"
-                                  className="learn-more job-popup"
-                                >
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                            <div
-                              id="job-popup"
-                              className="job-popup-detail mfp-hide"
-                            >
-                              <div className="popup-modal-dismiss">
-                                <svg
-                                  width="40"
-                                  height="40"
-                                  viewBox="0 0 40 40"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <rect
-                                    width="40"
-                                    height="40"
-                                    fill="url(#pattern0_1510_2048)"
-                                  />
-                                  <defs>
-                                    <pattern
-                                      id="pattern0_1510_2048"
-                                      patternContentUnits="objectBoundingBox"
-                                      width="1"
-                                      height="1"
+
+
+                          {currentJobs && currentJobs.length > 0 ? (
+
+                            currentJobs.map((job) => (
+  
+                              <div className="single-shortlist-column">
+                                <div className="profile-head-left">
+                                  <div className="profile-head-image">
+                                    <img src={job.orgId.profile.path} alt="Avatar" />
+                                  </div>
+                                  <div className="profile-head-info">
+                                    <h2 className="profile-head-title">{job.title}</h2>
+                                    <div className="profile-head-subtext">{job.company}</div>
+                                    <div className="profile-head-text">{job.location || 'No Location'}</div>
+                                    <Link
+                                      to={`#job-popup-${job.id}`}
+                                      className="learn-more job-popup"
                                     >
-                                      <use
-                                        href="#image0_1510_2048"
-                                        transform="scale(0.0111111)"
-                                      />
-                                    </pattern>
-                                    <image
-                                      id="image0_1510_2048"
-                                      width="90"
-                                      height="90"
-                                      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFdElEQVR4nO2dS28cRRDHWyK8FARHAkECBHyBACdARIiHckDAYUEiRjxipnrsWGAsZE+3o+FG4BRF4mvwyiEIPgAIBYWQCxceQoDjeKpmc4ojJR5Us7ZEHK+zzlZ3z+z2XyrJste93b/trX5V1ygVFRUVFRUVFRUVFRUVNZg6neqmI+nK4xaKQxboU6vxS6PpFwv4mwUko/ESG//Mv6v/1nvNJ/w/Juk+xmUM+HbjpXyyuM/o8n0DeMIAXbCaqiGtazV+vQj0noFirxpnzc7+dbvV9IYB+s4AXhGA28fwstX0bZbSRP7mH7epcVE+tXxHr6fRP+7g9jHA8xbwo/mE7lKjqiSpbjYaPzQa0TvgTcZ1yDTOcZ3UKCnT9JQFOhsa8DXAgX61afGsarvYJ1qNn1mNa6Gh9jdcMxqPz8xUt6o2ah7KB4ymH8KDpEGB/7Qw1X1YtUn8dRSaplWerWt1+YxqgwyUrxhNFxsArboRqxdDCb6mmiyTYuJ2Tkx+YHMbAN9VTdRiWr68vjgIDsoKwc4AX1VNEvs1C7gaGo514UbS4nnVBC3ChUdaOvBVA1rXJt2HgkLmuSdPixoAo3LaswFPBZ1n9xYj4UFYH7A1Hg+3rG70io+EDdeylJ72CjnPq10W8Ez4xpNfAzrrdSOKd+GCN1qHsUUoZr3tJ1vAInSDbbBejQUzcA7apDgfvLE6rPFeto/jp3MSlTV8yJrifD61vIet/gAlFz2Aq5vLrxcgMuX/6/RYjM/4pECYFOc3l280HhCBzZA1Htii/gtyHyQddAaaD1KlKppPLe/Z8j00vjDM7l/9TUnoxa3Kzg6du1uso2g66QhysVdy0yjvA3oY2NtBZuXTK/eKgQa84iSUgeMuxL52uraF7d9vh26kj7u4qkygTLINBuiwPGjAE6KgYQAwg8KWLGtnvfoLUcgcYmUAS+EeXV3vqz6IG5EoYwjQpWj4WR0LJ1xJK9EbA/Xk/9uRtPuoGGijcdIZaH1jvTJkT77K0vJtMdC9qE6HldU7A9cYyL0B8WMx0AbwK9cVtjtwBaHdhbMB0euWKFwfdlMgr9f3tBhoA/int4rrwdxISHexqa6/y4EOEAFqdgg7BOT1eq5Igpba9apcwA4FuTbA1Qhatw90dB3ah+uIg2HlZTCM0zvyM73je3y+/J1p2YLFavxcDnRcgldeluD1LVaHvcK0eFPJQPmWGOi4TUr9QSflPjHQceOf/Gz8s/hudYiBzzb4KEt0INwQXysW9W3ptXEdQ4EZALZoXEfPpsVB947q2x1ukAnGdTCL7dowlDhLQJsDaHLJuA5XATQsTsXgMq7DOA4Jk4zryDS97jTI0QAtyfQI5K3XBZOcv4et9p/CQY6by5fa7uUUGM5zf4xzELrdsAQ/UK41N7G0m7cGgzdWj3ggOosDsYM3WIcxnuYqn5eFjMafx683k9/LQiyb0JPx+psn8SXH4L1M+zGj8ZgKJb62y9d3Rx4y0I95p7pFhRRfSO9lbhlVyFjayfJB1QRZKPe3OeuM7QdZ46UMiudUk2SAXhq1xCg2xY5qojg9ziik+rEaL3NMuGqyOOVPq90I4GrjUvxsm/qnhQOk4YEPyv2qTbJTdL8F+r5FkE8FT+kz1Dy7XtRg01NmHgs+TxZbrkMDE6kAnskAn1CjpDyvdnFSkSZssXIdeBeO66RGVXMTS7vXT9T/9g4YcJkTdeczxZ1qXJRzymOggxboG7cLHZ4T00k+4xur1PNbqT7XAzrMV8nqp1EM73upLkvTtLOQgLarw/fOk3Kf0cU7FugoRwNxDHLvUSCIG48HqW8h9B4Zcrr3GjrKt1j5f+PjQaKioqKioqKioqKiotTg+g/jhnWGqOgW+gAAAABJRU5ErkJggg=="
-                                    />
-                                  </defs>
-                                </svg>
-                              </div>
-                              <h2 className="job-popup-title">Job Details</h2>
-                              <h3>About this job</h3>
-                              <p>
-                                Experienced UI/UX designer specializing in
-                                crafting intuitive and visually appealing
-                                interfaces. Skilled in user research,
-                                prototyping, and usability testing to ensure
-                                optimal user experiences. Passionate about
-                                advocating for user-centric design principles to
-                                drive business success.
-                              </p>
-                              <h3>Responsibilities</h3>
-                              <ul>
-                                <li>
-                                  Experienced UI/UX designer specializing in
-                                  crafting intuitive.
-                                </li>
-                                <li>
-                                  Experienced UI/UX designer specializing in
-                                  crafting intuitive.
-                                </li>
-                                <li>
-                                  Experienced UI/UX designer specializing in
-                                  crafting intuitive.
-                                </li>
-                                <li>
-                                  Experienced UI/UX designer specializing in
-                                  crafting intuitive.
-                                </li>
-                              </ul>
-                              <div className="s-20"></div>
-                              <h3>Skills required</h3>
-                              <div className="profile-edit-tags">
-                                <div className="profile-edit-tag">
-                                  User research
+                                      View
+                                    </Link>
+                                  </div>
                                 </div>
-                                <div className="profile-edit-tag">
-                                  User research
-                                </div>
-                                <div className="profile-edit-tag">
-                                  User research
-                                </div>
-                                <div className="profile-edit-tag">
-                                  User research
-                                </div>
-                              </div>
-                              <div className="s-20"></div>
+  
+                                {/* Job Popup */}
+                                <div
+                                  id={`job-popup-${job.id}`}
+                                  className="job-popup-detail mfp-hide"
+                                >
+                                  <div className="popup-modal-dismiss">
+                                    { closeSVG() }
+                                  </div>
+                                  <h2 className="job-popup-title">Job Details</h2>
+                                  <h3>About this job</h3>
+                                  <p>{job.description || 'No description available.'}</p>
 
-                              <h3>Location</h3>
-                              <p>Model Town, Lahore</p>
-                              <h3>Company size</h3>
-                              <p>100-150</p>
-                              <h3>Salary</h3>
-                              <p>PKR 150,000 to PKR 20,0000</p>
-                              <h3>Job type</h3>
-                              <p>Permanent</p>
+                                  <h3>Responsibilities</h3>
+                                  <ul>
+                                    {job.responsibilities && job.responsibilities.length > 0
+                                    ? job.responsibilities.map((responsibility, index) => (
+                                        <li key={index}>{responsibility}</li>
+                                      ))
+                                    : <li>No responsibilities listed.</li>}
+                                  </ul>
+                                  <div className="s-20"></div>
 
-                              <div className="popup-button">
-                                <Link to="#" className="button">
-                                  Message
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
+                                  <h3>Skills required</h3>
+                                  <div className="profile-edit-tags">
+                                    {job.skills && job.skills.length > 0 
+                                    ? job.skills.map((skill, index) => (
+                                        <div className="profile-edit-tag" key={index}>
+                                          {skill}
+                                        </div>
+                                      ))
+                                    : <div>No skills listed.</div>}
+                                  </div>
+
+                                  <div className="s-20"></div>
+  
+                                  <h3>Location</h3>
+                                  <p>{job.location || 'No location specified'}</p>
+                                  <h3>Company size</h3>
+                                  <p>{job.companySize || 'Unknown size'}</p>
+                                  <h3>Salary</h3>
+                                  <p>{job.salary || 'Salary not provided'}</p>
+                                  <h3>Job type</h3>
+                                  <p>{job.jobType || 'No job type specified'}</p>
+  
+                                  <div className="popup-button">
+                                    <Link to="#" className="button">
+                                      Message
+                                    </Link>
+                                  </div>
                                 </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
                               </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
+                            ))
+                          ) : (
+                            <>
+                              <div className="No-fetch-jobs-message">
+                                <div>{ magSVG() }</div>
+                                <div>You haven't been shortlisted for any jobs yet.</div>
                               </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="single-shortlist-column">
-                            <div className="profile-head-left">
-                              <div className="profile-head-image">
-                                <img src={companyLogo} alt="Avatar" />
-                              </div>
-                              <div className="profile-head-info">
-                                <h2 className="profile-head-title">
-                                  UI UX Designer
-                                </h2>
-                                <div className="profile-head-subtext">
-                                  Company Name
-                                </div>
-                                <div className="profile-head-text">
-                                  Pakistan remote
-                                </div>
-                                <Link to="#job-popup" className="learn-more">
-                                  View
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
+                            </>
+                          )}
+                          
+
+
                         </div>
-                        <div className="custom-slider-pagination flex-between-center">
-                          <button
-                            className="custom-slick-nav custom-prev slick-arrow slick-disabled"
-                            aria-disabled="true"
-                          >
-                            <svg
-                              width="16"
-                              height="15"
-                              viewBox="0 0 16 15"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+
+                        {currentJobs && currentJobs.length > 0 && (
+                          <div className="custom-slider-pagination flex-between-center">
+                            <button
+                              className="custom-slick-nav custom-prev slick-arrow"
+                              aria-disabled="true"
+                              onClick={() => setCurrentJobPage(currentJobPage - 1)}
+                              disabled={currentJobPage === 1}
                             >
-                              <path
-                                d="M7.59251 14.7955L0.433416 7.63636L7.59251 0.477273L9.24023 2.1108L4.91495 6.43608H15.0499V8.83665H4.91495L9.24023 13.1548L7.59251 14.7955Z"
-                                fill="#ffffff"
-                              ></path>
-                            </svg>
-                          </button>
-                          <div
-                            className="slides-numbers"
-                            style={{ display: "block" }}
-                          >
-                            <span className="active">01</span> of{" "}
-                            <span className="total">10</span>
+                              <svg
+                                width="16"
+                                height="15"
+                                viewBox="0 0 16 15"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M7.59251 14.7955L0.433416 7.63636L7.59251 0.477273L9.24023 2.1108L4.91495 6.43608H15.0499V8.83665H4.91495L9.24023 13.1548L7.59251 14.7955Z"
+                                  fill="#ffffff"
+                                ></path>
+                              </svg>
+                            </button>
+                            <div
+                              className="slides-numbers"
+                              style={{ display: "block" }}
+                            >
+                              <span className="active">{currentJobPage}</span> of{" "}
+                              <span className="total">{pageNumbers}</span>
+                            </div>
+                            <button
+                              className="custom-slick-nav custom-next slick-arrow"
+                              aria-disabled="false"
+                              onClick={() => setCurrentJobPage(currentJobPage + 1)}
+                              disabled={currentJobPage === pageNumbers}
+                            >
+                              <svg
+                                width="16"
+                                height="15"
+                                viewBox="0 0 16 15"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M8.41637 14.7955L6.76864 13.1619L11.0939 8.83665H0.958984V6.43608H11.0939L6.76864 2.1179L8.41637 0.477273L15.5755 7.63636L8.41637 14.7955Z"
+                                  fill="white"
+                                ></path>
+                              </svg>
+                            </button>
                           </div>
-                          <button
-                            className="custom-slick-nav custom-next slick-arrow"
-                            aria-disabled="false"
-                          >
-                            <svg
-                              width="16"
-                              height="15"
-                              viewBox="0 0 16 15"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M8.41637 14.7955L6.76864 13.1619L11.0939 8.83665H0.958984V6.43608H11.0939L6.76864 2.1179L8.41637 0.477273L15.5755 7.63636L8.41637 14.7955Z"
-                                fill="white"
-                              ></path>
-                            </svg>
-                          </button>
-                        </div>
+                        )}
+
                       </div>
                     </div>
                   </div>
