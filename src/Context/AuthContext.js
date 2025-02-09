@@ -67,9 +67,8 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     authService.logout();
-    setUser(null);
-    // setAdmin(null);
-    window.location.href = "/";
+    window.location.href = "/"; 
+    setTimeout(() => setUser(null), 100); //timeout to prevent loading null user data
   };
 
   const updateUser = (updatedFields) => {
