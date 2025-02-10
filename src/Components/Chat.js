@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
 import { Link } from "react-router-dom";
+import dummyProfile from "../Assets/images/uploads/user-avatar.png";
+
 
 const Chat = ({ userId, selectChat, userType }) => {
   const [chats, setChats] = useState([]);
@@ -28,16 +30,17 @@ const Chat = ({ userId, selectChat, userType }) => {
             <img
               src={
                 userType === "talent"
-                  ? chat.organization.profile.path
-                  : chat.talent.profile.path
+                  ? chat.organization?.profile?.path || dummyProfile
+                  : chat.talent?.profile?.path || dummyProfile
               }
               alt="User Avatar"
             />
             <img
               src={
+
                 userType === "talent"
-                  ? chat.organization.profile.path
-                  : chat.talent.profile.path
+                  ? chat.organization?.profile?.path || dummyProfile
+                  : chat.talent?.profile?.path || dummyProfile
               }
               alt="User Avatar"
             />

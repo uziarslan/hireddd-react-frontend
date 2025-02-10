@@ -138,7 +138,8 @@ export default function SearchPage() {
 
   if (isLoading) return <Loading isLoading={isLoading} />;
 
-  if (!user || !talents.length || !locationFilters.length) return null;
+  // set up error page.
+  if (!user || !talents?.length || !locationFilters?.length) return null;
 
   return (
     <>
@@ -262,9 +263,8 @@ export default function SearchPage() {
                 <ul>
                   <li>
                     <Link
-                      className={`tab-link ${
-                        tabName === "home" ? "current" : ""
-                      }`}
+                      className={`tab-link ${tabName === "home" ? "current" : ""
+                        }`}
                       onClick={() => setTabName("home")}
                     >
                       Home
@@ -272,9 +272,8 @@ export default function SearchPage() {
                   </li>
                   <li>
                     <Link
-                      className={`tab-link ${
-                        tabName === "hiredddStatus" ? "current" : ""
-                      }`}
+                      className={`tab-link ${tabName === "hiredddStatus" ? "current" : ""
+                        }`}
                       onClick={() => setTabName("hiredddStatus")}
                     >
                       Hireddd Status
@@ -282,9 +281,8 @@ export default function SearchPage() {
                   </li>
                   <li>
                     <Link
-                      className={`tab-link ${
-                        tabName === "messages" ? "current" : ""
-                      }`}
+                      className={`tab-link ${tabName === "messages" ? "current" : ""
+                        }`}
                       onClick={() => setTabName("messages")}
                     >
                       Message

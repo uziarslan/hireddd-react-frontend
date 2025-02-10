@@ -20,6 +20,7 @@ const AuthProvider = ({ children }) => {
       setUser(loggedInUser);
     };
 
+
     // const fetchAdmin = async () => {
     //   const loggedInAdmin = await authService.getAdmin();
     //   if (
@@ -67,8 +68,10 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     authService.logout();
-    window.location.href = "/"; 
-    setTimeout(() => setUser(null), 100); //timeout to prevent loading null user data
+    window.location.href = "/";
+    // setUser(null);
+    setTimeout(() => setUser(null), 200); //timeout to prevent loading null user data
+    // setAdmin(null);
   };
 
   const updateUser = (updatedFields) => {
