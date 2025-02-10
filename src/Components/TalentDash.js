@@ -15,6 +15,7 @@ import { AuthContext } from "../Context/AuthContext";
 import jobService from "../services/jobService";
 import Loading from "./Loading";
 import DocumentUploadModal from "./DocumentUploadModal"; // -Dylan
+import { useNavigate } from "react-router-dom";
 
 
 // --EGBAIYELO
@@ -160,8 +161,19 @@ export default function TalentDash() {
   const [currentJobs, setCurrentJobs] = useState([]);
   const [pageNumbers, setPageNumbers] = useState(1);
 
+  const nav = useNavigate();
+
   const getJobs = async () => {
+    try
+    {
     const jobs = await jobService.getJobsForTalent(user._id);
+    }
+    catch(e)
+    {
+      nav('/');
+    }
+
+
     console.log("here are jobs", jobs);
 
       const updatedJobs = jobs.map((job) => {

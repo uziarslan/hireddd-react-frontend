@@ -3,7 +3,7 @@ import "../Assets/Css/styles.min.css";
 import logoWhite from "../Assets/images/site-logo.svg";
 import logoPurple from "../Assets/images/site-logo.svg";
 import dummyProfile from "../Assets/images/uploads/user-avatar.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 
 // EGBAIYELO - Logout button icon data
@@ -22,20 +22,39 @@ const logoutSVG = () => (
 
 
 export default function DashNav({ firstName, profile, preview }) {
-  const { user, logout } = useContext(AuthContext); 
+  const { user, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
     logout();
   };
-  
+
+  const location = useLocation();  // Get the current URL path
+
+  const isTalentProfile = location.pathname === '/talent/profile';
+
+  const isOrgProfile = location.pathname === '/organization/profile';
+
+
   return (
     <>
       <header className="header-section header-section-profile">
         <div className="header-logo logo">
-          <Link to="/">
-            <img className="logo-white" src={logoWhite} alt="Site Logo" />
-            <img className="logo-purple" src={logoPurple} alt="Site Logo" />
-          </Link>
+
+          {/* Ensuring that the user fills out the profile*/}
+          {
+            isTalentProfile || isOrgProfile ?
+              <span>
+                <img className="logo-purple" src={logoPurple} alt="Site Logo" />
+              </span>
+              :
+              <Link to="/">
+                <img className="logo-white" src={logoWhite} alt="Site Logo" />
+                <img className="logo-purple" src={logoPurple} alt="Site Logo" />
+              </Link>
+          }
+
+
+
           <div className="menu-btn">
             <span className="top"></span>
             <span className="middle"></span>
@@ -72,11 +91,12 @@ export default function DashNav({ firstName, profile, preview }) {
               </svg>
             </div>
             {/* EGBAIYELO - so when we click icon we go to profile (dash) */}
-            <Link to={{ pathname: user.role === "talent"
-                          ? "/talent/dashboard"
-                          : "/organization/dashboard",
-                        state: { tab: "findTalents" }
-                      }} className="user-profile">
+            <Link to={{
+              pathname: user.role === "talent"
+                ? "/talent/dashboard"
+                : "/organization/dashboard",
+              state: { tab: "findTalents" }
+            }} className="user-profile">
               <div className="profile-image">
                 <img src={preview || profile || dummyProfile} alt="Profile" />
               </div>
@@ -85,10 +105,10 @@ export default function DashNav({ firstName, profile, preview }) {
               </div>
             </Link>
             {/* EGBAIYELO - Logout button, feel free to put better icon, i might move it to settings */}
-            <Link onClick={ handleLogout } className="logout-button">
-              { logoutSVG() }
+            <Link onClick={handleLogout} className="logout-button">
+              {logoutSVG()}
             </Link>
-            
+
           </div>
         </div>
       </header>
