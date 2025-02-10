@@ -161,18 +161,13 @@ export default function TalentDash() {
   const [currentJobs, setCurrentJobs] = useState([]);
   const [pageNumbers, setPageNumbers] = useState(1);
 
-  const nav = useNavigate();
+  const navigate = useNavigate();
+
+  
 
   const getJobs = async () => {
-    try
-    {
-    const jobs = await jobService.getJobsForTalent(user._id);
-    }
-    catch(e)
-    {
-      nav('/');
-    }
 
+    const jobs = await jobService.getJobsForTalent(user._id);
 
     console.log("here are jobs", jobs);
 
@@ -239,6 +234,12 @@ export default function TalentDash() {
   
       // fetchJobs();
     }
+
+    //==== Redirect users
+    if (user?.role && user.role !== 'talent') {
+      navigate('/');
+    }
+    //
 
   }, [user]); 
 

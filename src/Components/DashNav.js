@@ -29,9 +29,7 @@ export default function DashNav({ firstName, profile, preview }) {
   };
 
   const location = useLocation();  // Get the current URL path
-
   const isTalentProfile = location.pathname === '/talent/profile';
-
   const isOrgProfile = location.pathname === '/organization/profile';
 
 
@@ -52,7 +50,6 @@ export default function DashNav({ firstName, profile, preview }) {
                 <img className="logo-purple" src={logoPurple} alt="Site Logo" />
               </Link>
           }
-
 
 
           <div className="menu-btn">

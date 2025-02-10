@@ -10,6 +10,7 @@ import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
 import Loading from "./Loading";
 import axiosInstance from "../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 // EGBAIYELO - SVGs
 // These are constants and they are not all intelligeable so i declare them as components
@@ -146,6 +147,8 @@ export default function OrgDash() {
 
   const [isEditing, setIsEditing] = useState("");
 
+  const navigate = useNavigate();
+
 
   // edit profile
   const [userFields, setUserFields] = useState({
@@ -157,6 +160,8 @@ export default function OrgDash() {
     
   });
 
+
+
   // sending a change to the user object, in the backend, 
   useEffect(() => {
     if (user) {
@@ -166,13 +171,21 @@ export default function OrgDash() {
       setIndustry(user.industry || "");
       setCompanySize(user.companySize || "");
       setLocation(user.location || "");
-
     }
+
+    //==== Redirect users
+    if (user?.role && user.role !== 'organization') {
+      navigate('/');
+    }
+    //
   }, [user]);
+
+
 
   const handleFieldChange = (field, value) => {
     setUserFields((prev) => ({ ...prev, [field]: value }));
   }
+
 
   const handleCloseEdit = () => {
     setIsEditing("");
