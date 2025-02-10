@@ -31,10 +31,11 @@ export default function TalentProfile() {
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
-      setProfile(user.profile ? user.profile.path : dummyProfile);
+      setProfile(user.profile ? user.profile.path : "");
       setLocation(user.location);
       setSkill(user.skills.join(", "));
       setAbout(user.about);
+
       if (user.video && user.video.path) {
         setMediaBlobUrl(user.video.path);
       }
@@ -59,6 +60,7 @@ export default function TalentProfile() {
     setMessage("");
     setIsLoading(true);
 
+    // Create form data
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
@@ -68,7 +70,16 @@ export default function TalentProfile() {
 
     if (profile) {
       formData.append("profile", profile);
+      console.log(profile);
     }
+    else
+    {
+      const response = await fetch(dummyProfile);
+      const blob = await response.blob();
+      formData.append("profile", blob, "dummy-avatar.png");
+      console.log(blob);
+    }
+    //
 
     if (mediaBlobUrl) {
       const response = await fetch(mediaBlobUrl);
