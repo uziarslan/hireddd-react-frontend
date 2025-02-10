@@ -8586,28 +8586,7 @@ picture img.loaded {
 
 
 /* styles for upload / delete documents Talent Dash  - DYLAN*/
-.delete-button {
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
 
-.add-button {
-  background-color: green;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  text-align: center;
-  line-height: 30px;
-  font-size: 16px;
-}
 
 .document-item {
   display: flex;
@@ -8616,11 +8595,18 @@ picture img.loaded {
   gap: 5px; 
 }
 .profile-edit-documents {
-  display: flex;
-  gap: 10px; 
-  flex-wrap: wrap; 
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  justify-content: center; 
+  gap: 10px;
 }
 
+.document-name {
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* Styles for editing icons - EGBAIYELO */
 /* check mark icon, could be a check or a bookmark so (done) */
