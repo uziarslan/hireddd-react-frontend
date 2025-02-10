@@ -327,6 +327,11 @@ export default function TalentDash() {
       alert("No file selected.");
       return;
     }
+    // limit user to 3 uploaded documents
+    if (documents.length >= 3) {
+      alert("Maximum of 3 documents allowed.");
+      return;
+    }
   
     // Read the file as a Base64 string
     const reader = new FileReader();
