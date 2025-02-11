@@ -3,8 +3,8 @@ import "../Assets/Css/styles.min.css";
 import { Link } from "react-router-dom";
 import DashNav from "./DashNav";
 import dummyProfile from "../Assets/images/uploads/user-avatar.png";
-import socialIcon from "../Assets/images/profile-social-icon-01.svg";
-import socialIcon1 from "../Assets/images/profile-social-icon-02.svg";
+//import socialIcon from "../Assets/images/profile-social-icon-01.svg";
+//import socialIcon1 from "../Assets/images/profile-social-icon-02.svg";
 import pdfIcon from "../Assets/images/pdf-icon.svg";
 import linkedIn from "../Assets/images/profile-social-icon-03.svg";
 import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
@@ -17,7 +17,6 @@ import Loading from "./Loading";
 import DocumentUploadModal from "./DocumentUploadModal"; // -Dylan
 import { useNavigate } from "react-router-dom";
 
-
 // --EGBAIYELO
 const closeSVG = () => (
   <svg
@@ -27,11 +26,7 @@ const closeSVG = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect
-      width="40"
-      height="40"
-      fill="url(#pattern0_1510_2048)"
-    />
+    <rect width="40" height="40" fill="url(#pattern0_1510_2048)" />
     <defs>
       <pattern
         id="pattern0_1510_2048"
@@ -39,10 +34,7 @@ const closeSVG = () => (
         width="1"
         height="1"
       >
-        <use
-          href="#image0_1510_2048"
-          transform="scale(0.0111111)"
-        />
+        <use href="#image0_1510_2048" transform="scale(0.0111111)" />
       </pattern>
       <image
         id="image0_1510_2048"
@@ -63,14 +55,7 @@ const magSVG = () => (
     fill="none"
   >
     {/* Magnifying Glass Handle */}
-    <line
-      x1="70"
-      y1="70"
-      x2="100"
-      y2="100"
-      stroke="black"
-      strokeWidth="6"
-    />
+    <line x1="70" y1="70" x2="100" y2="100" stroke="black" strokeWidth="6" />
 
     {/* Magnifying Glass Lens */}
     <circle
@@ -83,26 +68,12 @@ const magSVG = () => (
     />
 
     {/* Glare Effect */}
-    <circle
-      cx="30"
-      cy="30"
-      r="10"
-      fill="white"
-      opacity="0.4"
-    />
+    <circle cx="30" cy="30" r="10" fill="white" opacity="0.4" />
 
     {/* Optional shadow to make it look more realistic */}
-    <circle
-      cx="40"
-      cy="40"
-      r="30"
-      fill="white"
-      opacity="0.1"
-    />
+    <circle cx="40" cy="40" r="30" fill="white" opacity="0.1" />
   </svg>
 );
-
-
 
 export default function TalentDash() {
   // const userJobs = [
@@ -151,53 +122,55 @@ export default function TalentDash() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
 
+  // -- RAUNAK
+  const [isEditingPortfolio, setIsEditingPortfolio] = useState(false);
+  const [portfolios, setPortfolios] = useState([]);
+  const [newLink, setNewLink] = useState({ icon: "", href: "" });
+  const [loading, setLoading] = useState(true);
+
   // -- MONTE
   const [about, setAbout] = useState("");
   const [skillsString, setSkills] = useState(""); // Not to be confused with the skills array
   // -- Jobs
   const [userJobs, setUserJobs] = useState([]);
-  const [currentJobPage, setCurrentJobPage] = useState(1); 
-  const [jobsPerPage] = useState(9);  
+  const [currentJobPage, setCurrentJobPage] = useState(1);
+  const [jobsPerPage] = useState(9);
   const [currentJobs, setCurrentJobs] = useState([]);
   const [pageNumbers, setPageNumbers] = useState(1);
 
   const navigate = useNavigate();
 
-  
-
   const getJobs = async () => {
-
     const jobs = await jobService.getJobsForTalent(user._id);
 
     console.log("here are jobs", jobs);
 
-      const updatedJobs = jobs.map((job) => {
-        return {
-          key: job.jobId._id,
-          status: job.status, 
-          ...job.jobId,  
-        };
-      });
+    const updatedJobs = jobs.map((job) => {
+      return {
+        key: job.jobId._id,
+        status: job.status,
+        ...job.jobId,
+      };
+    });
 
-    await setUserJobs(updatedJobs)
-    return updatedJobs;  // Return the updated array with status and job details
-  }
+    await setUserJobs(updatedJobs);
+    return updatedJobs; // Return the updated array with status and job details
+  };
 
   const handleJobSplice = async () => {
     // userJobs.length === 0
     // Job align
-    console.log("these are the jobs i got", userJobs)
-    const totalPages = Math.ceil(userJobs.length / jobsPerPage); 
+    console.log("these are the jobs i got", userJobs);
+    const totalPages = Math.ceil(userJobs.length / jobsPerPage);
     setPageNumbers(totalPages);
 
     const indexOfLastJob = currentJobPage * jobsPerPage;
     const indexOfFirstJob = indexOfLastJob - jobsPerPage;
     const currentJobs = userJobs.slice(indexOfFirstJob, indexOfLastJob);
     setCurrentJobs(currentJobs);
-  }
+  };
 
- 
-  // -- DYLAN 
+  // -- DYLAN
   const [uploadStatus, setUploadStatus] = useState(""); //video upload status
   const [documents, setDocuments] = useState([]); //initialize documents to an empty array to wait for user to load
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
@@ -207,22 +180,21 @@ export default function TalentDash() {
     email: "",
   }); // Initialize contact details to empty strings
 
-//update user data once user is loaded  
+  //update user data once user is loaded
   useEffect(() => {
     if (user) {
       setIsLoading(false);
-      setAbout(user.about);       // Skills in db is list but here is string - Monte
-      setSkills(user.skills.join(', '));  
+      setAbout(user.about); // Skills in db is list but here is string - Monte
+      setSkills(user.skills.join(", "));
 
       if (user.documents) {
-        setDocuments(user.documents); 
+        setDocuments(user.documents);
       }
       if (user.phone && user.username) {
         setContactDetails({
           phone: user.phone || "",
           email: user.username || "",
-        }); 
-      
+        });
       }
 
       getJobs();
@@ -231,39 +203,51 @@ export default function TalentDash() {
       //   console.log("here are", jobs);
       //   handleJobSplice();
       // }
-  
+
       // fetchJobs();
     }
 
     //==== Redirect users
-    if (user?.role && user.role !== 'talent') {
-      navigate('/');
+    if (user?.role && user.role !== "talent") {
+      navigate("/");
     }
     //
+  // Set the portfolio if available
+  if (user && user.portfolios) {
+    setPortfolios(user.portfolios || ""); // Assuming user.portfolios is an array of objects containing 'icon' and 'href'
+  }
 
-  }, [user]); 
+  setLoading(false);
+}, [user]);
 
   useEffect(() => {
     if (userJobs.length > 0) {
-      handleJobSplice();  
+      handleJobSplice();
     }
-  }, [userJobs, currentJobPage]);  
-
+  }, [userJobs, currentJobPage]);
+  
+  /*if (!user) {
+    return <div>Loading user data...</div>; // Handle the case when user is not available
+  }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+*/
   //method for uploading resume
   const handleUploadResume = () => {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "video/mp4,video/avi,video/mov,video/mkv,video/webm"; // Accept only videos
-  
+
     input.onchange = async (e) => {
       const file = e.target.files[0];
-  
+
       if (file) {
-        setUploadStatus("Uploading... ⏳"); 
-  
+        setUploadStatus("Uploading... ⏳");
+
         const formData = new FormData();
         formData.append("video", file);
-  
+
         try {
           const response = await fetch(
             `http://localhost:4000/api/v1/talent/upload-resume/${user._id}`,
@@ -272,30 +256,62 @@ export default function TalentDash() {
               body: formData,
             }
           );
-  
+
           const result = await response.json();
-  
+
           if (!response.ok) {
             throw new Error(result.error || "Failed to upload resume video.");
           }
-  
-          setUploadStatus("Upload Successful! ✅"); 
-  
+
+          setUploadStatus("Upload Successful! ✅");
+
           // Update the user state to reflect the new resume video
           updateUser({ video: { path: result.videoUrl } });
-  
-          setTimeout(() => setUploadStatus(""), 3000); 
+
+          setTimeout(() => setUploadStatus(""), 3000);
         } catch (error) {
           console.error("Error uploading resume video:", error);
           setUploadStatus("Upload Failed ❌");
         }
       }
     };
-  
+
     input.click();
   };
   
-  
+
+  // RAUNAK
+  const handleSavePortfolio = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Send the correct data structure
+      const response = await fetch(
+        `http://localhost:4000/api/v1/talent/edit-portfolio/${user._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          // Assuming your API expects an array of portfolio links:
+          body: JSON.stringify({ portfolios }),
+        }
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        alert("Portfolio section updated successfully!");
+        setIsEditingPortfolio(false);
+      } else {
+        console.error("Failed to update portfolio:", result.message);
+      }
+    } catch (error) {
+      console.error("Error updating Portfolio section:", error);
+      alert("An error occurred while updating the Portfolio section.");
+    }
+  };
+
   //method for deleting docs on profile -- DYLAN
   const handleDeleteDocument = async (docId) => {
     try {
@@ -303,9 +319,9 @@ export default function TalentDash() {
         `http://localhost:4000/api/v1/talent/delete-document/${user._id}/${docId}`,
         { method: "DELETE" }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("Document deleted successfully!");
         // Update the documents array in state
@@ -332,7 +348,7 @@ export default function TalentDash() {
       alert("Maximum of 3 documents allowed.");
       return;
     }
-  
+
     // Read the file as a Base64 string
     const reader = new FileReader();
     reader.onload = async (event) => {
@@ -345,50 +361,49 @@ export default function TalentDash() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               document: base64File,
-              fileName: certificateName || file.name, 
+              fileName: certificateName || file.name,
             }),
           }
         );
-  
+
         const result = await response.json();
-  
+
         if (!response.ok) {
           console.error("Upload Error:", result);
-          throw new Error(result.error || result.message || "Failed to upload the document.");
+          throw new Error(
+            result.error || result.message || "Failed to upload the document."
+          );
         }
-  
+
         alert("Document uploaded successfully!");
         console.log("Upload result:", result);
-  
+
         // Add the new document to the state
         setDocuments(result.talent.documents);
-        
-        
       } catch (error) {
         console.error("Error uploading document:", error);
         alert(error.message);
       }
     };
-  
-    reader.readAsDataURL(file); 
+
+    reader.readAsDataURL(file);
   };
 
-  //editing contact details 
+  //editing contact details
   // Editing contact details
   const handleSaveContactDetails = async () => {
-
     // Format handling -- MONTE
     // No agreed format
     // Phone and email regex data, it's global format
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const phoneRegex = /^[+]?[1-9]\d{1,14}$/; 
+    const phoneRegex = /^[+]?[1-9]\d{1,14}$/;
 
     // Standardize phone data, no brackets but replace dashes with spacess
     contactDetails.phone = contactDetails.phone
-    .replace(/[()]/g, '')  // Remove brackets
-    .replace(/-/g, ' ')    // Replace dashes with spaces
-    .replace(/\s+/g, ' ')  // After the dash replace spaces?
-    .trim();               // Trim trailings
+      .replace(/[()]/g, "") // Remove brackets
+      .replace(/-/g, " ") // Replace dashes with spaces
+      .replace(/\s+/g, " ") // After the dash replace spaces?
+      .trim(); // Trim trailings
     // Format in database should be +1 234 567 8910 or so
     // --
 
@@ -397,22 +412,22 @@ export default function TalentDash() {
       alert("Please enter a valid phone number.");
       return;
     }
-    
+
     // Validate email
     if (!emailRegex.test(contactDetails.email)) {
       alert("Please enter a valid email address.");
       return;
     }
-    
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/talent/update-contact-details/${user._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            phone: contactDetails.phone, 
-            email: contactDetails.email 
+          body: JSON.stringify({
+            phone: contactDetails.phone,
+            email: contactDetails.email,
           }),
         }
       );
@@ -420,10 +435,10 @@ export default function TalentDash() {
 
       if (result.success) {
         alert("Contact details updated successfully!");
-        updateUser({ 
+        updateUser({
           ...user, // Keep existing user data
-          phone: result.talent.phone, 
-          username: result.talent.username // Ensure email updates correctly
+          phone: result.talent.phone,
+          username: result.talent.username, // Ensure email updates correctly
         });
         setIsEditingContact(false); // Exit editing mode
       } else {
@@ -438,7 +453,8 @@ export default function TalentDash() {
   // Handling the sumamry and the skills -- MONTE
   // Handling the Summaries
   const handleSaveAbout = async () => {
-    if (!about.trim()) {  // Just to remove spaces before null checking
+    if (!about.trim()) {
+      // Just to remove spaces before null checking
       alert("About section cannot be empty!");
       return;
     }
@@ -449,15 +465,19 @@ export default function TalentDash() {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: about, userType: "talent", dataField: "about"  }), 
+          body: JSON.stringify({
+            data: about,
+            userType: "talent",
+            dataField: "about",
+          }),
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("About section updated successfully!");
-  
+
         setAbout(result.user.about); // Update the state with new about (using backend filtered text)
         updateUser({ about: result.user.about }); // Update the user state
         setIsEditing(""); // Exiting edit mode
@@ -468,7 +488,6 @@ export default function TalentDash() {
       console.error("Error updating About section:", error);
       alert("An error occurred while updating the About section.");
     }
-
   };
 
   // Handling the skills
@@ -487,13 +506,13 @@ export default function TalentDash() {
           body: JSON.stringify({ rawSkills: skillsString }), // Skills are sent as a string
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert("Skills section updated successfully!");
-  
-        setSkills(result.talent.skills.join(', ')); // Updating the skills form the backend (using backend filters)
+
+        setSkills(result.talent.skills.join(", ")); // Updating the skills form the backend (using backend filters)
         updateUser({ skills: result.talent.skills }); // Update the user state
         setIsEditing(""); // Exit edit mode
       } else {
@@ -503,11 +522,9 @@ export default function TalentDash() {
       console.error("Error updating Skills section:", error);
       alert("An error occurred while updating the Skills section.");
     }
-
   };
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
-
 
   return (
     <>
@@ -787,33 +804,46 @@ export default function TalentDash() {
                         </div>
                         View resume
                       </Link>
-                      <button className="resume-btn fill-btn" onClick={handleUploadResume}>
+                      <button
+                        className="resume-btn fill-btn"
+                        onClick={handleUploadResume}
+                      >
                         Upload resume
                       </button>
-                      {uploadStatus && <p style={{ color: uploadStatus.includes("Failed") ? "red" : "green" }}>{uploadStatus}</p>}
-
+                      {uploadStatus && (
+                        <p
+                          style={{
+                            color: uploadStatus.includes("Failed")
+                              ? "red"
+                              : "green",
+                          }}
+                        >
+                          {uploadStatus}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="profile-edit-options">
                     <div className="profile-edit-set">
                       {isEditing === "summary" && (
                         <button
-                          onClick={() =>  handleSaveAbout() }
+                          onClick={() => handleSaveAbout()}
                           className="edit-button profile-txtbx-done"
                         >
-                          <svg 
-                            width="24" 
-                            height="24" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
-                            <path 
-                              d="M20 6L9 17L4 12" 
-                              stroke="black" 
-                              strokeWidth="2" 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round"/>
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="black"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </svg>
                         </button>
                       )}
@@ -855,7 +885,7 @@ export default function TalentDash() {
                             </defs>
                           </svg>
                         </button>
-                      )} 
+                      )}
                       {!(isEditing === "summary") && (
                         <button
                           onClick={() => setIsEditing("summary")}
@@ -897,19 +927,19 @@ export default function TalentDash() {
                       )}
                       <div className="profile-edit-title">Summary</div>
                       <div className="profile-edit-text">
-                      {isEditing === "summary" ? (
-                        <div>
-                          <textarea
-                            value={about}
-                            placeholder="Summary"
-                            onChange={(e) => setAbout(e.target.value)}
-                          ></textarea>
-                        </div>
-                      ) : (
-                        <div>
-                          <p>{about}</p>
-                        </div>
-                      )}
+                        {isEditing === "summary" ? (
+                          <div>
+                            <textarea
+                              value={about}
+                              placeholder="Summary"
+                              onChange={(e) => setAbout(e.target.value)}
+                            ></textarea>
+                          </div>
+                        ) : (
+                          <div>
+                            <p>{about}</p>
+                          </div>
+                        )}
                         {/* <div
                           className={`profile-summry-edit ${
                             isEditing === "summary" ? "current" : ""
@@ -926,22 +956,23 @@ export default function TalentDash() {
                     <div className="profile-edit-set">
                       {isEditing === "topSkills" && (
                         <button
-                          onClick={() =>  handleSaveSkills()}
+                          onClick={() => handleSaveSkills()}
                           className="edit-button profile-txtbx-done"
                         >
-                          <svg 
-                            width="24" 
-                            height="24" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
-                            <path 
-                              d="M20 6L9 17L4 12" 
-                              stroke="black" 
-                              strokeWidth="2" 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round"/>
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="black"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </svg>
                         </button>
                       )}
@@ -1035,16 +1066,17 @@ export default function TalentDash() {
                             <p>Separate skills with Commas</p>
                           </div>
                         ) : (
-                          console.log(user),
+                          (console.log(user),
                           user.skills.map((skill, index) => (
                             <div key={index} className="profile-edit-tag">
                               {skill}
                             </div>
-                          ))
+                          )))
                         )}
                         {/* Edit Input for Skills */}
                       </div>
                     </div>
+
                     <div className="profile-edit-set">
                       {isEditing === "contactDetails" && (
                         <button
@@ -1121,47 +1153,64 @@ export default function TalentDash() {
                             />
                           </defs>
                         </svg>
-                      </button> 
+                      </button>
                       <div className="profile-edit-title">Contact Details</div>
                       <div className="profile-edit-text">
-                      {isEditingContact ? (
-                        <div>
-                          <label>
-                            <strong>Phone:</strong>
-                            <input
-                              type="text"
-                              value={contactDetails.phone || ""}
-                              placeholder={"+92XXXXXX"}
-                              onChange={(e) => {
-                                setContactDetails({ ...contactDetails, phone: e.target.value });
-                              }}
-                            />
-                          </label>
-                          <label>
-                            <strong>Email:</strong>
-                            <input
-                              type="email"
-                              value={isEditingContact ? contactDetails.email || user.username : user.username || ""}
-                              placeholder={"johndoe@example.com"}
-                              onChange={(e) => {
-                                setContactDetails({ ...contactDetails, email: e.target.value });
-                              }}
-                            />
-                          </label>
-                          <button onClick={handleSaveContactDetails}>Save</button>
-                        </div>
-                      ) : (
-                        <div>
-                          <p>
-                            <strong>Phone:</strong> {contactDetails.phone || user.phone || "Not provided"}
-                          </p>
-                          <p>
-                            <strong>Email:</strong> {contactDetails.email || user.username || "Not provided"}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
+                        {isEditingContact ? (
+                          <div>
+                            <label>
+                              <strong>Phone:</strong>
+                              <input
+                                type="text"
+                                value={contactDetails.phone || ""}
+                                placeholder={"+92XXXXXX"}
+                                onChange={(e) => {
+                                  setContactDetails({
+                                    ...contactDetails,
+                                    phone: e.target.value,
+                                  });
+                                }}
+                              />
+                            </label>
+                            <label>
+                              <strong>Email:</strong>
+                              <input
+                                type="email"
+                                value={
+                                  isEditingContact
+                                    ? contactDetails.email || user.username
+                                    : user.username || ""
+                                }
+                                placeholder={"johndoe@example.com"}
+                                onChange={(e) => {
+                                  setContactDetails({
+                                    ...contactDetails,
+                                    email: e.target.value,
+                                  });
+                                }}
+                              />
+                            </label>
+                            <button onClick={handleSaveContactDetails}>
+                              Save
+                            </button>
+                          </div>
+                        ) : (
+                          <div>
+                            <p>
+                              <strong>Phone:</strong>{" "}
+                              {contactDetails.phone ||
+                                user.phone ||
+                                "Not provided"}
+                            </p>
+                            <p>
+                              <strong>Email:</strong>{" "}
+                              {contactDetails.email ||
+                                user.username ||
+                                "Not provided"}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="profile-edit-set">
                       <button className="edit-button">
@@ -1199,18 +1248,177 @@ export default function TalentDash() {
                         </svg>
                       </button>
                       <div className="profile-edit-title">Portfolio</div>
-                      <div className="profile-edit-socials">
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={socialIcon} alt="Icon" />
-                        </Link>
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={socialIcon1} alt="Icon" />
-                        </Link>
+
+                      <div>
+                        <button
+                          onClick={() => setIsEditingPortfolio((prev) => !prev)}
+                          className="edit-button"
+                          style={{
+                            cursor: "pointer",
+                            border: "none",
+                            background: "transparent",
+                          }}
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 27 27"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              width="27"
+                              height="27"
+                              fill="url(#pattern0_1475_1863)"
+                            />
+                            <defs>
+                              <pattern
+                                id="pattern0_1475_1863"
+                                patternContentUnits="objectBoundingBox"
+                                width="1"
+                                height="1"
+                              >
+                                <use
+                                  href="#image0_1475_1863"
+                                  transform="scale(0.0111111)"
+                                />
+                              </pattern>
+                              <image
+                                id="image0_1475_1863"
+                                width="90"
+                                height="90"
+                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                              />
+                            </defs>
+                          </svg>
+                        </button>
+
+                        {isEditingPortfolio ? (
+                          <div>
+                            {/* Only render portfolio boxes from index 1 onward */}
+                            {portfolios.slice(1).map((portfolio, i) => {
+                              // Calculate the actual index in the portfolios array
+                              const actualIndex = i + 1;
+                              return (
+                                <div
+                                  key={portfolio._id || actualIndex}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    marginBottom: "8px",
+                                  }}
+                                >
+                                  <input
+                                    type="text"
+                                    placeholder="Portfolio Link"
+                                    value={portfolio.href}
+                                    onChange={(e) => {
+                                      const updatedPortfolios = [...portfolios];
+                                      updatedPortfolios[actualIndex] = {
+                                        ...updatedPortfolios[actualIndex],
+                                        href: e.target.value,
+                                      };
+
+                                      setPortfolios(updatedPortfolios);
+                                    }}
+                                    style={{
+                                      width: "80%",
+                                      marginRight: "10px",
+                                      padding: "5px",
+                                      border: "1px solid #ccc",
+                                      borderRadius: "8px",
+                                    }}
+                                  />
+                                  {/* Remove button with a cross icon */}
+                                  <button
+                                    onClick={() => {
+                                      setPortfolios(
+                                        portfolios.filter(
+                                          (_, index) => index !== actualIndex
+                                        )
+                                      );
+                                    }}
+                                    className="remove-button"
+                                    style={{
+                                      background: "transparent",
+                                      border: "none",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    <svg
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M1 1L15 15"
+                                        stroke="red"
+                                        strokeWidth="2"
+                                      />
+                                      <path
+                                        d="M15 1L1 15"
+                                        stroke="red"
+                                        strokeWidth="2"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              );
+                            })}
+
+                            <button
+                              onClick={() => {
+                                setPortfolios([...portfolios, newLink]);
+                                setNewLink({ href: "" });
+                                <input
+                                  type="text"
+                                  placeholder="Add new portfolio link"
+                                  value={newLink.href}
+                                  onChange={(e) =>
+                                    setNewLink({
+                                      ...newLink,
+                                      href: e.target.value,
+                                    })
+                                  }
+                                />;
+                              }}
+                              style={{ marginBottom: "2px" }}
+                            >
+                              Add Link
+                            </button>
+                            <button onClick={handleSavePortfolio}>
+                              Save Portfolio
+                            </button>
+                          </div>
+                        ) : (
+                          <div>
+                            {/* When not editing, only show portfolio links from index 1 onward */}
+                            {portfolios.slice(1).length > 0 ? (
+                              portfolios.slice(1).map((portfolio, index) => (
+                                <div key={portfolio._id || index}>
+                                  <a
+                                    href={portfolio.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {portfolio.href}
+                                  </a>
+                                </div>
+                              ))
+                            ) : (
+                              <p>No portfolio links provided</p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button className="edit-button"
-                      onClick={() => setIsDocModalOpen((prev) => !prev)}>
+                      <button
+                        className="edit-button"
+                        onClick={() => setIsDocModalOpen((prev) => !prev)}
+                      >
                         {"Edit"}
                         <svg
                           width="27"
@@ -1247,32 +1455,34 @@ export default function TalentDash() {
                       </button>
                       <div className="profile-edit-title">Attach Documents</div>
                       <div className="profile-edit-socials">
+                        <div className="profile-edit-documents">
+                          {documents.map((doc, index) => {
+                            if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
 
-                      <div className="profile-edit-documents">
-                      {documents.map((doc, index) => {
-                          if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
-
-                          return (
-                            <div key={index} className="document-item">
-                              <a 
-                                href={doc.fileData} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                download={doc.fileName}>
-                                <img src={pdfIcon} alt={`Document ${index + 1}`} />
-                              </a>
-                              <div className="document-name">{doc.fileName}</div>
-                            </div>
-                          );
-                        })}
-                      
+                            return (
+                              <div key={index} className="document-item">
+                                <a
+                                  href={doc.fileData}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download={doc.fileName}
+                                >
+                                  <img
+                                    src={pdfIcon}
+                                    alt={`Document ${index + 1}`}
+                                  />
+                                </a>
+                                <div className="document-name">
+                                  {doc.fileName}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-
                       </div>
                     </div>
                     <div className="profile-edit-set">
-                      <button 
-                        className="edit-button">
+                      <button className="edit-button">
                         <svg
                           width="27"
                           height="27"
@@ -1372,21 +1582,26 @@ export default function TalentDash() {
                         }`}
                       >
                         <div className="three-columns">
-
-
                           {currentJobs && currentJobs.length > 0 ? (
-
                             currentJobs.map((job) => (
-  
                               <div className="single-shortlist-column">
                                 <div className="profile-head-left">
                                   <div className="profile-head-image">
-                                    <img src={job.orgId.profile.path} alt="Avatar" />
+                                    <img
+                                      src={job.orgId.profile.path}
+                                      alt="Avatar"
+                                    />
                                   </div>
                                   <div className="profile-head-info">
-                                    <h2 className="profile-head-title">{job.title}</h2>
-                                    <div className="profile-head-subtext">{job.company}</div>
-                                    <div className="profile-head-text">{job.location || 'No Location'}</div>
+                                    <h2 className="profile-head-title">
+                                      {job.title}
+                                    </h2>
+                                    <div className="profile-head-subtext">
+                                      {job.company}
+                                    </div>
+                                    <div className="profile-head-text">
+                                      {job.location || "No Location"}
+                                    </div>
                                     <Link
                                       to={`#job-popup-${job.id}`}
                                       className="learn-more job-popup"
@@ -1395,51 +1610,70 @@ export default function TalentDash() {
                                     </Link>
                                   </div>
                                 </div>
-  
+
                                 {/* Job Popup */}
                                 <div
                                   id={`job-popup-${job.id}`}
                                   className="job-popup-detail mfp-hide"
                                 >
                                   <div className="popup-modal-dismiss">
-                                    { closeSVG() }
+                                    {closeSVG()}
                                   </div>
-                                  <h2 className="job-popup-title">Job Details</h2>
+                                  <h2 className="job-popup-title">
+                                    Job Details
+                                  </h2>
                                   <h3>About this job</h3>
-                                  <p>{job.description || 'No description available.'}</p>
+                                  <p>
+                                    {job.description ||
+                                      "No description available."}
+                                  </p>
 
                                   <h3>Responsibilities</h3>
                                   <ul>
-                                    {job.responsibilities && job.responsibilities.length > 0
-                                    ? job.responsibilities.map((responsibility, index) => (
-                                        <li key={index}>{responsibility}</li>
-                                      ))
-                                    : <li>No responsibilities listed.</li>}
+                                    {job.responsibilities &&
+                                    job.responsibilities.length > 0 ? (
+                                      job.responsibilities.map(
+                                        (responsibility, index) => (
+                                          <li key={index}>{responsibility}</li>
+                                        )
+                                      )
+                                    ) : (
+                                      <li>No responsibilities listed.</li>
+                                    )}
                                   </ul>
                                   <div className="s-20"></div>
 
                                   <h3>Skills required</h3>
                                   <div className="profile-edit-tags">
-                                    {job.skills && job.skills.length > 0 
-                                    ? job.skills.map((skill, index) => (
-                                        <div className="profile-edit-tag" key={index}>
+                                    {job.skills && job.skills.length > 0 ? (
+                                      job.skills.map((skill, index) => (
+                                        <div
+                                          className="profile-edit-tag"
+                                          key={index}
+                                        >
                                           {skill}
                                         </div>
                                       ))
-                                    : <div>No skills listed.</div>}
+                                    ) : (
+                                      <div>No skills listed.</div>
+                                    )}
                                   </div>
 
                                   <div className="s-20"></div>
-  
+
                                   <h3>Location</h3>
-                                  <p>{job.location || 'No location specified'}</p>
+                                  <p>
+                                    {job.location || "No location specified"}
+                                  </p>
                                   <h3>Company size</h3>
-                                  <p>{job.companySize || 'Unknown size'}</p>
+                                  <p>{job.companySize || "Unknown size"}</p>
                                   <h3>Salary</h3>
-                                  <p>{job.salary || 'Salary not provided'}</p>
+                                  <p>{job.salary || "Salary not provided"}</p>
                                   <h3>Job type</h3>
-                                  <p>{job.jobType || 'No job type specified'}</p>
-  
+                                  <p>
+                                    {job.jobType || "No job type specified"}
+                                  </p>
+
                                   <div className="popup-button">
                                     <Link to="#" className="button">
                                       Message
@@ -1451,14 +1685,13 @@ export default function TalentDash() {
                           ) : (
                             <>
                               <div className="No-fetch-jobs-message">
-                                <div>{ magSVG() }</div>
-                                <div>You haven't been shortlisted for any jobs yet.</div>
+                                <div>{magSVG()}</div>
+                                <div>
+                                  You haven't been shortlisted for any jobs yet.
+                                </div>
                               </div>
                             </>
                           )}
-                          
-
-
                         </div>
 
                         {currentJobs && currentJobs.length > 0 && (
@@ -1466,7 +1699,9 @@ export default function TalentDash() {
                             <button
                               className="custom-slick-nav custom-prev slick-arrow"
                               aria-disabled="true"
-                              onClick={() => setCurrentJobPage(currentJobPage - 1)}
+                              onClick={() =>
+                                setCurrentJobPage(currentJobPage - 1)
+                              }
                               disabled={currentJobPage === 1}
                             >
                               <svg
@@ -1486,13 +1721,15 @@ export default function TalentDash() {
                               className="slides-numbers"
                               style={{ display: "block" }}
                             >
-                              <span className="active">{currentJobPage}</span> of{" "}
-                              <span className="total">{pageNumbers}</span>
+                              <span className="active">{currentJobPage}</span>{" "}
+                              of <span className="total">{pageNumbers}</span>
                             </div>
                             <button
                               className="custom-slick-nav custom-next slick-arrow"
                               aria-disabled="false"
-                              onClick={() => setCurrentJobPage(currentJobPage + 1)}
+                              onClick={() =>
+                                setCurrentJobPage(currentJobPage + 1)
+                              }
                               disabled={currentJobPage === pageNumbers}
                             >
                               <svg
@@ -1510,7 +1747,6 @@ export default function TalentDash() {
                             </button>
                           </div>
                         )}
-
                       </div>
                     </div>
                   </div>
@@ -1521,12 +1757,12 @@ export default function TalentDash() {
         </div>
       </main>
       <DocumentUploadModal
-      isOpen={isDocModalOpen}  
-      onClose={() => setIsDocModalOpen(false)} 
-      onUpload={handleUploadDocument}
-      onDelete={handleDeleteDocument}
-      documents={documents}
-    />
+        isOpen={isDocModalOpen}
+        onClose={() => setIsDocModalOpen(false)}
+        onUpload={handleUploadDocument}
+        onDelete={handleDeleteDocument}
+        documents={documents}
+      />
     </>
   );
 }
