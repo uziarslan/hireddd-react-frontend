@@ -4635,7 +4635,7 @@ button.record-video {
   background-color: #d9d9d9;
   height: 230px;
   border-radius: 12px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .profile-record-video {
@@ -4646,9 +4646,21 @@ button.record-video {
 
 .record-video-buttons {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+  
+}
+
+.use-recording-button {
+  visibility: hidden; 
+}
+
+.use-recording-container {
+  display: flex;
+  justify-content: center;
+  width: 100%; 
+  margin-top: 10px; 
 }
 
 .record-video-buttons-inner {

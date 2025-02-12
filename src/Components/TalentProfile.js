@@ -26,6 +26,12 @@ export default function TalentProfile() {
   const mediaRecorderRef = useRef(null);
   const videoRef = useRef(null);
   const navigate = useNavigate();
+  const [isRecorded, setIsRecorded] = useState(false);
+  const [recordTime, setRecordTime] = useState(0); 
+  const recordIntervalRef = useRef(null); 
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+
 
   useEffect(() => {
     if (user) {
@@ -44,10 +50,10 @@ export default function TalentProfile() {
   }, [user]);
 
   useEffect(() => {
-    if (videoRef.current && mediaBlobUrl) {
+    if (videoRef.current && mediaBlobUrl && !isRecording) {
       videoRef.current.src = mediaBlobUrl;
     }
-  }, [mediaBlobUrl]);
+  }, [mediaBlobUrl, isRecording]);
 
   const fileInputRef = useRef(null);
 
@@ -55,40 +61,46 @@ export default function TalentProfile() {
     fileInputRef.current.click();
   };
 
+  //Dylan
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage("");
     setIsLoading(true);
-
-    // Create form data
+  
+    // Create form data for user details
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("location", location);
     formData.append("skills", skill);
     formData.append("about", about);
-
+  
+    // Handle profile picture upload
     if (profile) {
       formData.append("profile", profile);
-      console.log(profile);
-    }
-    else
-    {
+    } else {
       const response = await fetch(dummyProfile);
       const blob = await response.blob();
       formData.append("profile", blob, "dummy-avatar.png");
-      console.log(blob);
     }
-    //
-
-    if (mediaBlobUrl) {
-      const response = await fetch(mediaBlobUrl);
-      const blob = await response.blob();
-      formData.append("video", blob, "recorded-video.webm");
+  
+    if (uploadedFile) {
+      formData.append("video", uploadedFile, uploadedFile.name);
+    } else if (mediaBlobUrl) {
+        try {
+            const response = await fetch(mediaBlobUrl);
+            const blob = await response.blob();
+            formData.append("video", blob, "recorded-video.webm");
+        } catch (error) {
+            console.error("Error fetching video blob:", error);
+            alert("Failed to process the recorded video.");
+            setIsLoading(false);
+            return;
+        }
     }
-
+  
     try {
-      const { data, status } = await axiosInstance.post(
+      const {status } = await axiosInstance.post(
         "/talent/profile",
         formData,
         {
@@ -97,16 +109,19 @@ export default function TalentProfile() {
           },
         }
       );
-
+  
       if (status === 200) {
-        setMessage(data);
-        navigate("/talent/dashboard");
+        setMessage("Profile created successfully!");
+        navigate("/talent/dashboard"); // Redirect after successful registration
       }
     } catch (error) {
+      console.error("Registration error:", error);
+      alert("Failed to create profile.");
       if (error.response && error.response.data && error.response.data.error) {
-        setMessage(error.response.data);
+        setMessage(error.response.data.error);
       }
     }
+  
     setIsLoading(false);
   };
 
@@ -128,16 +143,22 @@ export default function TalentProfile() {
     }
   };
 
+  
   const startRecording = async () => {
     try {
-      setIsRecording(true);
+      setIsRecording(true); 
       setMediaBlobUrl("");
-
+      setUploadedFile(null);
+      setRecordTime(0);
+  
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
-
+  
+      if (!stream) return;
+  
+      
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       } else {
@@ -145,33 +166,103 @@ export default function TalentProfile() {
           "videoRef.current is null. The video element might not be rendered."
         );
       }
+  
       mediaRecorderRef.current = new MediaRecorder(stream);
       const chunks = [];
-
+  
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
           chunks.push(event.data);
         }
       };
-
+  
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunks, { type: "video/webm" });
         setMediaBlobUrl(URL.createObjectURL(blob));
-        stream.getTracks().forEach((track) => track.stop());
+        stream.getTracks().forEach((track) => track.stop()); 
       };
-
+  
       mediaRecorderRef.current.start();
+
+      
+      recordIntervalRef.current = setInterval(() => {
+        setRecordTime((prevTime) => {
+            if (prevTime >= 59) { 
+                stopRecording(); 
+                return 60; 
+            }
+            return prevTime + 1;
+        });
+    }, 1000);
+  
     } catch (err) {
       console.error("Error accessing media devices.", err);
     }
   };
-
+  
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      clearInterval(recordIntervalRef.current); 
+      setIsRecorded(true);
     }
   };
+  
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        processVideoFile(file);
+    }
+    
+};
+
+const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+        processVideoFile(file);
+    }
+};
+
+const handleDragOver = (event) => {
+    event.preventDefault();
+};
+
+const processVideoFile = (file) => {
+  const videoUrl = URL.createObjectURL(file);
+  const video = document.createElement("video");
+  video.preload = "metadata";
+  
+  video.onloadedmetadata = () => {
+      URL.revokeObjectURL(video.src); 
+      if (video.duration > 60) { // Reject if longer than 1 minute
+          alert("Video must be 60 seconds or less.");
+          return;
+      }
+      setMediaBlobUrl("");
+      setMediaBlobUrl(videoUrl);
+      setUploadedFile(file); 
+      setUploadPopup(false);
+      setIsRecorded(true);
+
+  };
+
+  video.src = videoUrl; 
+};
+
+
+const handleUploadVideoClick = () => {
+  document.getElementById("video-upload-input").click();
+};
+
+  
 
   return (
     <>
@@ -313,6 +404,7 @@ export default function TalentProfile() {
                         ref={videoRef}
                         autoPlay
                         muted
+                        playsInline // Ensure compatibility with mobile browsers
                       />
                     ) : (
                       mediaBlobUrl && (
@@ -326,20 +418,28 @@ export default function TalentProfile() {
                     )}
                   </div>
                   <div className="record-video-buttons">
-                    <div className="record-time">Record time 00:00</div>
-                    <div className="record-video-buttons-inner">
-                      <Link
-                        className="button job-popup outline"
-                        onClick={() => setUploadPopup(true)}
-                      >
-                        Upload Resume
-                      </Link>
-                      <button
-                        className="button-fill"
-                        onClick={isRecording ? stopRecording : startRecording}
-                      >
-                        {isRecording ? "Stop Recording" : "Start Recording"}
-                      </button>
+                    <div className="record-time">Record time {formatTime(recordTime)}</div>
+                    <div style={{ fontSize: "10px", marginBottom: "10px" }}>Maximum 60 Seconds</div>
+                      <div className="record-video-buttons-inner">
+                        <Link
+                          className="button job-popup outline"
+                          onClick={() => setUploadPopup(true)}
+                        >
+                          Upload Resume
+                        </Link>
+
+                        <button className="button-fill" onClick={isRecording ? stopRecording : startRecording}>
+                          {isRecording ? "Stop Recording" : "Start Recording"}
+                        </button>
+                      </div>
+                      <div className="use-recording-container">
+                        <button
+                          className="button-fill upload-btn use-recording-btn"
+                          style={{ visibility: isRecorded ? "visible" : "hidden" }}
+                          onClick={() => setIsProfile(true)}
+                        >
+                          Use Video
+                        </button>
                     </div>
                   </div>
                 </div>
@@ -354,6 +454,8 @@ export default function TalentProfile() {
                       <div
                         onClick={handleOutsideClick}
                         className="mfp-container mfp-inline-holder"
+                        onDrop={handleDrop}
+                        onDragOver={handleDragOver}
                       >
                         <div className="mfp-content">
                           <div
@@ -364,7 +466,14 @@ export default function TalentProfile() {
                               <p className="file-upload-top-text">
                                 Drag and drop or
                               </p>
-                              <button className="upload-button">
+                              <input
+                                type="file"
+                                id="video-upload-input"
+                                accept="video/*"
+                                style={{ display: "none" }}
+                                onChange={handleFileUpload}
+                              />
+                              <button className="upload-button" onClick={handleUploadVideoClick}>
                                 Upload video
                               </button>
                               <div className="upload-instructions">
