@@ -17,6 +17,7 @@ import TalentSetting from "./Components/TalentSetting";
 import Blog from "./Components/Blog";
 import Contact from "./Components/ContactUs";
 import Plans from "./Components/Plans";
+import CreateJob from "./Components/CreateJob"
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/find/employees" element={<SearchPage />} />
           <Route path="/talent/:talentId" element={<ProfilePage />} />
           <Route path="/talent/settings" element={<TalentSetting />} />
+          <Route path="/organization/createJob" element={<CreateJob />} />
         </Routes>
       </div>
     </Router>

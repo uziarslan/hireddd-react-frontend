@@ -4,6 +4,11 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_PUBLIC_URL + "/jobs";
 const CANDIDATE_API_URL = process.env.REACT_APP_PUBLIC_URL + "/jobCandidates"; 
 
+// jobtypes
+// Please dont delete anything when running, they are capitalized on display
+// If you want to add hyphen do so in frontend
+const jobTypes = ["fulltime", "parttime", "contract", "remote", "hybrid"];
+
 //-- Jobs --
 // Fetch all jobs by orgID
 const getJobsbyOrgID = async (orgId) => {
@@ -11,7 +16,7 @@ const getJobsbyOrgID = async (orgId) => {
     const response = await axios.get(`${API_URL}/org/${orgId}`);
     return response.data;
   } catch (error) {
-    throw new Error("Error fetching jobs by org");
+    throw new Error("JobService: Error fetching jobs by org");
   }
 };
 
@@ -21,7 +26,7 @@ const getJobById = async (jobId) => {
     const response = await axios.get(`${API_URL}/${jobId}`);
     return response.data;
   } catch (error) {
-    throw new Error("Error fetching job by ID");
+    throw new Error("JobService: Error fetching job by ID");
   }
 };
 
@@ -31,7 +36,7 @@ const createJob = async (jobData) => {
     const response = await axios.post(API_URL, jobData);
     return response.data;
   } catch (error) {
-    throw new Error("Error creating job");
+    throw new Error("JobService: Error creating job");
   }
 };
 
@@ -41,7 +46,7 @@ const updateJob = async (jobId, jobData) => {
     const response = await axios.put(`${API_URL}/${jobId}`, jobData);
     return response.data;
   } catch (error) {
-    throw new Error("Error updating job");
+    throw new Error("JobService: Error updating job");
   }
 };
 
@@ -51,7 +56,7 @@ const updateJob = async (jobId, jobData) => {
 //     const response = await axios.delete(`${API_URL}/${jobId}`);
 //     return response.data;
 //   } catch (error) {
-//     throw new Error("Error deleting job");
+//     throw new Error("JobService: Error deleting job");
 //   }
 // };
 
@@ -61,7 +66,7 @@ const createCandidate = async (candidateData) => {
     const response = await axios.post(CANDIDATE_API_URL, candidateData);
     return response.data;
   } catch (error) {
-    throw new Error("Error creating candidate");
+    throw new Error("JobService: Error creating candidate");
   }
 };
 
@@ -72,7 +77,7 @@ const updateCandidateStatus = async (candidateId, status) => {
     const response = await axios.put(`${CANDIDATE_API_URL}/${candidateId}`, { status });
     return response.data;
   } catch (error) {
-    throw new Error("Error updating candidate status");
+    throw new Error("JobService: Error updating candidate status");
   }
 };
 
@@ -82,7 +87,7 @@ const updateCandidateStatusByJobTalent = async (jobId, talentId, status) => {
     const response = await axios.put(`${CANDIDATE_API_URL}/job/${jobId}/talent/${talentId}`, { status });
     return response.data;
   } catch (error) {
-    throw new Error("Error updating candidate status by job and talent");
+    throw new Error("JobService: Error updating candidate status by job and talent");
   }
 };
 
@@ -92,7 +97,7 @@ const getCandidatesForJob = async (jobId) => {
     const response = await axios.get(`${CANDIDATE_API_URL}/job/${jobId}`);
     return response.data;
   } catch (error) {
-    throw new Error("Error fetching candidates for job");
+    throw new Error("JobService: Error fetching candidates for job");
   }
 };
 
@@ -114,7 +119,7 @@ const getJobsForTalent = async (talentId) => {
         // }));
     return response.data;
   } catch (error) {
-    throw new Error("Error fetching jobs for talent");
+    throw new Error("JobService: Error fetching jobs for talent");
   }
 };
 
@@ -124,7 +129,7 @@ const getJobsForTalent = async (talentId) => {
 //     const response = await axios.delete(`${CANDIDATE_API_URL}/job/${jobId}/talent/${talentId}`);
 //     return response.data;
 //   } catch (error) {
-//     throw new Error("Error deleting candidate");
+//     throw new Error("JobService: Error deleting candidate");
 //   }
 // };
 
@@ -140,6 +145,7 @@ const jobService = {
   getCandidatesForJob,
   getJobsForTalent,
 //   deleteCandidate,
+  jobTypes,
 };
 
 export default jobService;
