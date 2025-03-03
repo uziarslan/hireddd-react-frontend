@@ -9,7 +9,13 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const loggedInUser = await authService.getUser();
+      let loggedInUser;
+      try {
+      loggedInUser = await authService.getUser();
+      } catch (error) {
+        console.log(error);
+      }
+
       if (
         loggedInUser === null &&
         window.location.pathname === "/employeeportal"
@@ -17,6 +23,7 @@ const AuthProvider = ({ children }) => {
         window.location.href = "/";
         return;
       }
+
       setUser(loggedInUser);
     };
 
@@ -32,8 +39,15 @@ const AuthProvider = ({ children }) => {
     //   }
     //   setAdmin(loggedInAdmin);
     // };
-
-    fetchUser();
+    
+    try
+    {
+      fetchUser();
+    }
+    catch(e)
+    {
+      console.log("Failed to fetch user");
+    }
     // fetchAdmin();
   }, []);
 
