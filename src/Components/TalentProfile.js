@@ -386,7 +386,7 @@ const handleUploadVideoClick = () => {
                     ></textarea>
                   </div>
                   <div className="input-set input-set-full">
-                    <input type="submit" value="Create profile" />
+                    <input id="createProfile" type="submit" value="Create profile" />
                   </div>
                 </form>
               </div>
