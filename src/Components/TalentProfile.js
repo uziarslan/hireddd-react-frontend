@@ -312,6 +312,7 @@ const handleUploadVideoClick = () => {
                   <div className="profile-sidebar-title">Profile</div>
                 </Link>
                 <Link
+                  id="record-video-tab"
                   className={`profile-sidebar-link profile-tab-link ${
                     !isProfile ? "current" : ""
                   }`}

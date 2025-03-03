@@ -32,14 +32,15 @@ export default function HomePageNavbar() {
       $(document).off("scroll", handleScroll);
     };
 
+    // unreachable
+	// $( '.menu-btn' ).on( 'click', function() {
+	// 	$( this ).toggleClass( 'active' );
+	// 	$( '.nav-overlay' ).toggleClass( 'open' );
+	// 	$( 'html, body' ).toggleClass( 'no-overflow' );
+	// 	$( '.header-nav ul li.active' ).removeClass( 'active' );
+	// 	$( '.header-nav ul.sub-menu' ).slideUp();
+	// } );
 
-	$( '.menu-btn' ).on( 'click', function() {
-		$( this ).toggleClass( 'active' );
-		$( '.nav-overlay' ).toggleClass( 'open' );
-		$( 'html, body' ).toggleClass( 'no-overflow' );
-		$( '.header-nav ul li.active' ).removeClass( 'active' );
-		$( '.header-nav ul.sub-menu' ).slideUp();
-	} );
   }, []);
 
   return (
