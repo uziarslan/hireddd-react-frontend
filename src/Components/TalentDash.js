@@ -1249,171 +1249,251 @@ export default function TalentDash() {
                       </button>
                       <div className="profile-edit-title">Portfolio</div>
 
-                      <div>
-                        <button
-                          onClick={() => setIsEditingPortfolio((prev) => !prev)}
-                          className="edit-button"
-                          style={{
-                            cursor: "pointer",
-                            border: "none",
-                            background: "transparent",
-                          }}
-                        >
-                          <svg
-                            width="27"
-                            height="27"
-                            viewBox="0 0 27 27"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <rect
-                              width="27"
-                              height="27"
-                              fill="url(#pattern0_1475_1863)"
-                            />
-                            <defs>
-                              <pattern
-                                id="pattern0_1475_1863"
-                                patternContentUnits="objectBoundingBox"
-                                width="1"
-                                height="1"
-                              >
-                                <use
-                                  href="#image0_1475_1863"
-                                  transform="scale(0.0111111)"
-                                />
-                              </pattern>
-                              <image
-                                id="image0_1475_1863"
-                                width="90"
-                                height="90"
-                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
-                              />
-                            </defs>
-                          </svg>
-                        </button>
+<div>
+  <button
+    onClick={() => setIsEditingPortfolio((prev) => !prev)}
+    className="edit-button"
+    style={{
+      cursor: "pointer",
+      border: "none",
+      background: "transparent",
+    }}
+  >
+    <svg
+      width="27"
+      height="27"
+      viewBox="0 0 27 27"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        width="27"
+        height="27"
+        fill="url(#pattern0_1475_1863)"
+      />
+      <defs>
+        <pattern
+          id="pattern0_1475_1863"
+          patternContentUnits="objectBoundingBox"
+          width="1"
+          height="1"
+        >
+          <use
+            href="#image0_1475_1863"
+            transform="scale(0.0111111)"
+          />
+        </pattern>
+        <image
+          id="image0_1475_1863"
+          width="90"
+          height="90"
+          href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+        />
+      </defs>
+    </svg>
+  </button>
 
-                        {isEditingPortfolio ? (
-                          <div>
-                            {/* Only render portfolio boxes from index 1 onward */}
-                            {portfolios.slice(1).map((portfolio, i) => {
-                              // Calculate the actual index in the portfolios array
-                              const actualIndex = i + 1;
-                              return (
-                                <div
-                                  key={portfolio._id || actualIndex}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    marginBottom: "8px",
-                                  }}
-                                >
-                                  <input
-                                    type="text"
-                                    placeholder="Portfolio Link"
-                                    value={portfolio.href}
-                                    onChange={(e) => {
-                                      const updatedPortfolios = [...portfolios];
-                                      updatedPortfolios[actualIndex] = {
-                                        ...updatedPortfolios[actualIndex],
-                                        href: e.target.value,
-                                      };
+  {isEditingPortfolio ? (
+    <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 9999,
+    }}
+  >
+    {/* --- POPUP CONTAINER --- */}
+    <div
+        style={{
+          background: "#fff",
+          borderRadius: "12px",
+          padding: "20px",
+          width: "400px",
+          maxWidth: "90%",
+        }}
+      >
+        {/* Popup title */}
+        <h2 style={{ marginBottom: "20px" }}>
+          Portfolio Links
+        </h2>
+    
+      {/* Only render portfolio boxes from index 1 onward */}
+      {portfolios.slice(1).map((portfolio, i) => {
+        // Calculate the actual index in the portfolios array
+        const actualIndex = i + 1;
+        return (
+          <div
+            key={portfolio._id || actualIndex}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "8px",
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Portfolio Link"
+              value={portfolio.href}
+              onChange={(e) => {
+                const updatedPortfolios = [...portfolios];
+                updatedPortfolios[actualIndex] = {
+                  ...updatedPortfolios[actualIndex],
+                  href: e.target.value,
+                };
 
-                                      setPortfolios(updatedPortfolios);
-                                    }}
-                                    style={{
-                                      width: "80%",
-                                      marginRight: "10px",
-                                      padding: "5px",
-                                      border: "1px solid #ccc",
-                                      borderRadius: "8px",
-                                    }}
-                                  />
-                                  {/* Remove button with a cross icon */}
-                                  <button
-                                    onClick={() => {
-                                      setPortfolios(
-                                        portfolios.filter(
-                                          (_, index) => index !== actualIndex
-                                        )
-                                      );
-                                    }}
-                                    className="remove-button"
-                                    style={{
-                                      background: "transparent",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <svg
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 16 16"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M1 1L15 15"
-                                        stroke="red"
-                                        strokeWidth="2"
-                                      />
-                                      <path
-                                        d="M15 1L1 15"
-                                        stroke="red"
-                                        strokeWidth="2"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                              );
-                            })}
+                setPortfolios(updatedPortfolios);
+              }}
+              style={{
+                width: "80%",
+                marginRight: "10px",
+                padding: "5px",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+              }}
+            />
+            {/* Remove button with a cross icon */}
+            <button
+              onClick={() => {
+                setPortfolios(
+                  portfolios.filter(
+                    (_, index) => index !== actualIndex
+                  )
+                );
+              }}
+              className="remove-button"
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 1L15 15"
+                  stroke="red"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M15 1L1 15"
+                  stroke="red"
+                  strokeWidth="2"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      })}
 
-                            <button
-                              onClick={() => {
-                                setPortfolios([...portfolios, newLink]);
-                                setNewLink({ href: "" });
-                                <input
-                                  type="text"
-                                  placeholder="Add new portfolio link"
-                                  value={newLink.href}
-                                  onChange={(e) =>
-                                    setNewLink({
-                                      ...newLink,
-                                      href: e.target.value,
-                                    })
-                                  }
-                                />;
-                              }}
-                              style={{ marginBottom: "2px" }}
-                            >
-                              Add Link
-                            </button>
-                            <button onClick={handleSavePortfolio}>
-                              Save Portfolio
-                            </button>
-                          </div>
-                        ) : (
-                          <div>
-                            {/* When not editing, only show portfolio links from index 1 onward */}
-                            {portfolios.slice(1).length > 0 ? (
-                              portfolios.slice(1).map((portfolio, index) => (
-                                <div key={portfolio._id || index}>
-                                  <a
-                                    href={portfolio.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    {portfolio.href}
-                                  </a>
-                                </div>
-                              ))
-                            ) : (
-                              <p>No portfolio links provided</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+       {/* Add new link button & input */}
+       <div style={{ marginBottom: "10px" }}>
+          
+          <button
+            onClick={() => {
+              setPortfolios([...portfolios, newLink]);
+              setNewLink({ href: "" });
+              <input
+            type="text"
+            placeholder="Add link"
+            value={newLink.href}
+            onChange={(e) =>
+              setNewLink({
+                ...newLink,
+                href: e.target.value,
+              })
+            }
+            style={{
+              width: "100%",
+              padding: "10px",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              marginBottom: "5px",
+            }}
+          />
+            }}
+            style={{
+              padding: "8px 16px",
+              //backgroundColor: "#6200EE",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              marginRight: "10px",
+            }}
+          >
+            Add Link
+          </button>
+        </div>
+      {/* Footer buttons */}
+      <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <button
+            onClick={() => setIsEditingPortfolio(false)}
+            style={{
+              padding: "8px 16px",
+              //backgroundColor: "#ccc",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              marginRight: "10px",
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSavePortfolio}
+            style={{
+              padding: "8px 16px",
+              //backgroundColor: "#6200EE",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div>
+      {/* When not editing, only show portfolio links from index 1 onward */}
+      {portfolios.slice(1).length > 0 ? (
+        portfolios.slice(1).map((portfolio, index) => (
+          <div key={portfolio._id || index}>
+            <a
+              href={portfolio.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {portfolio.href}
+            </a>
+          </div>
+        ))
+      ) : (
+        <p>No portfolio links provided</p>
+      )}
+    </div>
+  )}
+</div>
+</div>
                     <div className="profile-edit-set">
                       <button
                         className="edit-button"
