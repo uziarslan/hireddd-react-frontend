@@ -88,6 +88,9 @@ describe("TalentDash Component", () => {
 
     renderTalentDash();
 
+    const { container } = renderTalentDash();
+
+
     // Click the 'Hireddd Status' link
     fireEvent.click(screen.getByText(/Hireddd Status/i));
 
@@ -119,7 +122,7 @@ describe("TalentDash Component", () => {
     // Wait for component to finish loading user data
     await waitFor(() => {
       // expect(screen.getByText(/React/i)).toBeInTheDocument();
-      expect(screen.getByText(/Node.js/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Node.js/i)[0]).toBeInTheDocument();
     });
   });
 
