@@ -8,16 +8,14 @@ const Chat = ({ userId, selectChat, userType }) => {
   const [chats, setChats] = useState([]);
 
   useEffect(() => {
-    axiosInstance
-      .get(`/chats/${userId}?userType=${userType}`)
+    axiosInstance.get(`/chats/${userId}?userType=${userType}`)
       .then((response) => {
         setChats(response.data);
       })
       .catch((error) => {
-        console.error("There was an error fetching the chats!", error);
       });
   }, [userId, userType]);
-
+  
   return (
     <div className="messages-chats-navigation">
       {chats.map((chat) => (
@@ -30,8 +28,8 @@ const Chat = ({ userId, selectChat, userType }) => {
             <img
               src={
                 userType === "talent"
-                  ? chat.organization?.profile?.path || dummyProfile
-                  : chat.talent?.profile?.path || dummyProfile
+                  ? chat.organization?.profile?.path || dummyProfile || "Unknown"
+                  : chat.talent?.profile?.path || dummyProfile || "Unknown"
               }
               alt="User Avatar"
             />
@@ -48,13 +46,13 @@ const Chat = ({ userId, selectChat, userType }) => {
           <div className="message-avatar-detail">
             <div className="message-avatar-title">
               {userType === "talent"
-                ? chat.organization.firstName
-                : chat.talent.firstName}
+                ? chat.organization.firstName || "Unknown"
+                : chat.talent.firstName || "Unknown"}
             </div>
             <div className="message-avatar-text">
               {userType === "talent"
-                ? chat.organization.companyName
-                : chat.talent.location}
+                ? chat.organization.companyName || "Unknown"
+                : chat.talent.location || "Unknown"}
             </div>
           </div>
         </Link>

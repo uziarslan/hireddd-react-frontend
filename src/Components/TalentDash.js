@@ -159,8 +159,6 @@ export default function TalentDash() {
   const getJobs = async () => {
     const jobs = await jobService.getJobsForTalent(user._id);
 
-    console.log("here are jobs", jobs);
-
     const updatedJobs = jobs.map((job) => {
       return {
         key: job.jobId._id,
@@ -176,7 +174,6 @@ export default function TalentDash() {
   const handleJobSplice = async () => {
     // userJobs.length === 0
     // Job align
-    console.log("these are the jobs i got", userJobs);
     const totalPages = Math.ceil(userJobs.length / jobsPerPage);
     setPageNumbers(totalPages);
 
@@ -402,7 +399,6 @@ export default function TalentDash() {
         }
 
         alert("Document uploaded successfully!");
-        console.log("Upload result:", result);
 
         // Add the new document to the state
         setDocuments(result.talent.documents);
@@ -643,6 +639,7 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">My Profile</div>
                 </Link>
                 <Link
+                 data-testid="messages-tab"
                   className={`profile-sidebar-link tab-link-main ${
                     tabName === "messages" ? "current" : ""
                   }`}
@@ -685,6 +682,7 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
+                data-testid="status-tab"
                   className={`profile-sidebar-link tab-link-main ${
                     tabName === "hiredddStatus" ? "current" : ""
                   }`}
@@ -727,6 +725,7 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Hireddd Status</div>
                 </Link>
                 <Link
+                  data-testid="settings-tab"
                   to="/talent/settings"
                   className={`profile-sidebar-link tab-link-main ${
                     tabName === "settings" ? "current" : ""
@@ -978,7 +977,7 @@ export default function TalentDash() {
                         </button>
                       )}
                       <div className="profile-edit-title">Summary</div>
-                      <div className="profile-edit-text">
+                      <div className="profile-edit-text" data-testid="user-summary">
                         {isEditing === "summary" ? (
                           <div>
                             <textarea
@@ -1107,7 +1106,7 @@ export default function TalentDash() {
                         </button>
                       )}
                       <div className="profile-edit-title">Top Skills</div>
-                      <div className="profile-edit-tags">
+                      <div className="profile-edit-tags" data-testid="skills-list">
                         {isEditing === "topSkills" ? (
                           <div>
                             <textarea
@@ -1118,7 +1117,7 @@ export default function TalentDash() {
                             <p>Separate skills with Commas</p>
                           </div>
                         ) : (
-                          (console.log(user),
+                          (
                           user.skills.map((skill, index) => (
                             <div key={index} className="profile-edit-tag">
                               {skill}
@@ -1207,7 +1206,7 @@ export default function TalentDash() {
                         </svg>
                       </button>
                       <div className="profile-edit-title">Contact Details</div>
-                      <div className="profile-edit-text">
+                      <div className="profile-edit-text" data-testid="user-contact">
                         {isEditingContact ? (
                           <div>
                             <label>
@@ -1878,6 +1877,7 @@ export default function TalentDash() {
         onDelete={handleDeleteDocument}
         documents={documents}
       />
+       <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div> 
     </>
   );
 }

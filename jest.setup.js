@@ -15,3 +15,10 @@ Object.defineProperty(window, "matchMedia", {
       dispatchEvent: jest.fn(),
     })),
   });
+
+  global.setImmediate = (fn) => setTimeout(fn, 0);
+  global.clearImmediate = (fn) => clearTimeout(fn);
+  
+  
+  
+  

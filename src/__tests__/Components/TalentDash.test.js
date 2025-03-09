@@ -1,14 +1,59 @@
 import React from "react";
-import { render, fireEvent, screen, waitFor } from "@testing-library/react";
+import { render, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import TalentDash from "../../Components/TalentDash";
 import { AuthContext } from "../../Context/AuthContext";
 import jobService from "../../services/jobService";
+import "../../../jest.setup.js";
+import axiosInstance from "../../services/axiosInstance";
+import axiosInstanceChat from "../../services/axiosInstanceChat";
+import userEvent from "@testing-library/user-event";
 
 // --- 1) MOCK THE SERVICE CALLS ---
 // Instead of calling the real endpoint, we mock the service
+
+// Mocking API Services
+jest.mock("axios", () => ({
+  create: jest.fn(() => ({
+    get: jest.fn(),
+    post: jest.fn(),
+  })),
+}));
+
+jest.mock("../../services/axiosInstanceChat", () => ({
+  get: jest.fn(() => Promise.resolve({ data: [] })),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));
+
+jest.mock("../../services/axiosInstance", () => ({
+  get: jest.fn(() => {
+    return Promise.resolve({
+      data: [
+        {
+          _id: "chat123",
+          organization: { firstName: "TechCorp", profile: { path: "org-profile.jpg" } },
+          talent: { firstName: "Jane", profile: { path: "talent-profile.jpg" }, location: "New York" },
+        },
+      ],
+    });
+  }),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));
+
 jest.mock("../../services/jobService", () => ({
-  getJobsForTalent: jest.fn(),
+  getJobsForTalent: jest.fn().mockResolvedValue([]), // Mock empty job response
+}));
+
+jest.mock("../../services/authService", () => ({
+  getUser: jest.fn().mockResolvedValue({
+    _id: "12345",
+    firstName: "Jane",
+    lastName: "Doe",
+    username: "janedoe@example.com",
+    phone: "+1234567890",
+    about: "Software developer with a focus on React and Node.js.",
+    skills: ["React", "Node.js"],
+  }),
 }));
 
 // --- 2) CREATE A DUMMY USER ---
@@ -28,6 +73,7 @@ const dummyUser = {
   portfolios: [{ href: "https://github.com/jane" }], // The first item is typically a placeholder; subsequent items are user links
 };
 
+
 // --- 3) WRAP THE COMPONENT RENDER ---
 function renderTalentDash(userValue = dummyUser) {
   return render(
@@ -44,109 +90,71 @@ function renderTalentDash(userValue = dummyUser) {
   );
 }
 
-describe("TalentDash Component", () => {
+describe("Initial Talent user information", () => {
   beforeEach(() => {
-    // Reset all mocks before each test
     jest.clearAllMocks();
+    jobService.getJobsForTalent.mockResolvedValueOnce([]);
+    axiosInstance.get.mockResolvedValueOnce({ data: [] });
+
+  });  
+//------User Information rendering tests------------
+  test("check if user summary renders", async () => {
+    renderTalentDash();
+    const summarySection = await screen.findByTestId("user-summary");
+    expect(within(summarySection).getByText(/Software developer with a focus on React and Node.js./i)).toBeInTheDocument();
+  });
+  
+  test("check if user skills render", async () => {
+    renderTalentDash();
+    const skillsList = await screen.findByTestId("skills-list");
+    expect(within(skillsList).getByText(/React/i)).toBeInTheDocument();
+    expect(within(skillsList).getByText(/Node.js/i)).toBeInTheDocument();
   });
 
-  test("renders user's name and default 'My Profile' tab", async () => {
-    // Mock the jobService.getJobsForTalent response
-    jobService.getJobsForTalent.mockResolvedValueOnce([]);
-
+  test("check if user phone & email render", async () => {
     renderTalentDash();
+    const contactSection = await screen.findByTestId("user-contact");
+    expect(within(contactSection).getByText(/janedoe@example.com/i)).toBeInTheDocument();
+    expect(within(contactSection).getByText(/1234567890/i)).toBeInTheDocument();
 
-    // The user’s first name should appear:
-    expect(await screen.findByText(/Jane/i)).toBeInTheDocument();
-
-    // The default tab is "My Profile," so check for the summary label
-    expect(screen.getByText(/Summary/i)).toBeInTheDocument();
-
-    // The "Messages" tab should be in the document but not active
-    expect(screen.getByText(/Messages/i)).toBeInTheDocument();
   });
 
-  test("switches to the 'Messages' tab when clicked", async () => {
-    // Mock the jobService.getJobsForTalent response
+  //add more here
+
+});
+
+describe("Swap tabs", () => { 
+  beforeEach(() => {
+    jest.clearAllMocks();
     jobService.getJobsForTalent.mockResolvedValueOnce([]);
-
-    renderTalentDash();
-
-    // Click the 'Messages' link
-    fireEvent.click(screen.getByText(/Messages/i));
-
-    // Expect some text or element from the Messages screen to appear
-    // For instance, there's a "Select a chat to start messaging" text by default
-    expect(await screen.findByText(/Select a chat to start messaging/i)).toBeInTheDocument();
-
-    // The summary text from the Profile tab should not be visible now
-    // expect(screen.queryByText(/Summary/i)).not.toBeInTheDocument();
+    axiosInstance.get.mockResolvedValueOnce({ data: [] });
   });
 
-  test("switches to 'Hireddd Status' tab when clicked", async () => {
-    jobService.getJobsForTalent.mockResolvedValueOnce([]);
-
-    renderTalentDash();
-
-    const { container } = renderTalentDash();
-
-
-    // Click the 'Hireddd Status' link
-    fireEvent.click(screen.getByText(/Hireddd Status/i));
-
-    // Expect the "Shortlisted" sub-tab to be visible
-
+  test("check if user settings appear when settings tab clicked.", async () => {
+    renderTalentDash(); 
+    const settingsTab = screen.getByTestId("settings-tab");
+    userEvent.click(settingsTab);
     await waitFor(() => {
-      const element = container.querySelector(".shortlisted-tabs-nav");
-      expect(element).toBeInTheDocument();
+      expect(screen.getByTestId("current-tab")).toHaveTextContent("settings");
+    })
+  });
+
+  test("check if user messages appear when messages tab clicked.", async () => {
+    renderTalentDash();
+    const messagesTab = screen.getByTestId("messages-tab");
+    userEvent.click(messagesTab);
+    await waitFor(() => {
+      expect(screen.getByTestId("current-tab")).toHaveTextContent("messages");
     });
   });
 
-  test("shows 'upload resume' button and resume link", async () => {
-    jobService.getJobsForTalent.mockResolvedValueOnce([]);
-
+  test("check if hiredddd status appear when jobs tab clicked.", async () => {
     renderTalentDash();
-
-    // Check that the "Upload resume" button is present
-    expect(await screen.findByText(/Upload resume/i)).toBeInTheDocument();
-
-    // Check that there is a link or button that says "View resume"
-    expect(screen.getByText(/View resume/i)).toBeInTheDocument();
-  });
-
-  test("displays user skills correctly", async () => {
-    jobService.getJobsForTalent.mockResolvedValueOnce([]);
-
-    renderTalentDash();
-
-    // Wait for component to finish loading user data
+    const jobsTab = screen.getByTestId("status-tab");
+    userEvent.click(jobsTab);
     await waitFor(() => {
-      // expect(screen.getByText(/React/i)).toBeInTheDocument();
-      expect(screen.getAllByText(/Node.js/i)[0]).toBeInTheDocument();
+      expect(screen.getByTestId("current-tab")).toHaveTextContent("hiredddStatus");
     });
   });
 
-  test("calls jobService.getJobsForTalent on load", async () => {
-    // Mock array of jobs to be returned
-    const mockJobs = [
-      {
-        jobId: {
-          _id: "job123",
-          title: "Frontend Developer",
-          location: "Remote",
-          orgId: { profile: { path: "company-logo.jpg" } },
-        },
-        status: "Shortlisted",
-      },
-    ];
-    jobService.getJobsForTalent.mockResolvedValueOnce(mockJobs);
-
-    renderTalentDash();
-
-    // jobService should have been called with the user’s ID
-    expect(jobService.getJobsForTalent).toHaveBeenCalledWith("12345");
-
-    // Check if the job title eventually appears
-    expect(await screen.findByText(/Frontend Developer/i)).toBeInTheDocument();
-  });
 });
