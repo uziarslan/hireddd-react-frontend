@@ -144,6 +144,16 @@ export default function TalentDash() {
   const [currentJobs, setCurrentJobs] = useState([]);
   const [pageNumbers, setPageNumbers] = useState(1);
 
+  // -- Ayushi
+  const [showResumeModal, setShowResumeModal] = useState(false);
+  const openResumeModal = (e) => {
+    e.preventDefault();
+    setShowResumeModal(true);
+  };
+  const closeResumeModal = () => {
+    setShowResumeModal(false);
+  };
+
   const navigate = useNavigate();
 
   const getJobs = async () => {
@@ -783,8 +793,9 @@ export default function TalentDash() {
                       </div>
                     </div>
                     <div className="profile-head-right">
-                      <Link
-                        to={user.video ? user.video.path : ""}
+                      <a
+                        href="#"
+                        onClick={openResumeModal}
                         className="button outline resume-button"
                       >
                         <div className="play-icon">
@@ -819,7 +830,7 @@ export default function TalentDash() {
                           </svg>
                         </div>
                         View resume
-                      </Link>
+                      </a>
                       <button
                         className="resume-btn fill-btn"
                         onClick={handleUploadResume}
@@ -839,6 +850,31 @@ export default function TalentDash() {
                       )}
                     </div>
                   </div>
+                  {showResumeModal && (
+  <div className="resume-modal-overlay">
+    <div className="resume-modal-content">
+      <div className="resume-modal-header">
+        <h2 className="resume-modal-title">Resume</h2>
+        <button onClick={closeResumeModal} className="resume-modal-close">
+          &times;
+        </button>
+      </div>
+      <div className="resume-modal-body">
+        {user.video && user.video.path ? (
+          <video
+            src={user.video.path}
+            controls
+            autoPlay
+            style={{ width: "100%", maxHeight: "400px" }}
+          />
+        ) : (
+          <p>No resume video uploaded.</p>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
                   <div className="profile-edit-options">
                     <div className="profile-edit-set">
                       {isEditing === "summary" && (
@@ -1397,33 +1433,31 @@ export default function TalentDash() {
 
                               {/* Add new link */}
                               <div style={{ marginBottom: "10px" }}>
-                                
-                              <button
+                                <button
                                   onClick={() => {
                                     setTempPortfolios([
                                       ...tempPortfolios,
                                       newLink,
                                     ]);
                                     setNewLink({ href: "" });
-                                <input
-                                  type="text"
-                                  placeholder="Add link"
-                                  value={newLink.href}
-                                  onChange={(e) =>
-                                    setNewLink({
-                                      ...newLink,
-                                      href: e.target.value,
-                                    })
-                                  }
-                                  style={{
-                                    width: "100%",
-                                    padding: "10px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "8px",
-                                    marginBottom: "5px",
-                                  }}
-                                />
-                                
+                                    <input
+                                      type="text"
+                                      placeholder="Add link"
+                                      value={newLink.href}
+                                      onChange={(e) =>
+                                        setNewLink({
+                                          ...newLink,
+                                          href: e.target.value,
+                                        })
+                                      }
+                                      style={{
+                                        width: "100%",
+                                        padding: "10px",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "8px",
+                                        marginBottom: "5px",
+                                      }}
+                                    />;
                                   }}
                                   style={{
                                     padding: "8px 16px",
@@ -1494,8 +1528,6 @@ export default function TalentDash() {
                           </div>
                         )}
                       </div>
-                      
-                      
                     </div>
                     <div className="profile-edit-set">
                       <button
