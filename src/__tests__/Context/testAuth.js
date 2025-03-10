@@ -1,4 +1,3 @@
-// __tests__/TestAuthProvider.js
 import React from "react";
 import { AuthContext } from "../../Context/AuthContext";
 

@@ -18,8 +18,7 @@ describe("Registration Component", () => {
     Promise.resolve({ status: 201, data: { success: "Organization created" } })
   );
 
-  // A helper function to render your Registration component
-  // within the necessary providers (AuthContext, Router, etc.)
+  // A helper function to render Registration component
   const renderComponent = () => {
     return render(
       <MemoryRouter>
@@ -44,10 +43,8 @@ describe("Registration Component", () => {
     // If your CSS toggles display, you can either check length >= 1 or test the visibility.
     expect(emailLabels.length).toBeGreaterThanOrEqual(1);
 
-    // Check that the user form's "Register" button is visible (the one for user)
-    // getAllByText can pick up multiple “Register” buttons
     const registerButtons = screen.getAllByRole("button", { name: /register/i });
-    expect(registerButtons.length).toBe(4); // One in user form, one in org form (likely both in DOM)
+    expect(registerButtons.length).toBe(4);
   });
 
   test("switches to the organization form when 'Register as organization' is clicked", () => {
