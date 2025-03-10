@@ -75,6 +75,31 @@ const magSVG = () => (
     <circle cx="40" cy="40" r="30" fill="white" opacity="0.1" />
   </svg>
 );
+// --EGBAIYELO
+const mailSVG = (kwidth = "1.2em", kheight="1.2em") => (
+  // <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  // <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+  <svg width={kwidth} height={kheight} viewBox="0 2 32 10" version="1.1" xmlns="http://www.w3.org/2000/svg"> 
+     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon-Set-Filled" transform="translate(-414.000000, -261.000000)" fill="var(--hr_purple)">
+            <path d="M430,275.916 L426.684,273.167 L415.115,285.01 L444.591,285.01 L433.235,273.147 L430,275.916 L430,275.916 Z M434.89,271.89 L445.892,283.329 C445.955,283.107 446,282.877 446,282.634 L446,262.862 L434.89,271.89 L434.89,271.89 Z M414,262.816 L414,282.634 C414,282.877 414.045,283.107 414.108,283.329 L425.147,271.927 L414,262.816 L414,262.816 Z M445,261 L415,261 L430,273.019 L445,261 L445,261 Z" id="mail">
+            </path>
+        </g>
+    </g>
+  </svg>
+)
+// --EGBAIYELO
+const bookmarkSVG = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="black" // Ensures the entire bookmark is filled
+  >
+    <path d="M6 2H18C19.1 2 20 2.9 20 4V20C20 20.8 19.2 21.3 18.5 20.9L12 17.6L5.5 20.9C4.8 21.3 4 20.8 4 20V4C4 2.9 4.9 2 6 2Z" />
+  </svg>
+);
 
 const mailSVG = (kwidth = "1.2em", kheight="1.2em") => (
   // <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -840,92 +865,79 @@ export default function TalentDash() {
                     </div>
                   </div>
                   {showResumeModal && (
-  <div className="resume-modal-overlay">
-    <div className="resume-modal-content">
-      <div className="resume-modal-header">
-        <h2 className="resume-modal-title">Resume</h2>
-        <button onClick={closeResumeModal} className="resume-modal-close">
-          &times;
-        </button>
-      </div>
-      <div className="resume-modal-body">
-        {user.video && user.video.path ? (
-          <video
-            src={user.video.path}
-            controls
-            autoPlay
-            style={{ width: "100%", maxHeight: "400px" }}
-          />
-        ) : (
-          <p>No resume video uploaded.</p>
-        )}
-      </div>
-    </div>
-  </div>
-)}
+                    <div className="resume-modal-overlay">
+                      <div className="resume-modal-content">
+                        <div className="resume-modal-header">
+                          <h2 className="resume-modal-title">Resume</h2>
+                          <button onClick={closeResumeModal} className="resume-modal-close">
+                            &times;
+                          </button>
+                        </div>
+                        <div className="resume-modal-body">
+                          {user.video && user.video.path ? (
+                            <video
+                              src={user.video.path}
+                              controls
+                              autoPlay
+                              style={{ width: "100%", maxHeight: "400px" }}
+                            />
+                          ) : (
+                            <p>No resume video uploaded.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="profile-edit-options">
                     <div className="profile-edit-set">
                       {isEditing === "summary" && (
-                        <button
-                          onClick={() => handleSaveAbout()}
-                          className="edit-button profile-txtbx-done"
-                        >
-                          <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        <>
+                          <button
+                            onClick={() => handleSaveAbout()}
+                            className="edit-button profile-txtbx-done"
                           >
-                            <path
-                              d="M20 6L9 17L4 12"
-                              stroke="black"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                      {isEditing === "summary" && (
-                        <button
-                          onClick={() => setIsEditing("")}
-                          className="edit-button profile-summry-close-button"
-                        >
-                          <svg
-                            width="27"
-                            height="27"
-                            viewBox="0 0 27 27"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                            {bookmarkSVG()}
+                          </button>
+
+                          <button
+                            onClick={() => setIsEditing("")}
+                            className="edit-button profile-summry-close-button"
                           >
-                            <rect
+                            <svg
                               width="27"
                               height="27"
-                              fill="url(#pattern0_1846_11491)"
-                            />
-                            <defs>
-                              <pattern
-                                id="pattern0_1846_11491"
-                                patternContentUnits="objectBoundingBox"
-                                width="1"
-                                height="1"
-                              >
-                                <use
-                                  href="#image0_1846_11491"
-                                  transform="scale(0.0111111)"
-                                />
-                              </pattern>
-                              <image
-                                id="image0_1846_11491"
-                                width="90"
-                                height="90"
-                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              viewBox="0 0 27 27"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect
+                                width="27"
+                                height="27"
+                                fill="url(#pattern0_1846_11491)"
                               />
-                            </defs>
-                          </svg>
-                        </button>
+                              <defs>
+                                <pattern
+                                  id="pattern0_1846_11491"
+                                  patternContentUnits="objectBoundingBox"
+                                  width="1"
+                                  height="1"
+                                >
+                                  <use
+                                    href="#image0_1846_11491"
+                                    transform="scale(0.0111111)"
+                                  />
+                                </pattern>
+                                <image
+                                  id="image0_1846_11491"
+                                  width="90"
+                                  height="90"
+                                  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                                />
+                              </defs>
+                            </svg>
+                          </button>
+                        </>
                       )}
                       {!(isEditing === "summary") && (
                         <button
@@ -996,65 +1008,52 @@ export default function TalentDash() {
                     </div>
                     <div className="profile-edit-set">
                       {isEditing === "topSkills" && (
-                        <button
-                          onClick={() => handleSaveSkills()}
-                          className="edit-button profile-txtbx-done"
-                        >
-                          <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        <>
+                          <button
+                            onClick={() => handleSaveSkills()}
+                            className="edit-button profile-txtbx-done"
                           >
-                            <path
-                              d="M20 6L9 17L4 12"
-                              stroke="black"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                      {isEditing === "topSkills" && (
-                        <button
-                          onClick={() => setIsEditing("")}
-                          className="edit-button profile-summry-close-button"
-                        >
-                          <svg
-                            width="27"
-                            height="27"
-                            viewBox="0 0 27 27"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                            {bookmarkSVG()}
+                          </button>
+
+                          <button
+                            onClick={() => setIsEditing("")}
+                            className="edit-button profile-summry-close-button"
                           >
-                            <rect
+                            <svg
                               width="27"
                               height="27"
-                              fill="url(#pattern0_1846_11491)"
-                            />
-                            <defs>
-                              <pattern
-                                id="pattern0_1846_11491"
-                                patternContentUnits="objectBoundingBox"
-                                width="1"
-                                height="1"
-                              >
-                                <use
-                                  href="#image0_1846_11491"
-                                  transform="scale(0.0111111)"
-                                />
-                              </pattern>
-                              <image
-                                id="image0_1846_11491"
-                                width="90"
-                                height="90"
-                                href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                              viewBox="0 0 27 27"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect
+                                width="27"
+                                height="27"
+                                fill="url(#pattern0_1846_11491)"
                               />
-                            </defs>
-                          </svg>
-                        </button>
+                              <defs>
+                                <pattern
+                                  id="pattern0_1846_11491"
+                                  patternContentUnits="objectBoundingBox"
+                                  width="1"
+                                  height="1"
+                                >
+                                  <use
+                                    href="#image0_1846_11491"
+                                    transform="scale(0.0111111)"
+                                  />
+                                </pattern>
+                                <image
+                                  id="image0_1846_11491"
+                                  width="90"
+                                  height="90"
+                                  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAENklEQVR4nO2dS4uURxSGH1AzipIsHUfBiPoHkrhKghKMMgvRLKJgFJIYszEwJiKtO3fRrGTAv+F1YdAfkBAM42WTTYILzc25mFW6YeIJFU6gaabHr6dPXb6vzwPvpumuPvVSXbc+VR84juM4juM4juM4lVkF7AJOAN8A14GHwM/APNBRzetrD/U9l/Qzb2kZzhJsAU4Dt4C/ABlSz4GbwBSwmRFnHXAcuAv8Y2BuPy0Cd4BjwFpGiA3a0p5GNLef/gQuAK/RYNYAZ4G5DAb3KsRwRmNqFO8CjwowuFc/AXtpAKFPvAK8KMDUfgqxTQNj1JTXge8LMFIq6kdgBzVjr9E0TRIrTAvfoyZ8APxdgGmyQoXF0BEK5/PIc2JJpFCHkxTKIV0c5DZJDM0+TGGEfq1dgDkSoRvZRyHsrOnAJwMMkNtzmzym0yJpuO7lnmdfKcAESaSwqMm2rC55xSfGCnXdndrk1cCDAiovifUo9UbU2QIqLZn0Zcr95NkCKiyZNKseRKdVQGUls8JedvS/n343XAy0gHFVy3jR016i/I5R2b/G/lvsuKERrSXKnzQyu61l9XLOMP6PYhp91zDQ8T7fsX/I3b/Qag/0KXujYfy3Y5m82XjTaHyZ71qp2cuZHJgw3nSKkspw2jBI0Z/xcgzajfTrLro5b1yHL4jALeMg2xWMqWq2ZVmD6BrGhBSrBeMgpcJPvUo3YlHGSrVgnX62K0KQYtAac7Xkbr1p6DOfRQxUVtgqc7bkbn1i6PN/WZ0xg5UBjSvF5KCvDX3mRoKAZYCuIHd3EW1ATLkl2q5gZCkmB80Y+szjhIFLxa4hZ3fRrV8sjc6RAdoZ0OwcJgc9szTaatdLIpmdy2TRbsqNpmZGe9dBmq7DB0PSDIY+vSPN9O56wv5usmYLlquGPvsSnERL8BORW0WnxptKHxv67Nuk9Df6DUujfeOfNBv/6NnqHANfO3FZ2QbC/5kyDrJlbEwVsy3zOoJOEYGJBqQbbDSMf/EldRiKOzVPoJmoQwINehVDzLyOycgpYZZ5HUdjJzn+ZhRoR83epDoXIcmxt3yr7d6nKe7+GOUkdFF9RQLW69agjKhmUyWio4nYMqKaIvFhofsFVFqaflgo8I4ff0vHdAGtTBLpMhkZ0+O70nD9ALxCZrbrwXRpqBaAbRTCnprfOiN9FBY471MYBxt4McqHFMrJhlz1s6g54UVzqObdSLvEK36Wu/rneU0Hvj3UjK3AdwWYJxV1r4QrfYaZZ08XvoJ8oYuR7PNkq+X6gwJM7VWI6W0axmq9VKSELdZnugsXYmos67WSTzIY/Ide1P0qI8RavYrh28gLnUX9I/XoqF09vxSb9AD7NX0axbDmzmtZp2KmBNSdVZrP9ilwUbOBZvRRIHNdjweZ09dm9D0X9RRr+Kw/HsRxHMdxHMdxHIeK/AvYyyqXnlvdpAAAAABJRU5ErkJggg=="
+                                />
+                              </defs>
+                            </svg>
+                          </button>
+                        </>
                       )}
                       {!(isEditing === "topSkills") && (
                         <button

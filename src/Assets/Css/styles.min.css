@@ -8884,6 +8884,9 @@ button.edit-button.profile-summry-close-button {
   display: block;
 }
 
+.inline-block{
+  width: fit-content;
+}
 
 .centered-message-button{
   margin-right: 0.2em;

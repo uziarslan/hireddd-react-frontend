@@ -60,7 +60,7 @@ export default function ProfilePage() {
           <div className="profile-body-row no-sidebar">
             <div className="profile-content-area">
               <div className="profile-sidebar-sidebar-link">
-                <Link to="/find/employees" className="back-link-arrow">
+                <Link to="/find/employees" className="back-link-arrow inline-block">
                   <svg
                     width="40"
                     height="40"
