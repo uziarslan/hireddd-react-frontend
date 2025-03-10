@@ -4,6 +4,23 @@ import { MemoryRouter } from "react-router-dom";
 import TalentProfile from "../../Components/TalentProfile";
 import { AuthContext } from "../../Context/AuthContext";
 
+jest.mock("axios", () => ({
+  create: jest.fn(() => ({
+    get: jest.fn(),
+    post: jest.fn(),
+  })),
+}));
+
+jest.mock("../../services/axiosInstanceChat", () => ({
+  get: jest.fn(() => Promise.resolve({ data: [] })),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));
+
+jest.mock("../../services/axiosInstance", () => ({
+  get: jest.fn(() => {return Promise.resolve({data: [],});}),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));
+
 
 // Dummy user for AuthContext
 const dummyUser = {
