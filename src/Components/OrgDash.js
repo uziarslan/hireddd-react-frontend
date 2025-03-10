@@ -342,6 +342,7 @@ export default function OrgDash() {
               <div className="profile-sidebar-links">
                 <Link
                   Link
+                  data-testid="findTalents-tab"
                   className={`profile-sidebar-link tab-link-main ${tabName === "findTalents" ? "current" : ""
                     }`}
                   onClick={() => setTabName("findTalents")}
@@ -384,6 +385,7 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Find Talents</div>
                 </Link>
                 <Link
+                  data-testid="profile-tab"
                   className={`profile-sidebar-link tab-link-main ${tabName === "profile" ? "current" : ""
                     }`}
                   onClick={() => setTabName("profile")}
@@ -425,6 +427,7 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Profile</div>
                 </Link>
                 <Link
+                  data-testid="messages-tab"
                   className={`profile-sidebar-link tab-link-main ${tabName === "messages" ? "current" : ""
                     }`}
                   onClick={() => setTabName("messages")}
@@ -466,6 +469,7 @@ export default function OrgDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
+                  data-testid="hiredddStatus-tab"
                   className={`profile-sidebar-link tab-link-main ${tabName === "hiredddStatus" ? "current" : ""
                     }`}
                   onClick={() => setTabName("hiredddStatus")}
@@ -573,8 +577,9 @@ export default function OrgDash() {
                       )}
 
                       <div className="profile-edit-title">About Company</div>
-                      <div className="profile-edit-text">
-                        <p className={`${isEditing === "about" ? "profile-summry-edit" : ""
+                      <div className="profile-edit-text" data-testid="org-summary">
+                      <p  data-testid="org-summary-p"
+                        className={`${isEditing === "about" ? "profile-summry-edit" : ""
                           }`}>{user.about}</p>
                         {/* profile-hidden */}
                         <div
@@ -627,7 +632,7 @@ export default function OrgDash() {
 
                       <div className="profile-edit-title">Website</div>
                       {/* {user.website.split("https://")} */}
-                      <div className="profile-edit-text">
+                      <div className="profile-edit-text" data-testid="org-website">
                         <a href={website} className={`${isEditing === "website" ? "profile-summry-edit" : "profile-txtbx-link"
                           }`}>{user.website} </a>
 
@@ -679,7 +684,7 @@ export default function OrgDash() {
                       )}
 
                       <div className="profile-edit-title">Industry</div>
-                      <div className="profile-edit-text">
+                      <div className="profile-edit-text" data-testid="org-industry">
 
                       <p className={`${isEditing === "industry" ? "profile-summry-edit" : ""
                           }`}>{user.industry}</p>
@@ -734,7 +739,7 @@ export default function OrgDash() {
                       )}
 
                       <div className="profile-edit-title">Company Size</div>
-                      <div className="profile-edit-text">
+                      <div className="profile-edit-text" data-testid="org-companySize">
                       
                       <p className={`${isEditing === "companySize" ? "profile-summry-edit" : ""
                           }`}>{user.companySize}</p>
@@ -788,7 +793,7 @@ export default function OrgDash() {
 
                       <div className="profile-edit-title">Headquarters</div>
                       
-                      <div className="profile-edit-text">
+                      <div className="profile-edit-text" data-testid="org-location">
                       <p
                           className={`${isEditing === "location" ? "profile-summry-edit" : "profile-txtbx-link"
                           }`}>{user.location}</p>
@@ -1057,6 +1062,8 @@ export default function OrgDash() {
           </div>
         </div>
       </main>
+      {/* Is there a better way to do this? */}
+      <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div> 
     </>
   );
 }
