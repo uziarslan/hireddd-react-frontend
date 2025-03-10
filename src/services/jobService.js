@@ -60,8 +60,11 @@ const updateJob = async (jobId, jobData) => {
 //   }
 // };
 
+//-- Candidates --
 // Create a new candidate
+// CandidateData -> jobId, talentId, status
 const createCandidate = async (candidateData) => {
+  console.log(candidateData)
   try {
     const response = await axios.post(CANDIDATE_API_URL, candidateData);
     return response.data;
@@ -70,7 +73,6 @@ const createCandidate = async (candidateData) => {
   }
 };
 
-//-- Candidates --
 // Update candidate status (by candidateId)
 const updateCandidateStatus = async (candidateId, status) => {
   try {
@@ -87,7 +89,12 @@ const updateCandidateStatusByJobTalent = async (jobId, talentId, status) => {
     const response = await axios.put(`${CANDIDATE_API_URL}/job/${jobId}/talent/${talentId}`, { status });
     return response.data;
   } catch (error) {
-    throw new Error("JobService: Error updating candidate status by job and talent");
+    if (error.response && error.response.status === 404) {
+      const createResponse = await createCandidate({ jobId, talentId, status });
+      return createResponse.data;
+    } else {
+      throw new Error("JobService: Error updating candidate status by job and talent");
+    }
   }
 };
 

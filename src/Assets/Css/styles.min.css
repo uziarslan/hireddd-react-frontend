@@ -8699,7 +8699,7 @@ button.edit-button.profile-summry-close-button {
 }
 /* A little higlight */
 .profile-edit-set textarea{
-  border: .15em solid grey;
+  border: .15em solid var(--hr_black_2);
 }
 /* For centering the logout button */
 .logout-button{
@@ -8741,10 +8741,24 @@ button.edit-button.profile-summry-close-button {
   color: var(--hr_purple);
 }
 
-.createjob-form textarea{
-  border: .15em solid lightgrey;
+.createjob-form textarea, .createjob-form input{
+  border: .15em solid var(--hr_gray_1);
   width: 100%;
+}
 
+.createjob-form textarea{
+  min-height: 10em;
+  max-height: 25em;
+}
+
+.createjob-form textarea:focus, .createjob-form input:focus{
+  border: .15em solid var(--hr_black_2);
+}
+
+.flexed-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .5em;
 }
 
 .createjob-form .profile-edit-text{
@@ -8760,12 +8774,18 @@ button.edit-button.profile-summry-close-button {
   padding: 0 .75em;
   margin: .2em .3em;
   height: 2.5em;
+  color: var(--hr_black);
+  background-color: transparent;
   opacity: 0.65;
   text-transform: capitalize;
+  border: .2em solid var(--hr_purple);
 }
 
 .createjob-form .job-toggle-btn.selected {
   opacity: 1;
+  color: var(--hr_white);
+  background-color: var(--hr_purple);
+
 }
 
 .createjob-form .job-type-toggle {
@@ -8785,6 +8805,11 @@ button.edit-button.profile-summry-close-button {
   min-width: 7em;
 }
 
+.createjob-form .profile-edit-options{
+  padding: 3.5em;
+  border-radius: 2em;
+}
+
 /* No fetch jobs  -- Egbaiyelo */
 .No-fetch-jobs-message{
   margin: 3em auto;  
@@ -8795,6 +8820,77 @@ button.edit-button.profile-summry-close-button {
   margin: .8em auto;
   font-size: larger;
 }
+
+/* light- Scrollbar  */
+.light-scrollbar::-webkit-scrollbar {
+  width: 10px; 
+  height: 10px; /* For horizontal scrollbar */
+}
+
+.light-scrollbar::-webkit-scrollbar-track {
+  background: transparent; 
+  border-radius: 15px; 
+  margin: 0.5em auto;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 50px; 
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+  cursor: default;
+}
+
+.light-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;   
+  /* If both vertical and horizontal exists  */
+}
+
+/* Job details -- Egbaiyelo */
+.job-detail{
+  overflow: scroll;
+  height: 80vh;
+  text-align: left ;
+}
+
+.job-detail p, 
+.job-detail h2,
+.job-detail div{
+  text-align: left;
+}
+
+.jobdetail-set{
+  margin: 1em auto;
+}
+
+.jobdetail-set>div{
+  font-weight: 500;
+  color: var(--hr_black);
+}
+
+/* Profile flex fix */
+.profile-head-left{
+  min-width: fit-content;
+  margin-bottom: 1em;
+}
+
+.clickable{
+  cursor: pointer;
+}
+
+.display-block{
+  display: block;
+}
+
+
+.centered-message-button{
+  margin-right: 0.2em;
+  margin-top: 0.3em;
+
+}
+
 /*  */
 
 

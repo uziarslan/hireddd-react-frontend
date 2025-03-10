@@ -21,11 +21,13 @@ const logoutSVG = () => (
 );
 
 
-export default function DashNav({ firstName, profile, preview }) {
+export default function DashNav({ firstName, profile, preview, toggleLoading }) {
   const { user, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
+    // toggleLoading(true);  // To ensure no error while logging out - Egbaiyelo
     logout();
+    // toggleLoading(false);
   };
 
   const location = useLocation();  // Get the current URL path

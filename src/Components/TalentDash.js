@@ -7,7 +7,7 @@ import dummyProfile from "../Assets/images/uploads/user-avatar.png";
 //import socialIcon1 from "../Assets/images/profile-social-icon-02.svg";
 import pdfIcon from "../Assets/images/pdf-icon.svg";
 import linkedIn from "../Assets/images/profile-social-icon-03.svg";
-import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
+// import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
 import Chat from "./Chat";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
@@ -15,6 +15,7 @@ import { AuthContext } from "../Context/AuthContext";
 import jobService from "../services/jobService";
 import Loading from "./Loading";
 import DocumentUploadModal from "./DocumentUploadModal"; // -Dylan
+import JobDetails from "./modals/JobDetails"; // - EGBAIYELO
 import { useNavigate } from "react-router-dom";
 
 // --EGBAIYELO
@@ -45,7 +46,7 @@ const closeSVG = () => (
     </defs>
   </svg>
 );
-
+// --EGBAIYELO
 const magSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -75,45 +76,23 @@ const magSVG = () => (
   </svg>
 );
 
+const mailSVG = (kwidth = "1.2em", kheight="1.2em") => (
+  // <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  // <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+  <svg width={kwidth} height={kheight} viewBox="0 2 32 10" version="1.1" xmlns="http://www.w3.org/2000/svg"> 
+     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon-Set-Filled" transform="translate(-414.000000, -261.000000)" fill="var(--hr_purple)">
+            <path d="M430,275.916 L426.684,273.167 L415.115,285.01 L444.591,285.01 L433.235,273.147 L430,275.916 L430,275.916 Z M434.89,271.89 L445.892,283.329 C445.955,283.107 446,282.877 446,282.634 L446,262.862 L434.89,271.89 L434.89,271.89 Z M414,262.816 L414,282.634 C414,282.877 414.045,283.107 414.108,283.329 L425.147,271.927 L414,262.816 L414,262.816 Z M445,261 L415,261 L430,273.019 L445,261 L445,261 Z" id="mail">
+            </path>
+        </g>
+    </g>
+  </svg>
+)
+// const bookmarkSVG = () => (
+
+// )
+
 export default function TalentDash() {
-  // const userJobs = [
-  //   {
-  //     id: 1,
-  //     title: "UI UX Designer",
-  //     company: "Company Name",
-  //     location: "Pakistan remote",
-  //     logo: "companyLogo", // Assuming you have a variable or URL for the logo
-  //     description:
-  //       "Experienced UI/UX designer specializing in crafting intuitive and visually appealing interfaces.",
-  //     responsibilities: [
-  //       "Experienced UI/UX designer specializing in crafting intuitive.",
-  //       "Experienced UI/UX designer specializing in crafting intuitive.",
-  //       "Experienced UI/UX designer specializing in crafting intuitive.",
-  //       "Experienced UI/UX designer specializing in crafting intuitive."
-  //     ],
-  //     skills: ["User research", "Prototyping", "Usability Testing"],
-  //     companySize: "100-150",
-  //     salary: "PKR 150,000 to PKR 20,0000",
-  //     jobType: "Permanent"
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Frontend Developer",
-  //     company: "Another Company",
-  //     location: "Remote",
-  //     logo: "anotherLogo",
-  //     description: "Skilled frontend developer with expertise in React and UI design.",
-  //     responsibilities: [
-  //       "Develop UI components.",
-  //       "Collaborate with the team.",
-  //       "Implement designs into React."
-  //     ],
-  //     skills: ["React", "JavaScript", "CSS"],
-  //     companySize: "50-100",
-  //     salary: "PKR 100,000 to PKR 150,000",
-  //     jobType: "Contract"
-  //   }
-  // ];
 
   const { user, updateUser } = useContext(AuthContext);
   const [tabName, setTabName] = useState("profile");
@@ -154,10 +133,18 @@ export default function TalentDash() {
     setShowResumeModal(false);
   };
 
+  // -- egbaiyelo
+  const [showJobDetails, setShowJobDetails] = useState(false);
+  const [jobDetailId, setJobDetailId] = useState("");
+
+
   const navigate = useNavigate();
 
+  // - MONTE
   const getJobs = async () => {
     const jobs = await jobService.getJobsForTalent(user._id);
+
+    // console.log("here are jobs", jobs);
 
     const updatedJobs = jobs.map((job) => {
       return {
@@ -170,10 +157,11 @@ export default function TalentDash() {
     await setUserJobs(updatedJobs);
     return updatedJobs; // Return the updated array with status and job details
   };
-
+  // - MONTE
   const handleJobSplice = async () => {
     // userJobs.length === 0
     // Job align
+    // console.log("these are the jobs i got", userJobs);
     const totalPages = Math.ceil(userJobs.length / jobsPerPage);
     setPageNumbers(totalPages);
 
@@ -230,7 +218,7 @@ export default function TalentDash() {
       setPortfolios(user.portfolios || ""); // Assuming user.portfolios is an array of objects containing 'icon' and 'href'
     }
 
-    setLoading(false);
+    setIsLoading(false);
   }, [user]);
 
   useEffect(() => {
@@ -546,13 +534,15 @@ export default function TalentDash() {
     }
   };
 
-  if (isLoading && !user) return <Loading isLoading={isLoading} />;
+  // formerly isLoading && !user
+  if (isLoading) return <Loading isLoading={isLoading} />;
 
   return (
     <>
       <DashNav
         profile={user.profile ? user.profile.path : dummyProfile}
         firstName={user.firstName}
+        toggleLoading={setIsLoading}
       />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
@@ -1716,12 +1706,20 @@ export default function TalentDash() {
                                     <div className="profile-head-text">
                                       {job.location || "No Location"}
                                     </div>
-                                    <Link
-                                      to={`#job-popup-${job.id}`}
-                                      className="learn-more job-popup"
-                                    >
-                                      View
-                                    </Link>
+                                    <div className="">
+                                      <Link
+                                        className="centered-message-button"
+                                      >
+                                        {mailSVG()}
+                                      </Link>
+                                      <Link
+                                        // to={`#job-popup-${job.id}`}
+                                        onClick={() => {setJobDetailId(job._id ?? ''); setShowJobDetails((prev) => !prev); }}
+                                        className="learn-more job-popup"
+                                      >
+                                        View
+                                      </Link>
+                                    </div>
                                   </div>
                                 </div>
 
@@ -1878,6 +1876,11 @@ export default function TalentDash() {
         documents={documents}
       />
        <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div> 
+      <JobDetails
+        isOpen={showJobDetails}
+        onClose={() => setShowJobDetails(false)}
+        Id = {jobDetailId}
+      />
     </>
   );
 }

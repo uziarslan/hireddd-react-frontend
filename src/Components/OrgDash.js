@@ -83,7 +83,6 @@ const closeSVG = () => (
     </defs>
   </svg>
 );
-
 const bookmarkSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -115,10 +114,6 @@ export default function OrgDash() {
   const [isEditing, setIsEditing] = useState("");
 
   const navigate = useNavigate();
-
-
-
-
 
   // sending a change to the user object, in the backend, 
   useEffect(() => {
@@ -152,7 +147,6 @@ export default function OrgDash() {
   };
 
   // For the next sprint
-
   const handleSaveAbout = async () => {
     if (!about.trim()) {  // Just to remove spaces before null checking
       alert("About section cannot be empty!");
@@ -330,17 +324,16 @@ export default function OrgDash() {
     }
 
   }
-
-
-
   
-  if (isLoading && !user) return <Loading isLoading={isLoading} />;
+  // formerly && !user
+  if (isLoading) return <Loading isLoading={isLoading} />;
 
   return (
     <>
       <DashNav
         profile={user?.profile?.path || dummyProfile}
         firstName={user?.firstName}
+        toggleLoading={setIsLoading}
       />
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
