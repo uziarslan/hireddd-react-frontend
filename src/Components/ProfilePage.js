@@ -12,13 +12,15 @@ import guranteeIcon from "../Assets/images/guarantee-icon.svg";
 import axiosInstance from "../services/axiosInstance";
 import Loading from "./Loading";
 import { AuthContext } from "../Context/AuthContext";
+import AddTalentToJob from "./modals/AddTalentToJob";
 
 export default function ProfilePage() {
   const { user } = useContext(AuthContext);
   const { talentId } = useParams();
   const [talent, setTalent] = useState({});
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showTalentAdd, setShowTalentAdd] = useState(false);
 
   useEffect(() => {
     const fetchTalentProfile = async () => {
@@ -58,7 +60,7 @@ export default function ProfilePage() {
           <div className="profile-body-row no-sidebar">
             <div className="profile-content-area">
               <div className="profile-sidebar-sidebar-link">
-                <Link to="/find/employees" className="back-link-arrow">
+                <Link to="/find/employees" className="back-link-arrow inline-block">
                   <svg
                     width="40"
                     height="40"
@@ -111,7 +113,10 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   <div className="profile-head-right">
-                    <button className=" change-status-button">
+                    <button 
+                      className="change-status-button"
+                      onClick={() => {setShowTalentAdd(true)}}
+                    >
                       <div className="btn-icon">
                         <svg
                           width="14"
@@ -265,7 +270,36 @@ export default function ProfilePage() {
                     </div>
                     <div className="profile-edit-title">Attach Documents</div>
                     <div className="profile-edit-socials">
-                      <Link to="#" className="profile-edit-social-icon">
+                        {/* {Resume view - DYLAN & MONTE } */}
+                      { talent.documents && talent.documents.length > 0 ?  
+                        (
+                          talent.documents.map((doc, index) => {
+                            if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
+  
+                            return (
+                              <div key={index} className="document-item">
+                                <a
+                                  href={doc.fileData}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  // download={doc.fileName}
+                                >
+                                  <img
+                                    src={pdfIcon}
+                                    alt={`Document ${index + 1}`}
+                                  />
+                                </a>
+                                <div className="document-name">
+                                  {doc.fileName}
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div>No documents available</div>
+                        )
+                      }
+                      {/* <Link to="#" className="profile-edit-social-icon">
                         <img src={pdfIcon} alt="Icon" />
                       </Link>
                       <Link to="#" className="profile-edit-social-icon">
@@ -273,7 +307,7 @@ export default function ProfilePage() {
                       </Link>
                       <Link to="#" className="profile-edit-social-icon">
                         <img src={pdfIcon} alt="Icon" />
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                   <div className="profile-edit-set">
@@ -342,6 +376,12 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+      {/* Add talent modal - EGBAIYELO */}
+      <AddTalentToJob
+        isOpen={showTalentAdd}
+        onClose={() => setShowTalentAdd(false)}
+        talentId = {talentId}
+      />
     </>
   );
 }

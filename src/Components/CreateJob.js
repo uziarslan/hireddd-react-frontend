@@ -1,5 +1,5 @@
 // Egbaiyelo
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "../Assets/Css/styles.min.css";
 import { Link } from "react-router-dom";
 import DashNav from "./DashNav";
@@ -9,6 +9,12 @@ import dummyProfile from "../Assets/images/uploads/user-avatar.png";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 
+const closeSVG = () => (
+  <svg width="2em" height="2em" viewBox="0 0 24 24" fill="var(--hr_purple)" xmlns="http://www.w3.org/2000/svg">
+  <path opacity="0.8" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" fill="#6656bc"/>
+  <path d="M8.96967 8.96967C9.26256 8.67678 9.73744 8.67678 10.0303 8.96967L12 10.9394L13.9697 8.96969C14.2626 8.6768 14.7374 8.6768 15.0303 8.96969C15.3232 9.26258 15.3232 9.73746 15.0303 10.0304L13.0607 12L15.0303 13.9696C15.3232 14.2625 15.3232 14.7374 15.0303 15.0303C14.7374 15.3232 14.2625 15.3232 13.9696 15.0303L12 13.0607L10.0304 15.0303C9.73746 15.3232 9.26258 15.3232 8.96969 15.0303C8.6768 14.7374 8.6768 14.2626 8.96969 13.9697L10.9394 12L8.96967 10.0303C8.67678 9.73744 8.67678 9.26256 8.96967 8.96967Z" fill="var(--hr_white)"/>
+  </svg>
+)
 
 export default function CreateJob() {
   const { user } = useContext(AuthContext);
@@ -16,6 +22,16 @@ export default function CreateJob() {
   const [job, setJob] = useState(null); 
 
   const navigate = useNavigate();
+  const textareaRef = useRef(null);  // To access the DOM directly
+
+  // const [tags, setTags] = useState([]);
+
+  // const [input, setInput] = useState("");
+
+  // const removeTag = (index) => {
+  //   setTags(tags.filter((_, i) => i !== index));
+  // };
+
 
   // Job properties
   const [title, setTitle] = useState("");
@@ -26,8 +42,6 @@ export default function CreateJob() {
   const [salary, setSalary] = useState("");
   const [jobType, setJobType] = useState("");
   const [expiry, setExpiry] = useState("");
-
-
 
   useEffect(() => {
     if(user?.role && user.role !== 'organization') {
@@ -52,33 +66,12 @@ export default function CreateJob() {
     }
   }, [user, job, navigate]);
 
-
-  // const handleResponsibilitiesChange = (e) => {
-  //   const lines = e.target.value.split('\n');
-  //   const bulletLines = lines.map(line => line.trim() ? `• ${line}` : '').join('\n');
-  //   setResponsibilities(bulletLines);
-  // };
-
-  // const resizeTextarea = () => {
-  //   if (textareaRef.current) {
-  //     textareaRef.current.style.height = 'auto'; // Reset height
-  //     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set height to scrollHeight
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   resizeTextarea(); // Resize when the component first mounts or when responsibilities change
-  // }, [responsibilities]);
-
-  // Also make editable textboxes so we can add divs and stuff and bulletpoints
-
+  // To toggle between the job types if selected or not
   const toggleJobType = (type) => {
     setJobType(prevState => {
       if (prevState.includes(type)) {
-        console.log("removing ", type, jobType)
         return prevState.filter(item => item !== type); 
       } else {
-        console.log("adding", type, jobType)
         return [...prevState, type]; 
       }
     });
@@ -86,7 +79,7 @@ export default function CreateJob() {
 
   const handleSubmit = async () => {
 
-    // Rewuired fields
+    // Required fields
     if (!title.trim() || !description.trim()){
       alert("Title and description are required");
     }
@@ -108,8 +101,6 @@ export default function CreateJob() {
       } else {
         alert('Invalid format: Please use yyyy-mm-dd.');
       }
-
-
 
     }
 
@@ -133,12 +124,19 @@ export default function CreateJob() {
         const newJob = await jobService.createJob(jobData);
         setJob(newJob);
       }
+      navigate("/organization/dashboard")
 
     } catch (error) {
       console.error("Error managing job:", error);
     }
   };
 
+  // This lets it grow
+  const handleTextAreaInput = (e) => {
+    e.target.style.height = "auto"; // Reset height to auto so its adjustable
+    if (e.target.style.height !== `${e.target.scrollHeight}px`) // So no unnecessary adjustments
+      e.target.style.height = `${e.target.scrollHeight}px`; 
+  };
 
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
   
@@ -152,10 +150,17 @@ export default function CreateJob() {
 
       <main id="main-section" className="main-section">
         <div className="wrapper wide-1230">
-          <div className="profile-content-area createjob-form">
+          <div className="createjob-form profile-content-area">
             <div className="profile-edit-options">
 
-              <h3 id="createjob-title">{job ? "Edit a job" : "Create a job"}</h3>
+              <div className="flexed-header">
+                <h3 id="createjob-title">{job ? "Edit a job" : "Create a job"}</h3>
+                <Link 
+                  to={"/organization/dashboard"}
+                >
+                  {closeSVG()}
+                </Link>
+              </div>
 
 
               {/* Title */}
@@ -167,35 +172,23 @@ export default function CreateJob() {
                   placeholder="Title"
                   onChange={(e) => setTitle(e.target.value)}
                 />
+                {/* <div>NB: You already have a job by this name</div> */}
               </div>
 
-              {/* Editable
-              <div className="createjob-edit-title">Editable</div>
-              <div className="profile-edit-text">
-                <div
-                  placeholder=""
-                  value={description}
-                  className="content-area"
-                  contentEditable="true"
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                  // dangerouslySetInnerHTML={{ __html: content }}
-                  style={{ minHeight: '100px', border: '1px solid #ccc', padding: '10px' }}
-                />
-              </div> */}
 
               {/* Description */}
               <div className="createjob-edit-title">Description</div>
               <div className="profile-edit-text">
 
                 <textarea
+                  ref={textareaRef}
+                  onInput={handleTextAreaInput}
                   value={description}
                   placeholder=""
                   onChange={(e) => {
                     setDescription(e.target.value);
                   }}
-                ></textarea>
+                />
               </div>
 
 
@@ -205,8 +198,10 @@ export default function CreateJob() {
 
                 <textarea
                   // ref={textareaRef} 
+                  // className="light-scrollbar"
                   value={responsibilities}
                   placeholder=""
+                  onInput={handleTextAreaInput}
                   onChange={(e) => {
                     // handleResponsibilitiesChange;
                     setResponsibilities(e.target.value);
@@ -222,6 +217,7 @@ export default function CreateJob() {
                 <textarea
                   value={skills}
                   placeholder=""
+                  onInput={handleTextAreaInput}
                   onChange={(e) => {
                     setSkills(e.target.value);
                   }}
@@ -289,7 +285,7 @@ export default function CreateJob() {
               <div className="createjob-form-btns">
 
                 <Link
-                  to={"/organization/profile"}
+                  to={"/organization/dashboard"}
                 >
                   <button
                     className="button outline resume-button"

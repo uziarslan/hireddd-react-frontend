@@ -26,17 +26,7 @@ jest.mock("../../services/axiosInstanceChat", () => ({
 }));
 
 jest.mock("../../services/axiosInstance", () => ({
-  get: jest.fn(() => {
-    return Promise.resolve({
-      data: [
-        {
-          _id: "chat123",
-          organization: { firstName: "TechCorp", profile: { path: "org-profile.jpg" } },
-          talent: { firstName: "Jane", profile: { path: "talent-profile.jpg" }, location: "New York" },
-        },
-      ],
-    });
-  }),
+  get: jest.fn(() => {return Promise.resolve({data: [],});}),
   post: jest.fn(() => Promise.resolve({ data: {} })),
 }));
 
@@ -90,6 +80,7 @@ function renderTalentDash(userValue = dummyUser) {
   );
 }
 
+//----Dylan-----
 describe("Initial Talent user information", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -97,7 +88,6 @@ describe("Initial Talent user information", () => {
     axiosInstance.get.mockResolvedValueOnce({ data: [] });
 
   });  
-//------User Information rendering tests------------
   test("check if user summary renders", async () => {
     renderTalentDash();
     const summarySection = await screen.findByTestId("user-summary");
@@ -156,5 +146,5 @@ describe("Swap tabs", () => {
       expect(screen.getByTestId("current-tab")).toHaveTextContent("hiredddStatus");
     });
   });
-
+//-----------------------------------------
 });
