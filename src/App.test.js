@@ -7,4 +7,5 @@ test('renders learn react link', () => {
   expect(linkElement).toBeInTheDocument();
 });
 
+// File necessary for testing.
 // to test run "npm test -- watchAll"

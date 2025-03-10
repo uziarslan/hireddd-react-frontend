@@ -311,7 +311,7 @@ export default function Registration() {
                           <Link to="/forgot/password">Forgot Password?</Link>
                         </div>
                         <div className="input-set input-set-submit">
-                          <input type="submit" value="Register" />
+                          <input type="submit" id="Register" value="Register" />
                         </div>
                       </div>
                     </div>

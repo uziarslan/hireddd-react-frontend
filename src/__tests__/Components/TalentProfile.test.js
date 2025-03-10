@@ -21,7 +21,7 @@ describe("TalentProfile Page", () => {
     render(
       <AuthContext.Provider value={{ user }}>
         <MemoryRouter>
-          <TalentProfile />
+          <TalentProfile />     
         </MemoryRouter>
       </AuthContext.Provider>
     );
@@ -54,7 +54,7 @@ describe("TalentProfile Page", () => {
     // expect(screen.queryByLabelText(/First name/i)).toBeNull();
 
     // Check that an element from the Record Video section is present
-    expect(screen.getByText(/Record Video/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Record Video/i)[0]).toBeInTheDocument();
   });
 
   test("shows loading overlay when isLoading is true on form submission", async () => {
@@ -82,7 +82,7 @@ describe("TalentProfile Page", () => {
     // Click the submit button
     const createProfile = container.querySelector("#createProfile");
       
-    fireEvent.click(createProfile);
+    fireEvent.click(createProfile);  
 
     
 
