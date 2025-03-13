@@ -161,6 +161,34 @@ export default function TalentDash() {
   }); // Initialize contact details to empty strings
 
   //update user data once user is loaded
+
+
+  //This Use Effect ensures that all user data is fetched on page load - fixes bug after registration - Dylan
+  useEffect(() => {
+    if (!user || user.fetched) return; // Prevents infinite loop
+  
+    async function fetchUserData() {
+      try {
+        if (!user.about || !user.phone || !user.skills || user.skills.length === 0) {
+          const response = await fetch(`http://localhost:4000/api/v1/talent/get-data/${user._id}`);
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+  
+          const fullUserData = await response.json();    
+          updateUser({ ...fullUserData, fetched: true }); // Mark user as fetched
+        }
+      } catch (error) {
+        console.error("Error fetching full user data:", error);
+      }
+    }
+  
+    fetchUserData();
+  }, [user, updateUser]);
+  
+  
+  
   useEffect(() => {
     if (user) {
       setIsLoading(false);
@@ -195,21 +223,12 @@ export default function TalentDash() {
         return updatedJobs; // Return the updated array with status and job details
       };
       getJobs();
-      // const fetchJobs = async () => {
-      //   const jobs = await getJobs();
-      //   console.log("here are", jobs);
-      //   handleJobSplice();
-      // }
-
-
-      // fetchJobs();
     }
 
     //==== Redirect users
     if (user?.role && user.role !== "talent") {
       navigate("/");
     }
-    //
     // Set the portfolio if available
     if (user && user.portfolios) {
       setPortfolios(user.portfolios || ""); // Assuming user.portfolios is an array of objects containing 'icon' and 'href'
@@ -238,13 +257,9 @@ export default function TalentDash() {
     }
   }, [userJobs, currentJobPage, jobsPerPage]);
 
-  /*if (!user) {
-    return <div>Loading user data...</div>; // Handle the case when user is not available
+  if (isLoading || !user || !user.about) {
+    return <Loading isLoading={true} />;  // Show loading spinner
   }
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-*/
   //method for uploading resume
   const handleUploadResume = () => {
     const input = document.createElement("input");
@@ -410,36 +425,28 @@ export default function TalentDash() {
     reader.readAsDataURL(file);
   };
 
-  //editing contact details
+
   // Editing contact details
   const handleSaveContactDetails = async () => {
-    // Format handling -- MONTE
-    // No agreed format
-    // Phone and email regex data, it's global format
+    // Basic regex patterns for validation
+    console.log("handleSaveContactDetails called");
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const phoneRegex = /^[+]?[1-9]\d{1,14}$/;
-
-    // Standardize phone data, no brackets but replace dashes with spacess
-    contactDetails.phone = contactDetails.phone
-      .replace(/[()]/g, "") // Remove brackets
-      .replace(/-/g, " ") // Replace dashes with spaces
-      .replace(/\s+/g, " ") // After the dash replace spaces?
-      .trim(); // Trim trailings
-    // Format in database should be +1 234 567 8910 or so
-    // --
-
-    // Validate phone number
-    if (!phoneRegex.test(contactDetails.phone)) {
-      alert("Please enter a valid phone number.");
-      return;
-    }
-
-    // Validate email
+    const phoneRegex = /^\d{3} \d{3} \d{4}$/; // Ensures format like "123 456 7890"
+  
+    // Validate email (always required)
     if (!emailRegex.test(contactDetails.email)) {
       alert("Please enter a valid email address.");
+      console.log("email fail");
+      console.log("email is:", contactDetails.email );
       return;
     }
-
+  
+    // Validate phone only if a number is provided
+    if (contactDetails.phone && !phoneRegex.test(contactDetails.phone)) {
+      alert("Please enter a valid phone number in the format XXX XXX XXXX.");
+      console.log("phone fail");
+      return;
+    }
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/talent/update-contact-details/${user._id}`,
@@ -447,19 +454,19 @@ export default function TalentDash() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            phone: contactDetails.phone,
-            email: contactDetails.email,
+            phone: contactDetails.phone || "", // Send empty string if no phone
+            email: contactDetails.email, // Email is required
           }),
         }
       );
       const result = await response.json();
-
+  
       if (result.success) {
         alert("Contact details updated successfully!");
         updateUser({
-          ...user, // Keep existing user data
+          ...user,
           phone: result.talent.phone,
-          username: result.talent.username, // Ensure email updates correctly
+          username: result.talent.username,
         });
         setIsEditingContact(false); // Exit editing mode
       } else {
@@ -470,6 +477,7 @@ export default function TalentDash() {
       alert("An error occurred while updating contact details.");
     }
   };
+  
 
   // Handling the sumamry and the skills -- MONTE
   // Handling the Summaries
@@ -551,8 +559,8 @@ export default function TalentDash() {
   return (
     <>
       <DashNav
-        profile={user.profile ? user.profile.path : dummyProfile}
-        firstName={user.firstName}
+        profile={user?.profile?.path || dummyProfile}
+        firstName={user?.firstName || dummyProfile }
         toggleLoading={setIsLoading}
       />
       <main id="main-section" className="main-section">
@@ -782,7 +790,7 @@ export default function TalentDash() {
                     <div className="profile-head-left">
                       <div className="profile-head-image">
                         <img
-                          src={user.profile ? user.profile.path : dummyProfile}
+                          src={user?.profile?.path || dummyProfile}
                           alt="Avatar"
                         />
                       </div>
@@ -1144,6 +1152,7 @@ export default function TalentDash() {
                         </button>
                       )}
                       <button
+                      data-testid="edit-contact-button"
                         onClick={() => setIsEditingContact((prev) => !prev)} // Toggles edit mode
                         className="edit-button"
                       >
@@ -1187,9 +1196,10 @@ export default function TalentDash() {
                             <label>
                               <strong>Phone:</strong>
                               <input
+                                data-testid="edit-phone"
                                 type="text"
                                 value={contactDetails.phone || ""}
-                                placeholder={"+92XXXXXX"}
+                                placeholder={"eg.123 456 7890"}
                                 onChange={(e) => {
                                   setContactDetails({
                                     ...contactDetails,
@@ -1201,12 +1211,9 @@ export default function TalentDash() {
                             <label>
                               <strong>Email:</strong>
                               <input
+                                data-testid="edit-email"
                                 type="email"
-                                value={
-                                  isEditingContact
-                                    ? contactDetails.email || user.username
-                                    : user.username || ""
-                                }
+                                value={contactDetails.email}
                                 placeholder={"johndoe@example.com"}
                                 onChange={(e) => {
                                   setContactDetails({
@@ -1216,23 +1223,19 @@ export default function TalentDash() {
                                 }}
                               />
                             </label>
-                            <button onClick={handleSaveContactDetails}>
+                            <button data-testid="save-contact-button" onClick={handleSaveContactDetails}>
                               Save
                             </button>
                           </div>
                         ) : (
                           <div>
-                            <p>
+                            <p data-testid="phone-display">
                               <strong>Phone:</strong>{" "}
-                              {contactDetails.phone ||
-                                user.phone ||
-                                "Not provided"}
+                              {user.phone ||"Not provided"}
                             </p>
-                            <p>
+                            <p data-testid="email-display">
                               <strong>Email:</strong>{" "}
-                              {contactDetails.email ||
-                                user.username ||
-                                "Not provided"}
+                              {user.username}
                             </p>
                           </div>
                         )}
