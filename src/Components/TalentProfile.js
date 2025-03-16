@@ -74,6 +74,10 @@ export default function TalentProfile() {
     formData.append("location", location);
     formData.append("skills", skill);
     formData.append("about", about);
+
+
+
+
   
     // Handle profile picture upload
     if (profile) {
@@ -83,7 +87,7 @@ export default function TalentProfile() {
       const blob = await response.blob();
       formData.append("profile", blob, "dummy-avatar.png");
     }
-  
+    
     if (uploadedFile) {
       formData.append("video", uploadedFile, uploadedFile.name);
     } else if (mediaBlobUrl) {
@@ -93,7 +97,10 @@ export default function TalentProfile() {
             formData.append("video", blob, "recorded-video.webm");
         } catch (error) {
             console.error("Error fetching video blob:", error);
-            alert("Failed to process the recorded video.");
+
+            setMessage({ error: "Failed to process the recorded video." });
+
+            // alert("Failed to process the recorded video.");
             setIsLoading(false);
             return;
         }
@@ -111,14 +118,15 @@ export default function TalentProfile() {
       );
   
       if (status === 200) {
-        setMessage("Profile created successfully!");
+        setMessage({ success: "Profile created successfully!" });
         navigate("/talent/dashboard"); // Redirect after successful registration
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      alert("Failed to create profile.");
+      console.error("Registration error:", error, error.response.data, error.response.data.error);
+      // setMessage({ error: "Failed to create profile." });
+
       if (error.response && error.response.data && error.response.data.error) {
-        setMessage(error.response.data.error);
+        setMessage(error.response.data);
       }
     }
   
@@ -386,7 +394,7 @@ const handleUploadVideoClick = () => {
                     ></textarea>
                   </div>
                   <div className="input-set input-set-full">
-                    <input id="createProfile" type="submit" value="Create profile" />
+                    <input id="createProfile" type="submit" value="Create profile" onChange={(e) => setAbout(e.target.value)} />
                   </div>
                 </form>
               </div>

@@ -225,7 +225,7 @@ export default function LoginPage() {
                           </defs>
                         </svg>
                       </div>
-                      Facbook
+                      Facebook
                     </Link>
                   </div>
                 </div>

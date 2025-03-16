@@ -91,7 +91,7 @@ export default function DashNav({ firstName, profile, preview, toggleLoading }) 
             </div>
             {/* EGBAIYELO - so when we click icon we go to profile (dash) */}
             <Link to={{
-              pathname: user.role === "talent"
+              pathname: user?.role === "talent"
                 ? "/talent/dashboard"
                 : "/organization/dashboard",
               state: { tab: "findTalents" }
