@@ -1422,6 +1422,44 @@ h1,
   overflow-y: auto;  /* scroll if content is too tall */
 }
 
+.profile-head-image {
+  position: relative;
+  width: 100px; /* Adjust size accordingly */
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile-picture {
+  width: 92%; /* Adjust size */
+  height: 100px;
+  background-size: cover;
+  
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width:24px;
+  height:24px;
+}
+
+.camera-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
 
 h2,
 .heading-2 {

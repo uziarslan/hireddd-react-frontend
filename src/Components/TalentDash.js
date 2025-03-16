@@ -349,6 +349,41 @@ export default function TalentDash() {
     setIsEditingPortfolio(false);
   };
 
+
+  const handleProfilePictureChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("profile", file); // "profile" must match Multer's `upload.single("profile")`
+  
+    try {
+      const response = await fetch(`http://localhost:4000/api/v1/talent/update-profile/${user._id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure user is authenticated
+        },
+        body: formData,
+      });
+  
+      const result = await response.json();
+      console.log("Response:", result); // Debugging
+  
+      if (response.ok) {
+        alert("Profile picture updated successfully!");
+        updateUser({ profile: { path: result.profileUrl } });
+      } else {
+        alert(`Failed: ${result.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      alert("An error occurred.");
+    }
+  };
+  
+  
+  
+
   //method for deleting docs on profile -- DYLAN
   const handleDeleteDocument = async (docId) => {
     try {
@@ -788,12 +823,21 @@ export default function TalentDash() {
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
                     <div className="profile-head-left">
-                      <div className="profile-head-image">
-                        <img
-                          src={user?.profile?.path || dummyProfile}
-                          alt="Avatar"
-                        />
-                      </div>
+                    <div className="profile-head-image">
+  <div
+    className="profile-picture"
+    style={{ backgroundImage: `url(${user?.profile?.path || dummyProfile})` }}
+  ></div>
+
+  {/* Camera Icon */}
+  <label className="camera-icon">
+    <input type="file" accept="image/*" onChange={handleProfilePictureChange} style={{ display: "none" }} />
+    <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+      <path d="M12 2C10.5 2 9.14 2.84 8.47 4H5C3.34 4 2 5.34 2 7V19C2 20.66 3.34 22 5 22H19C20.66 22 22 20.66 22 19V7C22 5.34 20.66 4 19 4H15.53C14.86 2.84 13.5 2 12 2ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6ZM5 19C4.45 19 4 18.55 4 18V16C4 15.45 4.45 15 5 15H19C19.55 15 20 15.45 20 16V18C20 18.55 19.55 19 19 19H5Z"/>
+    </svg>
+  </label>
+</div>
+
                       <div className="profile-head-info">
                         <h2 className="profile-head-title">{user.firstName}</h2>
                         <div className="profile-head-subtext">Industry</div>
