@@ -122,6 +122,8 @@ button.mfp-arrow {
 	box-shadow: none;
 	touch-action: manipulation;
 }
+
+
 button::-moz-focus-inner {
 	padding: 0;
 	border: 0;
@@ -9080,3 +9082,12 @@ button.edit-button.profile-summry-close-button {
 
 
 /*-----*/
+
+
+/* Error messaging styles */
+
+/* Error message */
+
+button.flash-close {
+  all: unset;
+}

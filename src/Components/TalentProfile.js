@@ -100,7 +100,6 @@ export default function TalentProfile() {
 
             setMessage({ error: "Failed to process the recorded video." });
 
-            // alert("Failed to process the recorded video.");
             setIsLoading(false);
             return;
         }
@@ -251,7 +250,7 @@ const processVideoFile = (file) => {
   video.onloadedmetadata = () => {
       URL.revokeObjectURL(video.src); 
       if (video.duration > 60) { // Reject if longer than 1 minute
-          alert("Video must be 60 seconds or less.");
+          setMessage({ error: "Video must be 60 seconds or less." });
           return;
       }
       setMediaBlobUrl("");
@@ -525,7 +524,8 @@ const handleUploadVideoClick = () => {
             </div>
           </div>
         </div>
-        <Flash message={message} />
+        {/* <Flash message={message} /> */}
+        <Flash message={message} clearMessage={() => setMessage({})} />
       </main>
     </>
   );
