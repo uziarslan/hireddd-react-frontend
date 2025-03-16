@@ -8,9 +8,8 @@ import dummyProfile from "../Assets/images/uploads/user-avatar.png";
 import pdfIcon from "../Assets/images/pdf-icon.svg";
 import linkedIn from "../Assets/images/profile-social-icon-03.svg";
 
-
 // import svgs
-import { mailSVG, magSVG, closeSVG, bookmarkSVG  } from "../Assets/vectors/talentDashVectors";
+import { mailSVG, magSVG, closeSVG, bookmarkSVG  } from "../Assets/vectors/ButtonVectors";
 
 // import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
 import Chat from "./Chat";
@@ -109,7 +108,7 @@ export default function TalentDash() {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
         }
-        setHasFetched(true);
+        // setHasFetched(true);
       } catch (error) {
         console.error("Error fetching full user data:", error);
         localStorage.clear();

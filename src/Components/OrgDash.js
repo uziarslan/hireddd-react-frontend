@@ -11,6 +11,8 @@ import { AuthContext } from "../Context/AuthContext";
 import Loading from "./Loading";
 // import axiosInstance from "../services/axiosInstance";
 import { useNavigate } from "react-router-dom";
+// import svgs
+import { bookmarkSVG  } from "../Assets/vectors/ButtonVectors";
 
 // EGBAIYELO - SVGs
 // These are constants and they are not all intelligeable so i declare them as components
@@ -83,17 +85,17 @@ const closeSVG = () => (
     </defs>
   </svg>
 );
-const bookmarkSVG = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width="24"
-    height="24"
-    fill="black" // Ensures the entire bookmark is filled
-  >
-    <path d="M6 2H18C19.1 2 20 2.9 20 4V20C20 20.8 19.2 21.3 18.5 20.9L12 17.6L5.5 20.9C4.8 21.3 4 20.8 4 20V4C4 2.9 4.9 2 6 2Z" />
-  </svg>
-);
+// const bookmarkSVG = () => (
+//   <svg
+//     xmlns="http://www.w3.org/2000/svg"
+//     viewBox="0 0 24 24"
+//     width="24"
+//     height="24"
+//     fill="black" // Ensures the entire bookmark is filled
+//   >
+//     <path d="M6 2H18C19.1 2 20 2.9 20 4V20C20 20.8 19.2 21.3 18.5 20.9L12 17.6L5.5 20.9C4.8 21.3 4 20.8 4 20V4C4 2.9 4.9 2 6 2Z" />
+//   </svg>
+// );
 
 export default function OrgDash() {
   const { user, updateUser } = useContext(AuthContext);
@@ -102,14 +104,13 @@ export default function OrgDash() {
   const [tabName, setTabName] = useState("profile");
   const [selectedChat, setSelectedChat] = useState(null);
 
-
   // organization properties
   const [about, setAbout] = useState("");
   const [industry, setIndustry] = useState("");
   const [website, setWebsite] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [location, setLocation] = useState("");
-
+  const maxAboutCharacters = 5000;
 
   const [isEditing, setIsEditing] = useState("");
 
@@ -134,8 +135,76 @@ export default function OrgDash() {
   }, [user, navigate]);
 
 
-
   const handleFieldChange = (field, value) => {
+    // setUserFields((prev) => ({ ...prev, [field]: value }));
+  }
+
+  // Consolidating the update logic, it was redundant -- MONTE
+  const updateField = async (field, value) => {
+    // null check
+    if (!value.trim()) {
+      alert(`${field} section cannot be empty!`);
+      return;
+    }
+
+    // Regex for company size
+    if (field === 'companySize') {
+      const companySizeRegex = /^\d+(-\d+)?$/; //+ Ill need to improve this
+      if (!companySizeRegex.test(value)) {
+        alert("Invalid company size format! It should only include numbers and optionally a hyphen (e.g., 100-500).");
+        return;
+      }
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: value, userType: "organization", dataField: field }),
+        }
+      );
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        alert(`${field} section updated successfully!`);
+  
+        // Catchall switch
+        switch (field) {
+          case 'about':
+            setAbout(result.user.about);
+            updateUser({ about: result.user.about });
+            break;
+          case 'website':
+            setWebsite(result.user.website);
+            updateUser({ website: result.user.website });
+            break;
+          case 'industry':
+            setIndustry(result.user.industry);
+            updateUser({ industry: result.user.industry });
+            break;
+          case 'companySize':
+            setCompanySize(result.user.companySize);
+            updateUser({ companySize: result.user.companySize });
+            break;
+          case 'location':
+            setLocation(result.user.location);
+            updateUser({ location: result.user.location });
+            break;
+          default:
+            break;
+        }
+  
+        setIsEditing(""); // Exiting edit mode
+      } else {
+        alert(`Failed to update the ${field} section. Please try again.`);
+      }
+    } catch (error) {
+      console.error(`Error updating ${field} section:`, error);
+      alert(`An error occurred while updating the ${field} section.`);
+    }    
     // setUserFields((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -147,183 +216,168 @@ export default function OrgDash() {
   };
 
   // For the next sprint
-  const handleSaveAbout = async () => {
-    if (!about.trim()) {  // Just to remove spaces before null checking
-      alert("About section cannot be empty!");
-      return;
-    }
+  // const handleSaveAbout = async () => {
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: about, userType: "organization", dataField: "about" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("About section updated successfully!");
-  
-        setAbout(result.user.about); // Update the state with new about (using backend filtered text)
-        updateUser({ about: result.user.about }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the About section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating About section:", error);
-      alert("An error occurred while updating the About section.");
-    }
 
-  };
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:4000/api/v1/edit-profile/${user._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ data: about, userType: "organization", dataField: "about" }), 
+  //       }
+  //     );
+  
+  //     const result = await response.json();
+  
+  //     if (result.success) {
+  //       alert("About section updated successfully!");
+  
+  //       setAbout(result.user.about); // Update the state with new about (using backend filtered text)
+  //       updateUser({ about: result.user.about }); // Update the user state
+  //       setIsEditing(""); // Exiting edit mode
+  //     } else {
+  //       alert("Failed to update the About section. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating About section:", error);
+  //     alert("An error occurred while updating the About section.");
+  //   }
+
+  // };
 
   //- Better way to do this to make location link to google maps location
   // let googleLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
 
-  const handleSaveWebsite = async () => {
-    if (!website.trim()) {  // Just to remove spaces before null checking
-      alert("Website section cannot be empty!");
-      return;
-    }
+  // const handleSaveWebsite = async () => {
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: website, userType: "organization", dataField: "website" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Website section updated successfully!");
-  
-        setWebsite(result.user.website); // Update the state with new website (using backend filtered text)
-        updateUser({ website: result.user.website }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the Website section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating Website section:", error);
-      alert("An error occurred while updating the Website section.");
-    }
-  }
 
-  const handleSaveIndustry = async () => {
-    if (!industry.trim()) {  // Just to remove spaces before null checking
-      alert("Industry section cannot be empty!");
-      return;
-    }
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:4000/api/v1/edit-profile/${user._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ data: website, userType: "organization", dataField: "website" }), 
+  //       }
+  //     );
+  
+  //     const result = await response.json();
+  
+  //     if (result.success) {
+  //       alert("Website section updated successfully!");
+  
+  //       setWebsite(result.user.website); // Update the state with new website (using backend filtered text)
+  //       updateUser({ website: result.user.website }); // Update the user state
+  //       setIsEditing(""); // Exiting edit mode
+  //     } else {
+  //       alert("Failed to update the Website section. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating Website section:", error);
+  //     alert("An error occurred while updating the Website section.");
+  //   }
+  // }
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: industry, userType: "organization", dataField: "industry" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Industry section updated successfully! fr");
-  
-        setIndustry(result.user.industry); // Update the state with new industry (using backend filtered text)
-        updateUser({ industry: result.user.industry }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the Industry section. Please try again. fr");
-      }
-    } catch (error) {
-      console.error("Error updating Industry section: fr", error);
-      alert("An error occurred while updating the Industry section. fr");
-    }
-  }
+  // const handleSaveIndustry = async () => {
 
-  const handleSaveCompanySize = async () => {
-    if (!companySize.trim()) {  // Just to remove spaces before null checking
-      alert("company size section cannot be empty!");
-      return;
-    }
 
-    // Validate company size format using regex
-    const companySizeRegex = /^\d+(-\d+)?$/;
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:4000/api/v1/edit-profile/${user._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ data: industry, userType: "organization", dataField: "industry" }), 
+  //       }
+  //     );
+  
+  //     const result = await response.json();
+  
+  //     if (result.success) {
+  //       alert("Industry section updated successfully! fr");
+  
+  //       setIndustry(result.user.industry); // Update the state with new industry (using backend filtered text)
+  //       updateUser({ industry: result.user.industry }); // Update the user state
+  //       setIsEditing(""); // Exiting edit mode
+  //     } else {
+  //       alert("Failed to update the Industry section. Please try again. fr");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating Industry section: fr", error);
+  //     alert("An error occurred while updating the Industry section. fr");
+  //   }
+  // }
 
-    if (!companySizeRegex.test(companySize)) {
-      alert("Invalid company size format! It should only include numbers and optionally a hyphen (e.g., 100-500).");
-      return;
-    }
+  // const handleSaveCompanySize = async () => {
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: companySize, userType: "organization", dataField: "companySize" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Company size section updated successfully!");
-  
-        setCompanySize(result.user.companySize); // Update the state with new CompanySize (using backend filtered text)
-        updateUser({ companySize: result.user.companySize }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the company size section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating company size section:", error);
-      alert("An error occurred while updating the company size section.");
-    }
-  }
 
-  const handleSaveLocation = async () => {
-    if (!location.trim()) {  // Just to remove spaces before null checking
-      alert("Location section cannot be empty!");
-      return;
-    }
+  //   // Validate company size format using regex
+  //   const companySizeRegex = /^\d+(-\d+)?$/;
 
-    try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/edit-profile/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: location, userType: "organization", dataField: "location" }), 
-        }
-      );
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert("Location section updated successfully!");
-  
-        setLocation(result.user.location); // Update the state with new location (using backend filtered text)
-        updateUser({ location: result.user.location }); // Update the user state
-        setIsEditing(""); // Exiting edit mode
-      } else {
-        alert("Failed to update the Location section. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating Location section:", error);
-      alert("An error occurred while updating the Location section.");
-    }
+  //   if (!companySizeRegex.test(companySize)) {
+  //     alert("Invalid company size format! It should only include numbers and optionally a hyphen (e.g., 100-500).");
+  //     return;
+  //   }
 
-  }
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:4000/api/v1/edit-profile/${user._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ data: companySize, userType: "organization", dataField: "companySize" }), 
+  //       }
+  //     );
+  
+  //     const result = await response.json();
+  
+  //     if (result.success) {
+  //       alert("Company size section updated successfully!");
+  
+  //       setCompanySize(result.user.companySize); // Update the state with new CompanySize (using backend filtered text)
+  //       updateUser({ companySize: result.user.companySize }); // Update the user state
+  //       setIsEditing(""); // Exiting edit mode
+  //     } else {
+  //       alert("Failed to update the company size section. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating company size section:", error);
+  //     alert("An error occurred while updating the company size section.");
+  //   }
+  // }
+
+  // const handleSaveLocation = async () => {
+
+
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:4000/api/v1/edit-profile/${user._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ data: location, userType: "organization", dataField: "location" }), 
+  //       }
+  //     );
+  
+  //     const result = await response.json();
+  
+  //     if (result.success) {
+  //       alert("Location section updated successfully!");
+  
+  //       setLocation(result.user.location); // Update the state with new location (using backend filtered text)
+  //       updateUser({ location: result.user.location }); // Update the user state
+  //       setIsEditing(""); // Exiting edit mode
+  //     } else {
+  //       alert("Failed to update the Location section. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating Location section:", error);
+  //     alert("An error occurred while updating the Location section.");
+  //   }
+
+  // }
   
   // formerly && !user
   if (isLoading) return <Loading isLoading={isLoading} />;
@@ -544,7 +598,7 @@ export default function OrgDash() {
                       </Link>
                     </div>
                   </div>
-                  <div className="profile-edit-options">
+                  <div className="profile-edit-options" data-testid="org-profile">
                     
                     {/* about company section */}
 
@@ -563,7 +617,7 @@ export default function OrgDash() {
 
                           {/* Save edit button */}
                           <button
-                            onClick={() => { handleSaveAbout(); }}
+                            onClick={() => { updateField("about", about); }}
                             className="edit-button profile-txtbx-done"
                           >
                             { bookmarkSVG() }
@@ -572,13 +626,13 @@ export default function OrgDash() {
                       ) : (
                         // (pencil) edit button
                         <button className="edit-button" onClick={() => setIsEditing("about")}>
-                        { pencilSVG() }
+                        { pencilSVG() } 
                         </button>
                       )}
 
                       <div className="profile-edit-title">About Company</div>
                       <div className="profile-edit-text" data-testid="org-summary">
-                      <p  data-testid="org-summary-p"
+                      <p  
                         className={`${isEditing === "about" ? "profile-summry-edit" : ""
                           }`}>{user.about}</p>
                         {/* profile-hidden */}
@@ -588,12 +642,14 @@ export default function OrgDash() {
                         >
                           <textarea
                             value={about}
-                            placeholder=""
+                            placeholder="Write something about your company..."
+                            maxLength={maxAboutCharacters} // Adding some validation here too
                             onChange={(e) => {
                               setAbout(e.target.value);
                               handleFieldChange("about", e.target.value)
                             }}
                           ></textarea>
+                          {about.length} / {maxAboutCharacters}
                         </div>
                       </div>
                     </div>
@@ -617,7 +673,7 @@ export default function OrgDash() {
 
                             {/* Save edit button */}
                             <button
-                              onClick={() => { handleSaveWebsite(); }}
+                              onClick={() => { updateField("website", website); }}
                               className="edit-button profile-txtbx-done"
                             >
                               { bookmarkSVG() }
@@ -670,7 +726,7 @@ export default function OrgDash() {
 
                           {/* Save edit button */}
                           <button
-                            onClick={() => { handleSaveIndustry(); }}
+                            onClick={() => { updateField("industry", industry); }}
                             className="edit-button profile-txtbx-done"
                           >
                             { bookmarkSVG() }
@@ -725,7 +781,7 @@ export default function OrgDash() {
 
                           {/* Save edit button */}
                           <button
-                            onClick={() => { handleSaveCompanySize(); }}
+                            onClick={() => { updateField("companySize", companySize); }}
                             className="edit-button profile-txtbx-done"
                           >
                             { bookmarkSVG() }
@@ -778,7 +834,7 @@ export default function OrgDash() {
 
                           {/* Save edit button */}
                           <button
-                            onClick={() => { handleSaveLocation(); }}
+                            onClick={() => { updateField("location", location); }}
                             className="edit-button profile-txtbx-done"
                           >
                             { bookmarkSVG() }

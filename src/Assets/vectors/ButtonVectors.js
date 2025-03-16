@@ -1,4 +1,4 @@
-// --EGBAIYELO
+// --MONTE
 export const closeSVG = () => (
   <svg
     width="40"
@@ -26,7 +26,7 @@ export const closeSVG = () => (
     </defs>
   </svg>
 );
-// --EGBAIYELO
+// --MONTE
 export const magSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +55,7 @@ export const magSVG = () => (
     <circle cx="40" cy="40" r="30" fill="white" opacity="0.1" />
   </svg>
 );
-// --EGBAIYELO
+// --MONTE
 export const mailSVG = (kwidth = "1.2em", kheight="1.2em") => (
   // <?xml version="1.0" encoding="UTF-8" standalone="no"?>
   // <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
@@ -68,7 +68,7 @@ export const mailSVG = (kwidth = "1.2em", kheight="1.2em") => (
     </g>
   </svg>
 )
-// --EGBAIYELO
+// --MONTE
 export const bookmarkSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
