@@ -16,6 +16,24 @@ import LoginPage from "../../Components/LoginPage";
 //   });
 
 // Create a mock for the navigate function.
+
+jest.mock("axios", () => ({
+  create: jest.fn(() => ({
+    get: jest.fn(),
+    post: jest.fn(),
+  })),
+}));
+
+jest.mock("../../services/axiosInstanceChat", () => ({
+  get: jest.fn(() => Promise.resolve({ data: [] })),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));
+
+jest.mock("../../services/axiosInstance", () => ({
+  get: jest.fn(() => {return Promise.resolve({data: [],});}),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+}));
+
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"), 
