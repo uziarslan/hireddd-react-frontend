@@ -102,6 +102,8 @@ export default function TalentDash() {
         if (!user.about || !user.phone || !user.skills || user.skills.length === 0) {
           const response = await fetch(`http://localhost:4000/api/v1/talent/get-data/${user._id}`);
 
+          console.log(response);
+          
           const fullUserData = await response.json();    
           updateUser({ ...fullUserData, fetched: true }); // Mark user as fetched
 
@@ -112,7 +114,6 @@ export default function TalentDash() {
         setHasFetched(true);
       } catch (error) {
         console.error("Error fetching full user data:", error);
-        localStorage.clear();
       }
     }
   
@@ -260,7 +261,7 @@ export default function TalentDash() {
 
       const result = await response.json();
       if (result.success) {
-        alert("Portfolio section updated successfully!");
+        // alert("Portfolio section updated successfully!");
 
         // Update the real portfolios state with tempPortfolios
         setPortfolios(tempPortfolios);
@@ -269,6 +270,7 @@ export default function TalentDash() {
         setIsEditingPortfolio(false);
       } else {
         console.error("Failed to update portfolio:", result.message);
+
         alert("Failed to update portfolio.");
       }
     } catch (error) {
@@ -396,7 +398,7 @@ export default function TalentDash() {
 
 
   // Editing contact details
-  const handleSaveContactDetails = async () => {
+  const handleSaveContactDetails = async () => {   
     // Basic regex patterns for validation
     console.log("handleSaveContactDetails called");
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
