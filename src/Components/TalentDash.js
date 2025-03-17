@@ -9,7 +9,7 @@ import pdfIcon from "../Assets/images/pdf-icon.svg";
 import linkedIn from "../Assets/images/profile-social-icon-03.svg";
 
 // import svgs
-import { mailSVG, magSVG, closeSVG, bookmarkSVG  } from "../Assets/vectors/ButtonVectors";
+import { mailSVG, magSVG, closeSVG, bookmarkSVG } from "../Assets/vectors/ButtonVectors";
 
 // import companyLogo from "../Assets/images/uploads/shortlisted-image.jpg";
 import Chat from "./Chat";
@@ -102,27 +102,28 @@ export default function TalentDash() {
           const response = await fetch(`http://localhost:4000/api/v1/talent/get-data/${user._id}`);
 
           console.log(response);
-          
-          const fullUserData = await response.json();    
+
+          const fullUserData = await response.json();
           updateUser({ ...fullUserData, fetched: true }); // Mark user as fetched
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
+
+          // if (!response.ok) {
+          //   throw new Error(`HTTP error! Status: ${response.status}`);
+          // }
         }
         // setHasFetched(true);
       } catch (error) {
         console.error("Error fetching full user data:", error);
       }
     }
-  
+
     fetchUserData();
   }, [user, updateUser]);
 
-  
-  
-  
-  
+
+
+
+
   useEffect(() => {
     if (user) {
       setIsLoading(false);
@@ -173,7 +174,7 @@ export default function TalentDash() {
 
   useEffect(() => {
     if (userJobs.length > 0) {
-      
+
       // - MONTE
       const handleJobSplice = async () => {
         // userJobs.length === 0
@@ -288,10 +289,10 @@ export default function TalentDash() {
   const handleProfilePictureChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-  
+
     const formData = new FormData();
     formData.append("profile", file); // "profile" must match Multer's `upload.single("profile")`
-  
+
     try {
       const response = await fetch(`http://localhost:4000/api/v1/talent/update-profile/${user._id}`, {
         method: "PUT",
@@ -300,10 +301,10 @@ export default function TalentDash() {
         },
         body: formData,
       });
-  
+
       const result = await response.json();
       console.log("Response:", result); // Debugging
-  
+
       if (response.ok) {
         alert("Profile picture updated successfully!");
         updateUser({ profile: { path: result.profileUrl } });
@@ -315,9 +316,9 @@ export default function TalentDash() {
       alert("An error occurred.");
     }
   };
-  
-  
-  
+
+
+
 
   //method for deleting docs on profile -- DYLAN
   const handleDeleteDocument = async (docId) => {
@@ -397,20 +398,20 @@ export default function TalentDash() {
 
 
   // Editing contact details
-  const handleSaveContactDetails = async () => {   
+  const handleSaveContactDetails = async () => {
     // Basic regex patterns for validation
     console.log("handleSaveContactDetails called");
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const phoneRegex = /^\d{3} \d{3} \d{4}$/; // Ensures format like "123 456 7890"
-  
+
     // Validate email (always required)
     if (!emailRegex.test(contactDetails.email)) {
       alert("Please enter a valid email address.");
       console.log("email fail");
-      console.log("email is:", contactDetails.email );
+      console.log("email is:", contactDetails.email);
       return;
     }
-  
+
     // Validate phone only if a number is provided
     if (contactDetails.phone && !phoneRegex.test(contactDetails.phone)) {
       alert("Please enter a valid phone number in the format XXX XXX XXXX.");
@@ -430,7 +431,7 @@ export default function TalentDash() {
         }
       );
       const result = await response.json();
-  
+
       if (result.success) {
         alert("Contact details updated successfully!");
         updateUser({
@@ -447,7 +448,7 @@ export default function TalentDash() {
       alert("An error occurred while updating contact details.");
     }
   };
-  
+
 
   // Handling the sumamry and the skills -- MONTE
   // Handling the Summaries
@@ -530,7 +531,7 @@ export default function TalentDash() {
     <>
       <DashNav
         profile={user?.profile?.path || dummyProfile}
-        firstName={user?.firstName || dummyProfile }
+        firstName={user?.firstName || dummyProfile}
         toggleLoading={setIsLoading}
       />
       <main id="main-section" className="main-section">
@@ -576,9 +577,8 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Home</div>
                 </Link> */}
                 <Link
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "profile" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "profile" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("profile")}
                 >
                   <div className="profile-sidebar-icon">
@@ -618,10 +618,9 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">My Profile</div>
                 </Link>
                 <Link
-                 data-testid="messages-tab"
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "messages" ? "current" : ""
-                  }`}
+                  data-testid="messages-tab"
+                  className={`profile-sidebar-link tab-link-main ${tabName === "messages" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("messages")}
                 >
                   <div className="profile-sidebar-icon">
@@ -661,10 +660,9 @@ export default function TalentDash() {
                   <div className="profile-sidebar-title">Messages</div>
                 </Link>
                 <Link
-                data-testid="status-tab"
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "hiredddStatus" ? "current" : ""
-                  }`}
+                  data-testid="status-tab"
+                  className={`profile-sidebar-link tab-link-main ${tabName === "hiredddStatus" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("hiredddStatus")}
                 >
                   <div className="profile-sidebar-icon">
@@ -706,9 +704,8 @@ export default function TalentDash() {
                 <Link
                   data-testid="settings-tab"
                   to="/talent/settings"
-                  className={`profile-sidebar-link tab-link-main ${
-                    tabName === "settings" ? "current" : ""
-                  }`}
+                  className={`profile-sidebar-link tab-link-main ${tabName === "settings" ? "current" : ""
+                    }`}
                   onClick={() => setTabName("settings")}
                 >
                   <div className="profile-sidebar-icon">
@@ -751,27 +748,26 @@ export default function TalentDash() {
             </div>
             <div className="profile-content-area">
               <div
-                className={`tabbed-content-main ${
-                  tabName === "profile" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "profile" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="profile-content-head">
                     <div className="profile-head-left">
-                    <div className="profile-head-image">
-  <div
-    className="profile-picture"
-    style={{ backgroundImage: `url(${user?.profile?.path || dummyProfile})` }}
-  ></div>
+                      <div className="profile-head-image">
+                        <div
+                          className="profile-picture"
+                          style={{ backgroundImage: `url(${user?.profile?.path || dummyProfile})` }}
+                        ></div>
 
-  {/* Camera Icon */}
-  <label className="camera-icon">
-    <input type="file" accept="image/*" onChange={handleProfilePictureChange} style={{ display: "none" }} />
-    <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
-      <path d="M12 2C10.5 2 9.14 2.84 8.47 4H5C3.34 4 2 5.34 2 7V19C2 20.66 3.34 22 5 22H19C20.66 22 22 20.66 22 19V7C22 5.34 20.66 4 19 4H15.53C14.86 2.84 13.5 2 12 2ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6ZM5 19C4.45 19 4 18.55 4 18V16C4 15.45 4.45 15 5 15H19C19.55 15 20 15.45 20 16V18C20 18.55 19.55 19 19 19H5Z"/>
-    </svg>
-  </label>
-</div>
+                        {/* Camera Icon */}
+                        <label className="camera-icon">
+                          <input type="file" accept="image/*" onChange={handleProfilePictureChange} style={{ display: "none" }} />
+                          <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                            <path d="M12 2C10.5 2 9.14 2.84 8.47 4H5C3.34 4 2 5.34 2 7V19C2 20.66 3.34 22 5 22H19C20.66 22 22 20.66 22 19V7C22 5.34 20.66 4 19 4H15.53C14.86 2.84 13.5 2 12 2ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6ZM5 19C4.45 19 4 18.55 4 18V16C4 15.45 4.45 15 5 15H19C19.55 15 20 15.45 20 16V18C20 18.55 19.55 19 19 19H5Z" />
+                          </svg>
+                        </label>
+                      </div>
 
                       <div className="profile-head-info">
                         <h2 className="profile-head-title">{user.firstName}</h2>
@@ -1080,11 +1076,11 @@ export default function TalentDash() {
                           </div>
                         ) : (
                           (
-                          user.skills.map((skill, index) => (
-                            <div key={index} className="profile-edit-tag">
-                              {skill}
-                            </div>
-                          )))
+                            user.skills.map((skill, index) => (
+                              <div key={index} className="profile-edit-tag">
+                                {skill}
+                              </div>
+                            )))
                         )}
                         {/* Edit Input for Skills */}
                       </div>
@@ -1131,7 +1127,7 @@ export default function TalentDash() {
                         </button>
                       )}
                       <button
-                      data-testid="edit-contact-button"
+                        data-testid="edit-contact-button"
                         onClick={() => setIsEditingContact((prev) => !prev)} // Toggles edit mode
                         className="edit-button"
                       >
@@ -1210,7 +1206,7 @@ export default function TalentDash() {
                           <div>
                             <p data-testid="phone-display">
                               <strong>Phone:</strong>{" "}
-                              {user.phone ||"Not provided"}
+                              {user.phone || "Not provided"}
                             </p>
                             <p data-testid="email-display">
                               <strong>Email:</strong>{" "}
@@ -1598,9 +1594,8 @@ export default function TalentDash() {
                 </div>
               </div>
               <div
-                className={`tabbed-content-main ${
-                  tabName === "messages" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "messages" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="user-search messages-search">
@@ -1626,9 +1621,8 @@ export default function TalentDash() {
               </div>
               <div
                 id="shortlisted"
-                className={`tabbed-content-main ${
-                  tabName === "hiredddStatus" ? "current" : ""
-                }`}
+                className={`tabbed-content-main ${tabName === "hiredddStatus" ? "current" : ""
+                  }`}
               >
                 <div className="profile-sidebar-sidebar-link">
                   <div className="shortlisted-tabs">
@@ -1636,9 +1630,8 @@ export default function TalentDash() {
                       <ul>
                         <li>
                           <Link
-                            className={`tab-link ${
-                              subTabName === "shortlisted" ? "current" : ""
-                            }`}
+                            className={`tab-link ${subTabName === "shortlisted" ? "current" : ""
+                              }`}
                             onClick={() => setSubTabName("shortlisted")}
                           >
                             Shortlisted
@@ -1648,9 +1641,8 @@ export default function TalentDash() {
                     </div>
                     <div className="shortlisted-tabs-content-area">
                       <div
-                        className={`shortlisted-tabs-content tabbed-content ${
-                          subTabName === "shortlisted" ? "current" : ""
-                        }`}
+                        className={`shortlisted-tabs-content tabbed-content ${subTabName === "shortlisted" ? "current" : ""
+                          }`}
                       >
                         <div className="three-columns">
                           {currentJobs && currentJobs.length > 0 ? (
@@ -1681,7 +1673,7 @@ export default function TalentDash() {
                                       </Link>
                                       <Link
                                         // to={`#job-popup-${job.id}`}
-                                        onClick={() => {setJobDetailId(job._id ?? ''); setShowJobDetails((prev) => !prev); }}
+                                        onClick={() => { setJobDetailId(job._id ?? ''); setShowJobDetails((prev) => !prev); }}
                                         className="learn-more job-popup"
                                       >
                                         View
@@ -1710,7 +1702,7 @@ export default function TalentDash() {
                                   <h3>Responsibilities</h3>
                                   <ul>
                                     {job.responsibilities &&
-                                    job.responsibilities.length > 0 ? (
+                                      job.responsibilities.length > 0 ? (
                                       job.responsibilities.map(
                                         (responsibility, index) => (
                                           <li key={index}>{responsibility}</li>
@@ -1842,11 +1834,11 @@ export default function TalentDash() {
         onDelete={handleDeleteDocument}
         documents={documents}
       />
-       <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div> 
+      <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div>
       <JobDetails
         isOpen={showJobDetails}
         onClose={() => setShowJobDetails(false)}
-        Id = {jobDetailId}
+        Id={jobDetailId}
       />
     </>
   );
