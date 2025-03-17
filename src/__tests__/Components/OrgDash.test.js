@@ -187,49 +187,49 @@ const dummyUser = {
   
   });
 
-  // describe("<OrgDash> - Edit Functionality", () => {
-  //   beforeEach(() => {
-  //     jest.clearAllMocks();
-  //     axiosInstance.get.mockResolvedValueOnce({
-  //       data: [],
-  //     });
-  //   });
+  describe("<OrgDash> - Edit Functionality", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      axiosInstance.get.mockResolvedValueOnce({
+        data: [],
+      });
+    });
   
-  //   test("should toggle 'About' edit mode on clicking pencil icon", async () => {
-  //     renderOrgDash();
-  //     const editButton = screen.getByRole("button", { name: /edit/i });
-  //     userEvent.click(editButton);
-  //     const textArea = screen.getByRole("textbox");
-  //     expect(textArea).toBeInTheDocument();
-  //   });
+    test("should toggle 'About' edit mode on clicking pencil icon", async () => {
+      renderOrgDash();
+      const editButton = screen.getByTestId("org-profile").querySelector('.edit-button');
+      userEvent.click(editButton);
+      const textArea = screen.getByTestId("org-summary").querySelector('textarea');
+      expect(textArea).toBeInTheDocument();
+    });
   
-  //   test("should close edit mode when close button is clicked", async () => {
-  //     renderOrgDash();
-  //     const editButton = screen.getByRole("button", { name: /edit/i });
-  //     userEvent.click(editButton);
-  //     const closeButton = screen.getByRole("button", { name: /close/i });
-  //     userEvent.click(closeButton);
-  //     const summarySection = await screen.findByTestId("org-summary");
-  //     const summaryText = within(summarySection).getByRole("textbox");
-  //     expect(summaryText.value).toBe("World-leading corporation in random stuff");
-  //   });
+    test("should close edit mode when close button is clicked", async () => {
+      renderOrgDash();
+      const editButton = screen.getByTestId("org-profile").querySelector('.edit-button');
+      userEvent.click(editButton);
+      const closeButton = screen.getByTestId("org-profile").querySelector('.edit-button');
+      console.log("__________________",closeButton)
+      userEvent.click(closeButton);
+      const summarySection = await screen.findByTestId("org-summary");
+      const summaryText = summarySection.querySelector('textarea');
+      expect(summaryText.value).toBe("World-leading corporation in random stuff");
+    });
   
-  //   test("should save changes when the save button is clicked", async () => {
-  //     renderOrgDash();
-  //     const editButton = screen.getByRole("button", { name: /edit/i });
-  //     userEvent.click(editButton);
-  //     const textArea = screen.getByRole("textbox");
-  //     userEvent.clear(textArea);
-  //     userEvent.type(textArea, "Updated company description.");
-  //     const saveButton = screen.getByRole("button", { name: /save/i });
-  //     userEvent.click(saveButton);
-  //     await waitFor(() => {
-  //       expect(screen.getByTestId("org-summary")).toHaveTextContent("Updated company description.");
-  //     });
-  //   });
-  // });
+    test("should save changes when the save button is clicked", async () => {
+      renderOrgDash();
+      const editButton = screen.getByTestId("org-profile").querySelector('.edit-button');
+      userEvent.click(editButton);
+      const textArea = screen.getByTestId("org-summary").querySelector('textarea');
+      userEvent.clear(textArea);
+      userEvent.type(textArea, "Updated company description.");
+      const saveButton = screen.getByTestId("org-profile").querySelector('.profile-txtbx-done');
+      userEvent.click(saveButton);
+      await waitFor(() => {
+        expect(screen.getByTestId("org-summary")).toHaveTextContent("Updated company description.");
+      });
+    });
+  });
 
-  // Error handling tests
   describe("<OrgDash> - Error Handling", () => {
     // They all use the same method which is great for test so we can just pick one
     beforeEach(() => {
@@ -264,6 +264,8 @@ const dummyUser = {
   
     test("should handle failed API call when saving changes", async () => {
       axiosInstance.post.mockRejectedValueOnce(new Error("Network Error"));
+      const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+
       renderOrgDash();
       const profileSection = screen.getByTestId("org-profile");
       // const aboutSection = screen.getByTestId("org-summary");
@@ -277,8 +279,10 @@ const dummyUser = {
       const saveButton = profileSection.querySelector(".profile-txtbx-done");
       userEvent.click(saveButton);
       await waitFor(() => {
-        expect(window.alert).toHaveBeenCalledWith("An error occurred while updating About section.");
+        expect(mockAlert).toHaveBeenCalledWith("An error occurred while updating the about section.");
       });
+      mockAlert.mockRestore();
+
     });
   });
 
