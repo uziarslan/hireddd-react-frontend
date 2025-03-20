@@ -9091,3 +9091,11 @@ button.edit-button.profile-summry-close-button {
 button.flash-close {
   all: unset;
 }
+
+.blurred-contact {
+  position: relative;
+  filter: blur(4px); /* Blurs the text */
+  pointer-events: none; /* Prevents interaction */
+  user-select: none; /* Prevents copying */
+}
+

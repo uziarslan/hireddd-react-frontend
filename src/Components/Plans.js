@@ -1,11 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../Assets/Css/styles.min.css";
 import heroShape from "../Assets/images/hero-shape.png";
 import HomePageNavbar from "../Components/HomePageNav";
 import HomePageFoot from "./HomePageFoot";
+import { AuthContext } from "../Context/AuthContext";
 
 export default function Plans() {
   const [modalName, setModalName] = useState("");
+  const { user, updateUser } = useContext(AuthContext);
+  
+  //method to buy premium - no payment - Dylan
+  const handleBuyPremium = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/v1/profile/buy-premium/${user._id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert("Premium activated! Reload the page to see changes.");
+      } else {
+        alert("Failed to upgrade to premium.");
+      }
+    } catch (error) {
+      console.error("Error buying premium:", error);
+      alert("An error occurred.");
+    }
+  };
+
+
 
   return (
     <>
@@ -162,6 +186,10 @@ export default function Plans() {
                           We automatically bill on the 1st of each month.
                         </p>
                       </div>
+                      {/* This button is to activate premium with no payment*/}
+                      <button onClick={handleBuyPremium} className="job-popup">
+                        Activate Premium - Dev
+                      </button>
                       <div className="plan-payment-box">
                         <div className="payment-box-left">
                           <h4>{modalName} Plan</h4>

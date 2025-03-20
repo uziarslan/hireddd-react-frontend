@@ -13,6 +13,8 @@ import axiosInstance from "../services/axiosInstance";
 import Loading from "./Loading";
 import { AuthContext } from "../Context/AuthContext";
 import AddTalentToJob from "./modals/AddTalentToJob";
+import { useNavigate } from "react-router-dom";
+
 
 export default function ProfilePage() {
   const { user } = useContext(AuthContext);
@@ -21,6 +23,10 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showTalentAdd, setShowTalentAdd] = useState(false);
+  const [hasPremium, setHasPremium] = useState(false);
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchTalentProfile = async () => {
@@ -47,6 +53,24 @@ export default function ProfilePage() {
     }
   }, [user, talent]);
 
+  //checking if org has premium - Dylan
+  useEffect(() => {
+    const checkPremiumStatus = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/api/v1/profile/check-premium/${user._id}`); 
+        const data = await response.json();
+        setHasPremium(data.hasPremium); 
+      } catch (error) {
+        console.error("Error fetching premium status:", error);
+      }
+    };
+  
+    if (user?._id) { 
+      checkPremiumStatus();
+    }
+  }, [user]);
+  
+  
   if (isLoading) return <Loading isLoading={isLoading} />;
 
   if (!user || !talent || !talent.skills) return null;
@@ -168,14 +192,31 @@ export default function ProfilePage() {
                   </div>
                   <div className="profile-edit-set">
                     <div className="profile-edit-title">Contact Details</div>
-                    <div className="profile-edit-text">
+
+                    <div className={`profile-edit-text ${!hasPremium ? "blurred-contact" : ""}`}>
                       <p>
-                        <strong>Phone</strong> +921234567
+                        <strong>Phone</strong> {hasPremium ? talent.phone : "XXXXXXXXXXX"}
                       </p>
                       <p>
-                        <strong>Email</strong> {talent.username}
+                        <strong>Email</strong> {hasPremium ? talent.username : "********@****.com"}
                       </p>
                     </div>
+
+                    {!hasPremium && (
+                      <div className="get-premium-btn">
+                      <Link to="/plans" className="premium-btn-link"> 
+                        <div className="premium-btn-icon">
+                          <img src={guranteeIcon} alt="Icon" />
+                        </div>
+                        <div className="premium-btn-text">
+                          <div className="btn-top-text">Get Premium</div>
+                          <div className="btn-bottom-text">
+                            To view more user details
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                    )}
                   </div>
                   <div className="profile-edit-set">
                     <div
@@ -355,20 +396,6 @@ export default function ProfilePage() {
                         <img src={linkedIn} alt="Icon" />
                       </Link>
                     </div>
-                  </div>
-
-                  <div className="get-premium-btn">
-                    <Link to="#">
-                      <div className="premium-btn-icon">
-                        <img src={guranteeIcon} alt="Icon" />
-                      </div>
-                      <div className="premium-btn-text">
-                        <div className="btn-top-text">Get Premium</div>
-                        <div className="btn-bottom-text">
-                          To view more user details
-                        </div>
-                      </div>
-                    </Link>
                   </div>
                 </div>
               </div>
