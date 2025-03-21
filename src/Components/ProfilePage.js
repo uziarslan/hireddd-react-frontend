@@ -218,48 +218,8 @@ export default function ProfilePage() {
                     </div>
                     )}
                   </div>
+                  {hasPremium && (
                   <div className="profile-edit-set">
-                    <div
-                      id="addprofilelink"
-                      className="job-popup-detail profile-links-popup mfp-hide"
-                    >
-                      <h2 className="job-popup-title">Portfolio Links</h2>
-                      <div className="popup-links">
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={socialIcon} alt="Portfolio badge" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="text" placeholder="Add Link" />
-                          </div>
-                        </div>
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={socialIcon1} alt="Portfolio badge" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="text" placeholder="Add Link" />
-                          </div>
-                        </div>
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img
-                              src="../assets/src/images/potfolio-link-badge.svg"
-                              alt="Portfolio badge"
-                            />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="text" placeholder="Add Link" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="status-popup-bottom-btns">
-                        <button className="outline-button popup-modal-dismiss">
-                          Cancel
-                        </button>
-                        <button className="fill-button">Save</button>
-                      </div>
-                    </div>
                     <div className="profile-edit-title">Portfolio</div>
                     <div className="profile-edit-socials">
                       <Link to="#" className="profile-edit-social-icon">
@@ -270,126 +230,31 @@ export default function ProfilePage() {
                       </Link>
                     </div>
                   </div>
+                )}
+                  {hasPremium && (
                   <div className="profile-edit-set">
-                    <div
-                      id="attachdocument"
-                      className="job-popup-detail profile-links-popup mfp-hide"
-                    >
-                      <h2 className="job-popup-title">Add Certificate</h2>
-                      <div className="popup-links">
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={pdfIcon} alt="Portfolio badge" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="file" placeholder="Add Link" />
-                          </div>
-                        </div>
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={pdfIcon} alt="Portfolio badge" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="file" placeholder="Add Link" />
-                          </div>
-                        </div>
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={pdfIcon} alt="Portfolio badge" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="file" placeholder="Add Link" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="status-popup-bottom-btns">
-                        <button className="outline-button popup-modal-dismiss">
-                          Cancel
-                        </button>
-                        <button className="fill-button">Save</button>
-                      </div>
-                    </div>
                     <div className="profile-edit-title">Attach Documents</div>
                     <div className="profile-edit-socials">
-                        {/* {Resume view - DYLAN & MONTE } */}
-                      { talent.documents && talent.documents.length > 0 ?  
-                        (
-                          talent.documents.map((doc, index) => {
-                            if (!doc || !doc.fileData) return null; // Safeguard to skip invalid documents
-  
-                            return (
-                              <div key={index} className="document-item">
-                                <a
-                                  href={doc.fileData}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  // download={doc.fileName}
-                                >
-                                  <img
-                                    src={pdfIcon}
-                                    alt={`Document ${index + 1}`}
-                                  />
-                                </a>
-                                <div className="document-name">
-                                  {doc.fileName}
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <div>No documents available</div>
-                        )
-                      }
-                      {/* <Link to="#" className="profile-edit-social-icon">
-                        <img src={pdfIcon} alt="Icon" />
-                      </Link>
-                      <Link to="#" className="profile-edit-social-icon">
-                        <img src={pdfIcon} alt="Icon" />
-                      </Link>
-                      <Link to="#" className="profile-edit-social-icon">
-                        <img src={pdfIcon} alt="Icon" />
-                      </Link> */}
+                      {talent.documents && talent.documents.length > 0 ? (
+                        talent.documents.map((doc, index) => {
+                          if (!doc || !doc.fileData) return null; // Skip invalid documents
+                          return (
+                            <div key={index} className="document-item">
+                              <a href={doc.fileData} target="_blank" rel="noopener noreferrer">
+                                <img src={pdfIcon} alt={`Document ${index + 1}`} />
+                              </a>
+                              <div className="document-name">{doc.fileName}</div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div>No documents available</div>
+                      )}
                     </div>
                   </div>
+                )}
+                  {hasPremium && (
                   <div className="profile-edit-set">
-                    <div
-                      id="linkedin-popup"
-                      className="job-popup-detail profile-links-popup mfp-hide"
-                    >
-                      <h2 className="job-popup-title">Portfolio Links</h2>
-                      <div className="popup-links">
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={linkedIn} alt="Icon" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="text" placeholder="Add Link" />
-                          </div>
-                        </div>
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={linkedIn} alt="Icon" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="text" placeholder="Add Link" />
-                          </div>
-                        </div>
-                        <div className="popup-link-item">
-                          <div className="popup-link-icon">
-                            <img src={linkedIn} alt="Icon" />
-                          </div>
-                          <div className="popup-link-title">
-                            <input type="text" placeholder="Add Link" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="status-popup-bottom-btns">
-                        <button className="outline-button popup-modal-dismiss">
-                          Cancel
-                        </button>
-                        <button className="fill-button">Save</button>
-                      </div>
-                    </div>
                     <div className="profile-edit-title">LinkedIn</div>
                     <div className="profile-edit-socials">
                       <Link to="#" className="profile-edit-social-icon">
@@ -397,6 +262,7 @@ export default function ProfilePage() {
                       </Link>
                     </div>
                   </div>
+                )}
                 </div>
               </div>
             </div>
