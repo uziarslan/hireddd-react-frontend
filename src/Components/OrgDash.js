@@ -590,7 +590,7 @@ export default function OrgDash() {
                         <div className="profile-head-text">{user.location}</div>
                       </div>
                     </div>
-                    <div className="profile-head-right">
+                    <div className="profile-head-right" data-testid="org-create-job">
                       <Link to="/organization/createJob">
                         <button className="resume-btn fill-btn">
                           Create Job
