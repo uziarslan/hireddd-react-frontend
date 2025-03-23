@@ -13,6 +13,7 @@ import Loading from "./Loading";
 import { useNavigate } from "react-router-dom";
 // import svgs
 import { bookmarkSVG  } from "../Assets/vectors/ButtonVectors";
+import jobService from "../services/jobService";
 
 // EGBAIYELO - SVGs
 // These are constants and they are not all intelligeable so i declare them as components
@@ -114,6 +115,12 @@ export default function OrgDash() {
 
   const [isEditing, setIsEditing] = useState("");
 
+  const [candidates, setCandidates] = useState([]);
+  const [currentCandPage, setCurrentCandPage] = useState(1);
+  const [candidatesPerPage] = useState(9);
+  const [currentCands, setCurrentCands] = useState([]);
+  const [pageNumbers, setPageNumbers] = useState(1);
+
   const navigate = useNavigate();
 
   // sending a change to the user object, in the backend, 
@@ -131,6 +138,65 @@ export default function OrgDash() {
     if (user?.role && user.role !== 'organization') {
       navigate('/');
     }
+
+    setIsLoading(true)
+    const getCandidates = async () => {
+      try {
+        const jobs = await jobService.getJobsbyOrgID(user._id);
+        console.log("Fetched jobs:", jobs);
+    
+        // Array to hold candidates and their associated jobs
+        const candidatesWithJobs = [];
+    
+        // Loop over each job and fetch candidates for each
+        for (const job of jobs) {
+          try {
+            // Fetching candidates for the current job
+            const candidates = await jobService.getCandidatesForJob(job._id);
+            console.log(`Fetched candidates for job ${job._id}:`, candidates);
+    
+            // If candidates exist, associate the job with each candidate
+            for (const candidate of candidates) {
+              let existingCandidate = candidatesWithJobs.find(
+                (c) => c.talentId._id === candidate.talentId._id
+              );
+
+              if (existingCandidate) {
+                existingCandidate.orgJobs.push(job.title);
+              } else {
+                // If the candidate doesn't exist, create a new candidate entry
+                candidate.orgJobs = [job.title]; 
+                candidatesWithJobs.push(candidate);
+              }
+
+              // if (!candidate.orgJobs) {
+              //   candidate.orgJobs = []; 
+              // }
+    
+              // // Add the current job to the candidate's jobs array
+              // candidate.jobs.push(job);
+              // candidatesWithJobs.push(candidate);
+            }
+
+          } catch (error) {
+            console.error(`Error fetching candidates for job ${job._id}:`, error);
+          }
+        }
+
+        setCandidates(candidatesWithJobs)
+    
+        // Optionally: Process the candidates array further or set it in your state
+        console.log("Candidates with associated jobs:", candidatesWithJobs);
+    
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+        alert("Error fetching job data");
+      } finally {
+        setIsLoading(false)
+      }
+    };
+    
+    getCandidates();
     //
   }, [user, navigate]);
 
@@ -208,12 +274,15 @@ export default function OrgDash() {
     // setUserFields((prev) => ({ ...prev, [field]: value }));
   }
 
-
   const handleCloseEdit = () => {
     setIsEditing("");
     // To cancel an edit  -- MONTE
     // handleProfileEdit();
   };
+
+  const handleShortlist = () => {
+
+  }
 
   // For the next sprint
   // const handleSaveAbout = async () => {
@@ -918,21 +987,78 @@ export default function OrgDash() {
                           12-04-2024
                           <div className="calendar-icon"></div>
                         </button>
-                        <select>
-                          <option value="Value1">Interviewed</option>
+                        <select>{console.log(jobService.statuses)}
+                          <option key="all" value="all">All Statuses</option>
+                          {
+                            jobService.statuses.map((status) => (
+                               <option key={status} value={status}>{status}</option>
+                            ))
+                          }
+                          {/* cleanup */}
+                          {/* <option value="Value1">Interviewed</option>
                           <option value="Value2">Interviewed 2</option>
-                          <option value="Value3">Interviewed 3</option>
+                          <option value="Value3">Interviewed 3</option> */}
                         </select>
                         <select>
-                          <option value="Value1">Job Type</option>
+                          <option value="all">All JobTypes</option>
+                          {
+                            jobService.jobTypes.map((jobtype) => (
+                              <option key={jobtype} value={jobtype}>{jobtype}</option>
+                            ))
+                          }
+                          {/* cleanup */}
+                          {/* <option value="Value1">Job Type</option>
                           <option value="Value2">Job Type 2</option>
-                          <option value="Value3">Job Type 3</option>
+                          <option value="Value3">Job Type 3</option> */}
                         </select>
                       </div>
                     </div>
                     <div className="shortlisted-tabs-content-area">
                       <div className="shortlisted-tabs-content">
-                        <div className="profile-content-head">
+                        {
+                          candidates.map((candidate) => (
+                            <div className="profile-content-head">
+                              <div className="profile-head-left">
+                                <div className="profile-head-image">
+                                  <img src={dummyProfile} alt="Avatar" />
+                                </div>
+                                <div className="profile-head-info">
+                                  <h2 className="profile-head-title">
+                                    {candidate.talentId.firstName || ""}
+                                    {candidate.talentId.lastName || ""}
+                                  </h2>
+                                  <div className="profile-head-subtext">
+                                    Jobs Applied for <br></br>
+                                    {candidate.orgJobs.map((title) => (
+                                      <>
+                                        <span>{title}</span><br/>
+                                      </>
+                                    ))}
+                                  </div>
+                                  <div className="profile-head-text">
+                                    12-04-2024
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="profile-head-right">
+                                <button className="resume-btn fill-btn">
+                                  <div className="play-icon">
+                                    <img src={playIcon} alt="Play icon" />
+                                  </div>
+                                  View profile
+                                </button>
+                                <Link className="button outline resume-button">
+                                  <div className="play-icon">
+                                    <img src={eyeIcon} alt="Eye Icon" />
+                                  </div>
+                                  View video
+                                </Link>
+                              </div>
+                            </div>
+                          ))
+                        }
+                        {/* cleanup */}
+                        {/* <div className="profile-content-head">
                           <div className="profile-head-left">
                             <div className="profile-head-image">
                               <img src={dummyProfile} alt="Avatar" />
@@ -1065,7 +1191,7 @@ export default function OrgDash() {
                               View video
                             </Link>
                           </div>
-                        </div>
+                        </div> */}
                         <div className="custom-slider-pagination flex-between-center">
                           <button
                             className="custom-slick-nav custom-prev slick-arrow slick-disabled"

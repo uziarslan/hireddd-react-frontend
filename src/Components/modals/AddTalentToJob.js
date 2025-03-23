@@ -14,7 +14,7 @@ const AddTalentToJob = ({ isOpen, onClose, talentId }) => {
   // const [selectedStatuses, setSelectedStatuses] = useState({});
   const [statusMap, setStatusMap] = useState({});
 
-  const statuses = ["shortlisted", "interviewed", "assessed", "hired", "rejected"]
+  const statuses = jobService.statuses
 
   useEffect(() => {
     // const statusMap = {}

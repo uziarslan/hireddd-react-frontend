@@ -23,11 +23,6 @@ import JobDetails from "./modals/JobDetails"; // - EGBAIYELO
 import { useNavigate } from "react-router-dom";
 
 
-
-
-
-
-
 export default function TalentDash() {
 
   const { user, updateUser } = useContext(AuthContext);
@@ -69,7 +64,7 @@ export default function TalentDash() {
     setShowResumeModal(false);
   };
 
-  // -- egbaiyelo
+  // -- Egbaiyelo
   const [showJobDetails, setShowJobDetails] = useState(false);
   const [jobDetailId, setJobDetailId] = useState("");
 

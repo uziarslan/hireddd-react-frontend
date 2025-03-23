@@ -8,6 +8,7 @@ const CANDIDATE_API_URL = process.env.REACT_APP_PUBLIC_URL + "/jobCandidates";
 // Please dont delete anything when running, they are capitalized on display
 // If you want to add hyphen do so in frontend
 const jobTypes = ["fulltime", "parttime", "contract", "remote", "hybrid"];
+const statuses = ["shortlisted", "interviewed", "assessed", "hired", "rejected"]
 
 //-- Jobs --
 // Fetch all jobs by orgID
@@ -162,6 +163,7 @@ const jobService = {
   getJobsForTalent,
 //   deleteCandidate,
   jobTypes,
+  statuses,
 };
 
 export default jobService;
