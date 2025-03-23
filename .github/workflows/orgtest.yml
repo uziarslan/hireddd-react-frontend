@@ -24,5 +24,8 @@ jobs:
     - name: Install dependencies
       run: npm install  
 
-    - name: Run Jest tests with testPathPattern
-      run: npm test -- --testPathPattern=OrgDash  
+    - name: Run Jest testPathPattern OrgDash
+      run: npm test -- --testPathPattern=OrgDash 
+
+    - name:  Run Jest testPathPattern Jobs <Dependencies>
+      run: npm test -- --testPathPattern=Jobs

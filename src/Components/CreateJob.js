@@ -48,7 +48,6 @@ export default function CreateJob() {
       navigate('/');
     }
 
-
     if (job) {
       if(job.orgId !== user._id)
         navigate('/');
@@ -165,20 +164,20 @@ export default function CreateJob() {
 
               {/* Title */}
               <div className="createjob-edit-title">Title</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-title">
                 <input
                   type="text"
                   value={title}
                   placeholder="Title"
                   onChange={(e) => setTitle(e.target.value)}
                 />
-                {/* <div>NB: You already have a job by this name</div> */}
+                <div>NB: You already have a job by this name, - <span>edit instead?</span></div>
               </div>
 
 
               {/* Description */}
               <div className="createjob-edit-title">Description</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-description">
 
                 <textarea
                   ref={textareaRef}
@@ -194,7 +193,7 @@ export default function CreateJob() {
 
               {/* Responsibilities */}
               <div className="createjob-edit-title">Responsibilities</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-responsibilities">
 
                 <textarea
                   // ref={textareaRef} 
@@ -212,7 +211,7 @@ export default function CreateJob() {
 
               {/* Skills */}
               <div className="createjob-edit-title">Skills</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-skills">
 
                 <textarea
                   value={skills}
@@ -227,7 +226,7 @@ export default function CreateJob() {
 
               {/* Locations */}
               <div className="createjob-edit-title">Locations</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-locations">
                 <input
                   type="text"
                   value={locations}
@@ -239,7 +238,7 @@ export default function CreateJob() {
 
               {/* Salary */}
               <div className="createjob-edit-title">Salary</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-salary">
                 <input
                   type="text"
                   value={salary}
@@ -251,13 +250,14 @@ export default function CreateJob() {
 
               {/* Job Type */}
               <div className="createjob-edit-title">Job Type</div>
-              <div className="createjob-edit-text">
+              <div className="createjob-edit-text"  data-testid="create-job-jobType">
                 <div className="job-type-toggle">
 
                   {/* Restyle to div for more flexibility */}
                   {jobService.jobTypes.map((type) => (
                     <button
                       key={type} 
+                      data-testid={`jobType-${type}`}
                       type="button"
                       className={`job-toggle-btn ${jobType.includes(type) ? "selected" : ""}`}
                       onClick={() => toggleJobType(type)}
@@ -273,7 +273,7 @@ export default function CreateJob() {
 
               {/* Expiry */}
               <div className="createjob-edit-title">Expiry</div>
-              <div className="profile-edit-text">
+              <div className="profile-edit-text" data-testid="create-job-expiry">
                 <input
                   type="text"
                   value={expiry}
@@ -294,6 +294,7 @@ export default function CreateJob() {
                   </button>
                 </Link>
                 <button
+                  data-testid="create-job-submit"
                   onClick={handleSubmit}
                 >
                   Continue

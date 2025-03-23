@@ -30,6 +30,15 @@ const getJobById = async (jobId) => {
   }
 };
 
+const getJob = async (queryData) => {
+  try {
+    const response = await axios.get(`${API_URL}/${queryData}`);
+    return response.data;
+  } catch (error) {
+    throw new Error("JobService: Error fetching job");
+  }
+};
+
 // Create a new job
 const createJob = async (jobData) => {
   try {
