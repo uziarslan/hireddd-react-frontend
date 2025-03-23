@@ -414,8 +414,7 @@ export default function OrgDash() {
 
       // get the user and the job associated with them.
 
-      for(const candidateID of candidatesListIDs)
-      {
+      for (const candidateID of candidatesListIDs) {
         // get user
         const candidate_profile = await fetch()
       }
@@ -670,10 +669,12 @@ export default function OrgDash() {
                         <h2 className="profile-head-title">
                           {user.firstName} {user.lastName}
                         </h2>
-                        <div className="profile-head-subtext">
-                          {user.industry}
-                        </div>
-                        <div className="profile-head-text">{user.location}</div>
+                        {user.industry != "undefined" && (
+                          <div className="profile-head-subtext">
+                            {user.industry}
+                          </div>
+                        )}
+                        <div className="profile-head-text">{user.location != "undefined" ? user.location : ""}</div>
                       </div>
                     </div>
                     <div className="profile-head-right">
@@ -720,7 +721,7 @@ export default function OrgDash() {
                       <div className="profile-edit-text" data-testid="org-summary">
                         <p
                           className={`${isEditing === "about" ? "profile-summry-edit" : ""
-                            }`}>{user.about}</p>
+                            }`}>{user.about != "undefined" ? user.about : ""}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "about" ? "" : "profile-summry-edit"
@@ -776,7 +777,7 @@ export default function OrgDash() {
                       {/* {user.website.split("https://")} */}
                       <div className="profile-edit-text" data-testid="org-website">
                         <a href={website} className={`${isEditing === "website" ? "profile-summry-edit" : "profile-txtbx-link"
-                          }`}>{user.website} </a>
+                          }`}>{user.website != "undefined" ? user.website : ""} </a>
 
                         <div className={`profile-about-edit ${isEditing === "website" ? "" : "profile-summry-edit"
                           }`}>
@@ -829,7 +830,7 @@ export default function OrgDash() {
                       <div className="profile-edit-text" data-testid="org-industry">
 
                         <p className={`${isEditing === "industry" ? "profile-summry-edit" : ""
-                          }`}>{user.industry}</p>
+                          }`}>{user.industry != "undefined" ? user.industry : ""} </p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "industry" ? "" : "profile-summry-edit"
@@ -884,7 +885,7 @@ export default function OrgDash() {
                       <div className="profile-edit-text" data-testid="org-companySize">
 
                         <p className={`${isEditing === "companySize" ? "profile-summry-edit" : ""
-                          }`}>{user.companySize}</p>
+                          }`}>{user.companySize != "undefined" ? user.companySize : ""}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "companySize" ? "" : "profile-summry-edit"
@@ -938,7 +939,7 @@ export default function OrgDash() {
                       <div className="profile-edit-text" data-testid="org-location">
                         <p
                           className={`${isEditing === "location" ? "profile-summry-edit" : "profile-txtbx-link"
-                            }`}>{user.location}</p>
+                            }`}>{user.location != "undefined" ? user.location : ""}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "location" ? "" : "profile-summry-edit"
@@ -1067,7 +1068,7 @@ export default function OrgDash() {
                       </div>
 
 
-                      
+
                       <div className="shortlisted-tabs-content">
                         {/*  */}
 
