@@ -169,6 +169,7 @@ export default function OrgDash() {
                 candidatesWithJobs.push(candidate);
               }
 
+              // cleanup
               // if (!candidate.orgJobs) {
               //   candidate.orgJobs = []; 
               // }
@@ -199,6 +200,26 @@ export default function OrgDash() {
     getCandidates();
     //
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (candidates.length > 0) {
+
+      // - MONTE
+      const handleCandSplice = async () => {
+        // userJobs.length === 0
+        // Job align
+        // console.log("these are the jobs i got", userJobs);
+        const totalPages = Math.ceil(candidates.length / candidatesPerPage);
+        setPageNumbers(totalPages);
+
+        const indexOfLastCandidate = currentCandPage * candidatesPerPage;
+        const indexOfFirstCandidate = indexOfLastCandidate - candidatesPerPage;
+        const currentCandidates = candidates.slice(indexOfFirstCandidate, indexOfLastCandidate);
+        setCurrentCands(currentCandidates);
+      };
+      handleCandSplice();
+    }
+  }, [candidates, currentCandPage, candidatesPerPage]);
 
 
   const handleFieldChange = (field, value) => {
@@ -280,6 +301,7 @@ export default function OrgDash() {
     // handleProfileEdit();
   };
 
+  // cleanup
   const handleShortlist = () => {
 
   }
@@ -1024,11 +1046,11 @@ export default function OrgDash() {
                                 </div>
                                 <div className="profile-head-info">
                                   <h2 className="profile-head-title">
-                                    {candidate.talentId.firstName || ""}
+                                    {candidate.talentId.firstName || ""} {" "}
                                     {candidate.talentId.lastName || ""}
                                   </h2>
                                   <div className="profile-head-subtext">
-                                    Jobs Applied for <br></br>
+                                    Jobs Applied for: <br></br>
                                     {candidate.orgJobs.map((title) => (
                                       <>
                                         <span>{title}</span><br/>
@@ -1196,6 +1218,10 @@ export default function OrgDash() {
                           <button
                             className="custom-slick-nav custom-prev slick-arrow slick-disabled"
                             aria-disabled="true"
+                            onClick={() =>
+                              setCurrentCandPage(currentCandPage - 1)
+                            }
+                            disabled={currentCandPage === 1}
                           >
                             <svg
                               width="16"
@@ -1214,12 +1240,16 @@ export default function OrgDash() {
                             className="slides-numbers"
                             style={{ display: "block" }}
                           >
-                            <span className="active">04</span> of{" "}
-                            <span className="total">10</span>
+                            <span className="active">{currentCandPage}</span> of{" "}
+                            <span className="total">{pageNumbers}</span>
                           </div>
                           <button
                             className="custom-slick-nav custom-next slick-arrow"
                             aria-disabled="false"
+                            onClick={() =>
+                              setCurrentCandPage(currentCandPage + 1)
+                            }
+                            disabled={currentCandPage === pageNumbers}
                           >
                             <svg
                               width="16"
