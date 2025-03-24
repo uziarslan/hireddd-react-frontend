@@ -19,6 +19,8 @@ jest.mock("axios", () => ({
     })),
 }));
   
+// global.console.warn = jest.fn();
+
 jest.mock("../../services/axiosInstanceChat", () => ({
     get: jest.fn(() => Promise.resolve({ data: [] })),
     post: jest.fn(() => Promise.resolve({ data: {} })),
@@ -42,6 +44,8 @@ jest.mock("../../services/axiosInstance", () => ({
 
 jest.mock("../../services/jobService", () => ({
     getJobsbyOrgId: jest.fn().mockResolvedValue([]), 
+    statuses: ["open", "closed", "pending"],
+    jobTypes: ["parttime", "fulltime"]
 }));
 
 jest.mock("../../services/authService", () => ({
@@ -290,21 +294,22 @@ const dummyUser = {
 
 
   describe("Create Job", () => { 
-    beforeEach(() => {
-      jest.clearAllMocks();
-      jobService.getJobsbyOrgId.mockResolvedValueOnce([]);
-      axiosInstance.get.mockResolvedValueOnce({ data: [] });
+    // beforeEach(() => {
+    //   jest.clearAllMocks();
+    //   jobService.getJobsbyOrgId.mockResolvedValueOnce([]);
+    //   axiosInstance.get.mockResolvedValueOnce({ data: [] });
   
-    }); 
+    // }); 
     
-    test("check if user create job appears when createjob button is clicked.", async () => {
-      renderOrgDash();
-      const createJobButton = screen.getByTestId("org-create-job").querySelector('button');
-      userEvent.click(createJobButton);
-      await waitFor(() => {
-        expect(screen.getByTestId("current-tab")).toHaveTextContent("hiredddStatus");
-      });
-    });
+    // Tested in jobs
+    // test("check if user create job appears when createjob button is clicked.", async () => {
+    //   renderOrgDash();
+    //   const createJobButton = screen.getByTestId("org-create-job").querySelector('button');
+    //   userEvent.click(createJobButton);
+    //   await waitFor(() => {
+    //     expect(screen.getByTestId("current-tab")).toHaveTextContent("hiredddStatus");
+    //   });
+    // });
 
   //   test("check if createJob title renders", async () => {
   //     renderOrgDash();

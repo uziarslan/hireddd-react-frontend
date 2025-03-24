@@ -140,6 +140,7 @@ export default function OrgDash() {
     }
 
     setIsLoading(true)
+    // Getting candidates for the org
     const getCandidates = async () => {
       try {
         const jobs = await jobService.getJobsbyOrgID(user._id);
@@ -168,15 +169,6 @@ export default function OrgDash() {
                 candidate.orgJobs = [job.title]; 
                 candidatesWithJobs.push(candidate);
               }
-
-              // cleanup
-              // if (!candidate.orgJobs) {
-              //   candidate.orgJobs = []; 
-              // }
-    
-              // // Add the current job to the candidate's jobs array
-              // candidate.jobs.push(job);
-              // candidatesWithJobs.push(candidate);
             }
 
           } catch (error) {
@@ -186,8 +178,7 @@ export default function OrgDash() {
 
         setCandidates(candidatesWithJobs)
     
-        // Optionally: Process the candidates array further or set it in your state
-        console.log("Candidates with associated jobs:", candidatesWithJobs);
+        // console.log("Candidates with associated jobs:", candidatesWithJobs);
     
       } catch (error) {
         console.error("Error fetching jobs:", error);
@@ -206,9 +197,7 @@ export default function OrgDash() {
 
       // - MONTE
       const handleCandSplice = async () => {
-        // userJobs.length === 0
-        // Job align
-        // console.log("these are the jobs i got", userJobs);
+          // Job align
         const totalPages = Math.ceil(candidates.length / candidatesPerPage);
         setPageNumbers(totalPages);
 
@@ -476,79 +465,42 @@ export default function OrgDash() {
   const [shortlisted, setShortlisted] = useState([]);
 
 
-  useEffect(() => {
-    if (tabName === "hiredddStatus") {
-      getJobCandidates();
-      console.log("Candidates fetched.")
-    }
-  }, [tabName]);
-
-
-  const getJobCandidates = async () => {
-    try {
-      // Assuming jobService.getJobsbyOrgID returns a promise that resolves to an array of jobs
-      const jobs = await jobService.getJobsbyOrgID(user._id);
-      let candidatesListIDs = [];
-
-      // Use a for...of loop to iterate through the jobs
-      for (const job of jobs) {
-        // Pass job._id (or the appropriate job identifier) to getCandidatesForJob
-        const jobCandidates = await jobService.getCandidatesForJob(job._id);
-        // Merge candidates from the current job into the candidatesList
-        candidatesListIDs = candidatesListIDs.concat(jobCandidates);
-      }
-
-      // get the user and the job associated with them.
-
-      for (const candidateID of candidatesListIDs) {
-        // get user
-        const candidate_profile = await fetch()
-      }
-
-      // Update the shortlisted state with all candidates
-      setShortlisted(candidatesList);
-      console.log(candidatesList)
-    } catch (error) {
-      console.error("Error getting job candidates:", error);
-    }
-  };
-
-  // const getJobCandidates = async() => 
-  // {
-
-  //   // get org id
-
-  //   let getShortlisted = []
-
-  //   const _orgid = user?._id;
-
-  //   try
-  //   {
-  //     const jobs = jobService.getJobsbyOrgID(_orgid);
+  // useEffect(() => {
+  //   if (tabName === "hiredddStatus") {
+  //     getJobCandidates();
+  //     console.log("Candidates fetched.")
   //   }
-  //   catch(e)
-  //   {
-  //     console.error("Error getting jobs by orgID");
+  // }, [tabName]);
+
+  // Logic to be reviewed
+  // const getJobCandidates = async () => {
+  //   try {
+  //     // Assuming jobService.getJobsbyOrgID returns a promise that resolves to an array of jobs
+  //     const jobs = await jobService.getJobsbyOrgID(user._id);
+  //     let candidatesListIDs = [];
+
+  //     // Use a for...of loop to iterate through the jobs
+  //     for (const job of jobs) {
+  //       // Pass job._id (or the appropriate job identifier) to getCandidatesForJob
+  //       const jobCandidates = await jobService.getCandidatesForJob(job._id);
+  //       // Merge candidates from the current job into the candidatesList
+  //       candidatesListIDs = candidatesListIDs.concat(jobCandidates);
+  //     }
+
+  //     // get the user and the job associated with them.
+
+  //     for (const candidateID of candidatesListIDs) {
+  //       // get user
+  //       const candidate_profile = await fetch()
+  //     }
+
+  //     // Update the shortlisted state with all candidates
+  //     setShortlisted(candidatesList);
+  //     console.log(candidatesList)
+  //   } catch (error) {
+  //     console.error("Error getting job candidates:", error);
   //   }
-
-  //   foreach(job in jobs)
-  //   {
-  //     getShortlisted.append(jobService.getCandidatesForJob())
-  //   }
-
-  //   setShortlisted(getShortlisted);
-
-  //   //  get job ids from org
-
-  //   // /jobs/org/:orgId
-
-
-  //   // get all shortlisted candidates from that job
-
-
-  //   // "/jobCandidates/job/:jobId"
-  // }
-
+  // };
 
   // formerly && !user
   if (isLoading) return <Loading isLoading={isLoading} />;
@@ -1129,7 +1081,7 @@ export default function OrgDash() {
                     <div className="shortlisted-tabs-content-area">
                       <div className="shortlisted-tabs-content">
                         {
-                          candidates.map((candidate) => (
+                          currentCands.map((candidate) => (
                             <div className="profile-content-head">
                               <div className="profile-head-left">
                                 <div className="profile-head-image">
@@ -1204,7 +1156,7 @@ export default function OrgDash() {
                           </div>
                         </div>
                         {/*  */}
-                        <div className="profile-content-head">
+                        {/* <div className="profile-content-head">
                           <div className="profile-head-left">
                             <div className="profile-head-image">
                               <img src={dummyProfile} alt="Avatar" />
@@ -1305,7 +1257,7 @@ export default function OrgDash() {
                               View video
                             </Link>
                           </div>
-                        </div> */}
+                        </div>  */}
                         <div className="custom-slider-pagination flex-between-center">
                           <button
                             className="custom-slick-nav custom-prev slick-arrow slick-disabled"
