@@ -43,6 +43,12 @@ export default function CreateJob() {
   const [jobType, setJobType] = useState("");
   const [expiry, setExpiry] = useState("");
 
+  const [jobs, setJobs] = useState([]);
+
+  const [issues, setIssues] = useState([]);
+  const [showJobs, setShowJobs] = useState("");
+
+
   useEffect(() => {
     if(user?.role && user.role !== 'organization') {
       navigate('/');
@@ -63,6 +69,18 @@ export default function CreateJob() {
       setJobType(job.jobType || "");
       setExpiry(job.expiry || "");
     }
+
+    const fetchJobs = async () => {
+      try{
+        const jobsList = await jobService.getJobsbyOrgID(user._id)
+        console.log(jobsList)
+        setJobs(jobsList)
+      } catch (error) {
+        console.error(error)
+        alert("Trouble fetching data")
+      }
+    }
+    fetchJobs()
   }, [user, job, navigate]);
 
   // To toggle between the job types if selected or not
@@ -100,7 +118,6 @@ export default function CreateJob() {
       } else {
         alert('Invalid format: Please use yyyy-mm-dd.');
       }
-
     }
 
     const jobData = {
@@ -137,6 +154,45 @@ export default function CreateJob() {
       e.target.style.height = `${e.target.scrollHeight}px`; 
   };
 
+
+  const handleTitleInput = (e) => {
+    console.log(jobs, e)
+    // if creating a job
+    let foundJob;
+    if (!job) {
+      foundJob = jobs//.find((jobItem) => jobItem.title === e.target.value);
+      // Query similarity but lowercased and spaces removed
+      .find((jobItem) => {
+        const normalizedJobTitle = (jobItem.title || '').toLowerCase().replace(/\s+/g, '');
+        const normalizedInputValue = (e.target.value || '').toLowerCase().replace(/\s+/g, '');
+        return normalizedJobTitle === normalizedInputValue;
+      })
+    } else {
+      foundJob = jobs
+        .filter((jobItem) => jobItem.id !== job.id)
+        // .find((jobItem) => jobItem.title === e.target.value);
+        .find((jobItem) => {
+          const normalizedJobTitle = (jobItem.title || '').toLowerCase().replace(/\s+/g, '');
+          const normalizedInputValue = (e.target.value || '').toLowerCase().replace(/\s+/g, '');
+          return normalizedJobTitle === normalizedInputValue;
+        })
+    }
+
+    if (foundJob) 
+      setIssues((prevIssues) => [...prevIssues, 'duplicateTitle']);
+    else setIssues((prevIssues) => prevIssues.filter(error => error !== 'duplicateTitle'));
+  }
+
+  let debounceTimeout;
+
+  const handleDebouncedInput = (e) => {
+    clearTimeout(debounceTimeout); // Clear the previous timeout
+
+    debounceTimeout = setTimeout(() => {
+      handleTitleInput(e); // Call the actual handler after delay
+    }, 500); // Delay in ms (e.g., 500ms)
+  };
+
   if (isLoading && !user) return <Loading isLoading={isLoading} />;
   
 
@@ -148,159 +204,199 @@ export default function CreateJob() {
       />
 
       <main id="main-section" className="main-section">
-        <div className="wrapper wide-1230">
-          <div className="createjob-form profile-content-area">
-            <div className="profile-edit-options">
+        <div className="wrapper ">
 
-              <div className="flexed-header">
-                <h3 id="createjob-title">{job ? "Edit a job" : "Create a job"}</h3>
-                <Link 
-                  to={"/organization/dashboard"}
-                >
-                  {closeSVG()}
-                </Link>
+          {/* Show job button */}
+          {
+            showJobs ? (
+              <button 
+                className="show-job-button"
+                onClick={() => setShowJobs(false)}>Remove Jobs</button>
+            ) : (
+              <button 
+                className="show-job-button"
+                onClick={() => setShowJobs(true)}>See Jobs</button>
+            )
+          }
+
+          <div className={`createjob-form ${showJobs ? "profile-body-row" : "profile-content-area"}`}>
+            <div className={`${showJobs ? "show-job-sidebar" : ""}`}>
+              <div>
+                {
+                  showJobs ? (
+                    <>
+                      <h2>Your Jobs</h2> 
+                      {
+                      jobs.map((thisJob) => (
+                        <>
+                          <div className="edit-job-tab clickable" 
+                            onClick={() => setJob(thisJob)}
+                          >
+                            <div className="createjob-edit-title show-job-title">{thisJob.title}</div>
+                            <div>{thisJob.description}</div>
+                          </div>
+                        </>
+                      ))}
+                    </>
+                  ) : (null)
+                }
               </div>
 
+            </div>
+            <div className={`${showJobs ? "show-job-right" : ""}`}>
+              <div className="profile-edit-options">
 
-              {/* Title */}
-              <div className="createjob-edit-title">Title</div>
-              <div className="profile-edit-text" data-testid="create-job-title">
-                <input
-                  type="text"
-                  value={title}
-                  placeholder="Title"
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <div>NB: You already have a job by this name, - <span>edit instead?</span></div>
-              </div>
-
-
-              {/* Description */}
-              <div className="createjob-edit-title">Description</div>
-              <div className="profile-edit-text" data-testid="create-job-description">
-
-                <textarea
-                  ref={textareaRef}
-                  onInput={handleTextAreaInput}
-                  value={description}
-                  placeholder=""
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                />
-              </div>
-
-
-              {/* Responsibilities */}
-              <div className="createjob-edit-title">Responsibilities</div>
-              <div className="profile-edit-text" data-testid="create-job-responsibilities">
-
-                <textarea
-                  // ref={textareaRef} 
-                  // className="light-scrollbar"
-                  value={responsibilities}
-                  placeholder=""
-                  onInput={handleTextAreaInput}
-                  onChange={(e) => {
-                    // handleResponsibilitiesChange;
-                    setResponsibilities(e.target.value);
-                  }}
-                ></textarea>
-              </div>
-
-
-              {/* Skills */}
-              <div className="createjob-edit-title">Skills</div>
-              <div className="profile-edit-text" data-testid="create-job-skills">
-
-                <textarea
-                  value={skills}
-                  placeholder=""
-                  onInput={handleTextAreaInput}
-                  onChange={(e) => {
-                    setSkills(e.target.value);
-                  }}
-                ></textarea>
-              </div>
-
-
-              {/* Locations */}
-              <div className="createjob-edit-title">Locations</div>
-              <div className="profile-edit-text" data-testid="create-job-locations">
-                <input
-                  type="text"
-                  value={locations}
-                  placeholder="Location"
-                  onChange={(e) => setLocations(e.target.value)}
-                />
-              </div>
-
-
-              {/* Salary */}
-              <div className="createjob-edit-title">Salary</div>
-              <div className="profile-edit-text" data-testid="create-job-salary">
-                <input
-                  type="text"
-                  value={salary}
-                  placeholder="Salary"
-                  onChange={(e) => setSalary(e.target.value)}
-                />
-              </div>
-
-
-              {/* Job Type */}
-              <div className="createjob-edit-title">Job Type</div>
-              <div className="createjob-edit-text"  data-testid="create-job-jobType">
-                <div className="job-type-toggle">
-
-                  {/* Restyle to div for more flexibility */}
-                  {jobService.jobTypes.map((type) => (
-                    <button
-                      key={type} 
-                      data-testid={`jobType-${type}`}
-                      type="button"
-                      className={`job-toggle-btn ${jobType.includes(type) ? "selected" : ""}`}
-                      onClick={() => toggleJobType(type)}
-                    >
-                      {type} 
-                    </button>
-                  ))}
-
-
-                </div>
-              </div>
-
-
-              {/* Expiry */}
-              <div className="createjob-edit-title">Expiry</div>
-              <div className="profile-edit-text" data-testid="create-job-expiry">
-                <input
-                  type="text"
-                  value={expiry}
-                  placeholder="YYYY-MM-DD"
-                  onChange={(e) => setExpiry(e.target.value)}
-                />
-              </div>
-
-              <div className="createjob-form-btns">
-
-                <Link
-                  to={"/organization/dashboard"}
-                >
-                  <button
-                    className="button outline resume-button"
+                <div className="flexed-header">
+                  <h3 id="createjob-title">{job ? "Edit a job" : "Create a job"}</h3>
+                  <Link 
+                    to={"/organization/dashboard"}
                   >
-                    Cancel
-                  </button>
-                </Link>
-                <button
-                  data-testid="create-job-submit"
-                  onClick={handleSubmit}
-                >
-                  Continue
-                </button>
-              </div>
+                    {closeSVG()}
+                  </Link>
+                </div>
 
+
+                {/* Title */}
+                <div className="createjob-edit-title">Title</div>
+                <div className="profile-edit-text" data-testid="create-job-title">
+                  <input
+                    type="text"
+                    value={title}
+                    placeholder="Title"
+                    onChange={(e) => setTitle(e.target.value)}
+                    onInput={(e) => handleDebouncedInput(e)}
+                  />
+                  { issues.includes("duplicateTitle") ? (<div>NB: You already have a job by this name, - <span className="">edit instead?</span></div>) : (null)}
+                </div>
+
+
+                {/* Description */}
+                <div className="createjob-edit-title">Description</div>
+                <div className="profile-edit-text" data-testid="create-job-description">
+
+                  <textarea
+                    ref={textareaRef}
+                    onInput={handleTextAreaInput}
+                    value={description}
+                    placeholder=""
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                    }}
+                  />
+                </div>
+
+
+                {/* Responsibilities */}
+                <div className="createjob-edit-title">Responsibilities</div>
+                <div className="profile-edit-text" data-testid="create-job-responsibilities">
+
+                  <textarea
+                    // ref={textareaRef} 
+                    // className="light-scrollbar"
+                    value={responsibilities}
+                    placeholder=""
+                    onInput={handleTextAreaInput}
+                    onChange={(e) => {
+                      // handleResponsibilitiesChange;
+                      setResponsibilities(e.target.value);
+                    }}
+                  ></textarea>
+                </div>
+
+
+                {/* Skills */}
+                <div className="createjob-edit-title">Skills</div>
+                <div className="profile-edit-text" data-testid="create-job-skills">
+
+                  <textarea
+                    value={skills}
+                    placeholder=""
+                    onInput={handleTextAreaInput}
+                    onChange={(e) => {
+                      setSkills(e.target.value);
+                    }}
+                  ></textarea>
+                </div>
+
+
+                {/* Locations */}
+                <div className="createjob-edit-title">Locations</div>
+                <div className="profile-edit-text" data-testid="create-job-locations">
+                  <input
+                    type="text"
+                    value={locations}
+                    placeholder="Location"
+                    onChange={(e) => setLocations(e.target.value)}
+                  />
+                </div>
+
+
+                {/* Salary */}
+                <div className="createjob-edit-title">Salary</div>
+                <div className="profile-edit-text" data-testid="create-job-salary">
+                  <input
+                    type="text"
+                    value={salary}
+                    placeholder="Salary"
+                    onChange={(e) => setSalary(e.target.value)}
+                  />
+                </div>
+
+
+                {/* Job Type */}
+                <div className="createjob-edit-title">Job Type</div>
+                <div className="createjob-edit-text"  data-testid="create-job-jobType">
+                  <div className="job-type-toggle">
+
+                    {/* Restyle to div for more flexibility */}
+                    {jobService.jobTypes.map((type) => (
+                      <button
+                        key={type} 
+                        data-testid={`jobType-${type}`}
+                        type="button"
+                        className={`job-toggle-btn ${jobType.includes(type) ? "selected" : ""}`}
+                        onClick={() => toggleJobType(type)}
+                      >
+                        {type} 
+                      </button>
+                    ))}
+
+
+                  </div>
+                </div>
+
+
+                {/* Expiry */}
+                <div className="createjob-edit-title">Expiry</div>
+                <div className="profile-edit-text" data-testid="create-job-expiry">
+                  <input
+                    type="text"
+                    value={expiry}
+                    placeholder="YYYY-MM-DD"
+                    onChange={(e) => setExpiry(e.target.value)}
+                  />
+                </div>
+
+                <div className="createjob-form-btns">
+
+                  <Link
+                    to={"/organization/dashboard"}
+                  >
+                    <button
+                      className="button outline resume-button"
+                    >
+                      Cancel
+                    </button>
+                  </Link>
+                  <button
+                    data-testid="create-job-submit"
+                    onClick={handleSubmit}
+                  >
+                    Continue
+                  </button>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>

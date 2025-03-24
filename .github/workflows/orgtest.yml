@@ -3,10 +3,20 @@ name: Run Jest Tests with testPathPattern
 on:
   push:
     branches:
-      - COIS-4000-Students  
+      - COIS-4000-Students 
+    paths:
+      - '**/Org*'
+      - '**/*Org'
+      - '**/Job*'
+      - '**/*Job' 
   pull_request:
     branches:
-      - COIS-4000-Students  
+      - COIS-4000-Students 
+    paths:
+      - '**/Org*'
+      - '**/*Org'
+      - '**/Job*'
+      - '**/*Job' 
 
 jobs:
   test:
@@ -29,3 +39,6 @@ jobs:
 
     - name:  Run Jest testPathPattern Jobs <Dependencies>
       run: npm test -- --testPathPattern=Jobs
+
+    # - name:  Run Jest testPathPattern Jobs <Dependencies>
+    #   run: npm test -- --testPathPattern=TalentJobs

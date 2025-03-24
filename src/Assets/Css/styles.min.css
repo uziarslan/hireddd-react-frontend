@@ -8934,6 +8934,33 @@ button.edit-button.profile-summry-close-button {
 
 }
 
+.edit-job-tab{
+  background-color: white;
+  border-radius: .5em;
+  margin: .6em .25em;
+}
+
+.show-job-button{
+  width: 7.5em;
+}
+.show-job-title{
+  font-size:large;
+}
+.show-job-sidebar{
+  width: 275px;
+  padding: 38px 15px 38px 20px;
+  box-sizing: border-box;
+  background-color: var(--hr_white);
+  box-shadow: 0px 0px 28px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  /* position: sticky; */
+  top: 50px;
+}
+.show-job-right{
+  width: calc(100% - 275px);
+
+}
+
 /*  */
 
 
