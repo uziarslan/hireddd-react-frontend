@@ -107,6 +107,7 @@ export default function TalentDash() {
           // }
         }
         // setHasFetched(true);
+
       } catch (error) {
         console.error("Error fetching full user data:", error);
       }

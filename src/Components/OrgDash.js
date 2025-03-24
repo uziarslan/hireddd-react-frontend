@@ -252,12 +252,12 @@ export default function OrgDash() {
           body: JSON.stringify({ data: value, userType: "organization", dataField: field }),
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         alert(`${field} section updated successfully!`);
-  
+
         // Catchall switch
         switch (field) {
           case 'about':
@@ -283,7 +283,7 @@ export default function OrgDash() {
           default:
             break;
         }
-  
+
         setIsEditing(""); // Exiting edit mode
       } else {
         alert(`Failed to update the ${field} section. Please try again.`);
@@ -291,7 +291,7 @@ export default function OrgDash() {
     } catch (error) {
       console.error(`Error updating ${field} section:`, error);
       alert(`An error occurred while updating the ${field} section.`);
-    }    
+    }
     // setUserFields((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -319,12 +319,12 @@ export default function OrgDash() {
   //         body: JSON.stringify({ data: about, userType: "organization", dataField: "about" }), 
   //       }
   //     );
-  
+
   //     const result = await response.json();
-  
+
   //     if (result.success) {
   //       alert("About section updated successfully!");
-  
+
   //       setAbout(result.user.about); // Update the state with new about (using backend filtered text)
   //       updateUser({ about: result.user.about }); // Update the user state
   //       setIsEditing(""); // Exiting edit mode
@@ -353,12 +353,12 @@ export default function OrgDash() {
   //         body: JSON.stringify({ data: website, userType: "organization", dataField: "website" }), 
   //       }
   //     );
-  
+
   //     const result = await response.json();
-  
+
   //     if (result.success) {
   //       alert("Website section updated successfully!");
-  
+
   //       setWebsite(result.user.website); // Update the state with new website (using backend filtered text)
   //       updateUser({ website: result.user.website }); // Update the user state
   //       setIsEditing(""); // Exiting edit mode
@@ -383,12 +383,12 @@ export default function OrgDash() {
   //         body: JSON.stringify({ data: industry, userType: "organization", dataField: "industry" }), 
   //       }
   //     );
-  
+
   //     const result = await response.json();
-  
+
   //     if (result.success) {
   //       alert("Industry section updated successfully! fr");
-  
+
   //       setIndustry(result.user.industry); // Update the state with new industry (using backend filtered text)
   //       updateUser({ industry: result.user.industry }); // Update the user state
   //       setIsEditing(""); // Exiting edit mode
@@ -421,12 +421,12 @@ export default function OrgDash() {
   //         body: JSON.stringify({ data: companySize, userType: "organization", dataField: "companySize" }), 
   //       }
   //     );
-  
+
   //     const result = await response.json();
-  
+
   //     if (result.success) {
   //       alert("Company size section updated successfully!");
-  
+
   //       setCompanySize(result.user.companySize); // Update the state with new CompanySize (using backend filtered text)
   //       updateUser({ companySize: result.user.companySize }); // Update the user state
   //       setIsEditing(""); // Exiting edit mode
@@ -451,12 +451,12 @@ export default function OrgDash() {
   //         body: JSON.stringify({ data: location, userType: "organization", dataField: "location" }), 
   //       }
   //     );
-  
+
   //     const result = await response.json();
-  
+
   //     if (result.success) {
   //       alert("Location section updated successfully!");
-  
+
   //       setLocation(result.user.location); // Update the state with new location (using backend filtered text)
   //       updateUser({ location: result.user.location }); // Update the user state
   //       setIsEditing(""); // Exiting edit mode
@@ -469,7 +469,87 @@ export default function OrgDash() {
   //   }
 
   // }
-  
+
+
+  // Shortlisted handling
+
+  const [shortlisted, setShortlisted] = useState([]);
+
+
+  useEffect(() => {
+    if (tabName === "hiredddStatus") {
+      getJobCandidates();
+      console.log("Candidates fetched.")
+    }
+  }, [tabName]);
+
+
+  const getJobCandidates = async () => {
+    try {
+      // Assuming jobService.getJobsbyOrgID returns a promise that resolves to an array of jobs
+      const jobs = await jobService.getJobsbyOrgID(user._id);
+      let candidatesListIDs = [];
+
+      // Use a for...of loop to iterate through the jobs
+      for (const job of jobs) {
+        // Pass job._id (or the appropriate job identifier) to getCandidatesForJob
+        const jobCandidates = await jobService.getCandidatesForJob(job._id);
+        // Merge candidates from the current job into the candidatesList
+        candidatesListIDs = candidatesListIDs.concat(jobCandidates);
+      }
+
+      // get the user and the job associated with them.
+
+      for (const candidateID of candidatesListIDs) {
+        // get user
+        const candidate_profile = await fetch()
+      }
+
+      // Update the shortlisted state with all candidates
+      setShortlisted(candidatesList);
+      console.log(candidatesList)
+    } catch (error) {
+      console.error("Error getting job candidates:", error);
+    }
+  };
+
+  // const getJobCandidates = async() => 
+  // {
+
+  //   // get org id
+
+  //   let getShortlisted = []
+
+  //   const _orgid = user?._id;
+
+  //   try
+  //   {
+  //     const jobs = jobService.getJobsbyOrgID(_orgid);
+  //   }
+  //   catch(e)
+  //   {
+  //     console.error("Error getting jobs by orgID");
+  //   }
+
+  //   foreach(job in jobs)
+  //   {
+  //     getShortlisted.append(jobService.getCandidatesForJob())
+  //   }
+
+  //   setShortlisted(getShortlisted);
+
+  //   //  get job ids from org
+
+  //   // /jobs/org/:orgId
+
+
+  //   // get all shortlisted candidates from that job
+
+
+  //   // "/jobCandidates/job/:jobId"
+  // }
+
+
   // formerly && !user
   if (isLoading) return <Loading isLoading={isLoading} />;
 
@@ -675,10 +755,12 @@ export default function OrgDash() {
                         <h2 className="profile-head-title">
                           {user.firstName} {user.lastName}
                         </h2>
-                        <div className="profile-head-subtext">
-                          {user.industry}
-                        </div>
-                        <div className="profile-head-text">{user.location}</div>
+                        {user.industry != "undefined" && (
+                          <div className="profile-head-subtext">
+                            {user.industry}
+                          </div>
+                        )}
+                        <div className="profile-head-text">{user.location != "undefined" ? user.location : ""}</div>
                       </div>
                     </div>
                     <div className="profile-head-right" data-testid="org-create-job">
@@ -690,7 +772,7 @@ export default function OrgDash() {
                     </div>
                   </div>
                   <div className="profile-edit-options" data-testid="org-profile">
-                    
+
                     {/* about company section */}
 
                     <div className="profile-edit-set">
@@ -703,7 +785,7 @@ export default function OrgDash() {
                             onClick={() => { handleCloseEdit(); }}
                             className="edit-button profile-summry-close-button"
                           >
-                            { closeSVG() }
+                            {closeSVG()}
                           </button>
 
                           {/* Save edit button */}
@@ -711,21 +793,21 @@ export default function OrgDash() {
                             onClick={() => { updateField("about", about); }}
                             className="edit-button profile-txtbx-done"
                           >
-                            { bookmarkSVG() }
+                            {bookmarkSVG()}
                           </button>
                         </>
                       ) : (
                         // (pencil) edit button
                         <button className="edit-button" onClick={() => setIsEditing("about")}>
-                        { pencilSVG() } 
+                          {pencilSVG()}
                         </button>
                       )}
 
                       <div className="profile-edit-title">About Company</div>
                       <div className="profile-edit-text" data-testid="org-summary">
-                      <p  
-                        className={`${isEditing === "about" ? "profile-summry-edit" : ""
-                          }`}>{user.about}</p>
+                        <p
+                          className={`${isEditing === "about" ? "profile-summry-edit" : ""
+                            }`}>{user.about != "undefined" ? user.about : ""}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "about" ? "" : "profile-summry-edit"
@@ -753,27 +835,27 @@ export default function OrgDash() {
 
                       {/* EGBAIYELO - Making the logic more compact */}
                       {isEditing === "website" ? (
-                          <>
-                            {/* Close edit button */}
-                            <button
-                              onClick={() => { handleCloseEdit(); }}
-                              className="edit-button profile-summry-close-button"
-                            >
-                              { closeSVG() }
-                            </button>
+                        <>
+                          {/* Close edit button */}
+                          <button
+                            onClick={() => { handleCloseEdit(); }}
+                            className="edit-button profile-summry-close-button"
+                          >
+                            {closeSVG()}
+                          </button>
 
-                            {/* Save edit button */}
-                            <button
-                              onClick={() => { updateField("website", website); }}
-                              className="edit-button profile-txtbx-done"
-                            >
-                              { bookmarkSVG() }
-                            </button>
-                          </>
+                          {/* Save edit button */}
+                          <button
+                            onClick={() => { updateField("website", website); }}
+                            className="edit-button profile-txtbx-done"
+                          >
+                            {bookmarkSVG()}
+                          </button>
+                        </>
                       ) : (
                         // (pencil) edit button
                         <button className="edit-button" onClick={() => setIsEditing("website")}>
-                        { pencilSVG() }
+                          {pencilSVG()}
                         </button>
                       )}
 
@@ -781,7 +863,7 @@ export default function OrgDash() {
                       {/* {user.website.split("https://")} */}
                       <div className="profile-edit-text" data-testid="org-website">
                         <a href={website} className={`${isEditing === "website" ? "profile-summry-edit" : "profile-txtbx-link"
-                          }`}>{user.website} </a>
+                          }`}>{user.website != "undefined" ? user.website : ""} </a>
 
                         <div className={`profile-about-edit ${isEditing === "website" ? "" : "profile-summry-edit"
                           }`}>
@@ -802,7 +884,7 @@ export default function OrgDash() {
 
 
                     {/* industry */}
-                  
+
                     <div className="profile-edit-set">
                       {/* EGBAIYELO - Making the logic more compact */}
                       {isEditing === "industry" ? (
@@ -812,7 +894,7 @@ export default function OrgDash() {
                             onClick={() => { handleCloseEdit(); }}
                             className="edit-button profile-summry-close-button"
                           >
-                            { closeSVG() }
+                            {closeSVG()}
                           </button>
 
                           {/* Save edit button */}
@@ -820,21 +902,21 @@ export default function OrgDash() {
                             onClick={() => { updateField("industry", industry); }}
                             className="edit-button profile-txtbx-done"
                           >
-                            { bookmarkSVG() }
+                            {bookmarkSVG()}
                           </button>
                         </>
                       ) : (
                         // (pencil) edit button
                         <button className="edit-button" onClick={() => setIsEditing("industry")}>
-                        { pencilSVG() }
+                          {pencilSVG()}
                         </button>
                       )}
 
                       <div className="profile-edit-title">Industry</div>
                       <div className="profile-edit-text" data-testid="org-industry">
 
-                      <p className={`${isEditing === "industry" ? "profile-summry-edit" : ""
-                          }`}>{user.industry}</p>
+                        <p className={`${isEditing === "industry" ? "profile-summry-edit" : ""
+                          }`}>{user.industry != "undefined" ? user.industry : ""} </p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "industry" ? "" : "profile-summry-edit"
@@ -867,7 +949,7 @@ export default function OrgDash() {
                             onClick={() => { handleCloseEdit(); }}
                             className="edit-button profile-summry-close-button"
                           >
-                            { closeSVG() }
+                            {closeSVG()}
                           </button>
 
                           {/* Save edit button */}
@@ -875,21 +957,21 @@ export default function OrgDash() {
                             onClick={() => { updateField("companySize", companySize); }}
                             className="edit-button profile-txtbx-done"
                           >
-                            { bookmarkSVG() }
+                            {bookmarkSVG()}
                           </button>
                         </>
                       ) : (
                         // (pencil) edit button
                         <button className="edit-button" onClick={() => setIsEditing("companySize")}>
-                        { pencilSVG() }
+                          {pencilSVG()}
                         </button>
                       )}
 
                       <div className="profile-edit-title">Company Size</div>
                       <div className="profile-edit-text" data-testid="org-companySize">
-                      
-                      <p className={`${isEditing === "companySize" ? "profile-summry-edit" : ""
-                          }`}>{user.companySize}</p>
+
+                        <p className={`${isEditing === "companySize" ? "profile-summry-edit" : ""
+                          }`}>{user.companySize != "undefined" ? user.companySize : ""}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "companySize" ? "" : "profile-summry-edit"
@@ -910,7 +992,7 @@ export default function OrgDash() {
 
 
                     {/* location */}
-                    
+
                     <div className="profile-edit-set">
                       {/* EGBAIYELO - Making the logic more compact */}
                       {isEditing === "location" ? (
@@ -920,7 +1002,7 @@ export default function OrgDash() {
                             onClick={() => { handleCloseEdit(); }}
                             className="edit-button profile-summry-close-button"
                           >
-                            { closeSVG() }
+                            {closeSVG()}
                           </button>
 
                           {/* Save edit button */}
@@ -928,22 +1010,22 @@ export default function OrgDash() {
                             onClick={() => { updateField("location", location); }}
                             className="edit-button profile-txtbx-done"
                           >
-                            { bookmarkSVG() }
+                            {bookmarkSVG()}
                           </button>
                         </>
                       ) : (
                         // (pencil) edit button
                         <button className="edit-button" onClick={() => setIsEditing("location")}>
-                        { pencilSVG() }
+                          {pencilSVG()}
                         </button>
                       )}
 
                       <div className="profile-edit-title">Headquarters</div>
-                      
+
                       <div className="profile-edit-text" data-testid="org-location">
-                      <p
+                        <p
                           className={`${isEditing === "location" ? "profile-summry-edit" : "profile-txtbx-link"
-                          }`}>{user.location}</p>
+                            }`}>{user.location != "undefined" ? user.location : ""}</p>
                         {/* profile-hidden */}
                         <div
                           className={`profile-about-edit ${isEditing === "location" ? "" : "profile-summry-edit"
@@ -1035,6 +1117,15 @@ export default function OrgDash() {
                         </select>
                       </div>
                     </div>
+
+                    {/* 
+                    
+                      Shortlisted section:
+
+                      query job candidates
+                    
+                    
+                    */}
                     <div className="shortlisted-tabs-content-area">
                       <div className="shortlisted-tabs-content">
                         {
@@ -1112,6 +1203,7 @@ export default function OrgDash() {
                             </Link>
                           </div>
                         </div>
+                        {/*  */}
                         <div className="profile-content-head">
                           <div className="profile-head-left">
                             <div className="profile-head-image">
@@ -1275,7 +1367,7 @@ export default function OrgDash() {
         </div>
       </main>
       {/* Is there a better way to do this? */}
-      <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div> 
+      <div data-testid="current-tab" style={{ visibility: "hidden" }}>{tabName}</div>
     </>
   );
 }
