@@ -9126,3 +9126,35 @@ button.flash-close {
   user-select: none; /* Prevents copying */
 }
 
+/* Override for SocialMedia modal buttons */
+.social-media-modal-actions {
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 50px; /* Smaller gap between buttons */
+}
+
+.social-media-modal-actions .cancel-btn{
+  width: 35%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 2px solid #6b46c1;
+  background: white;
+  color: #6b46c1;
+  margin-left: 80px;
+
+
+}
+.social-media-modal-actions .save-btn {
+  width: 35%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 15px;
+  cursor: pointer;
+  background: #6b46c1;
+  color: white;
+  border: none;
+  margin-right: 80px;
+}

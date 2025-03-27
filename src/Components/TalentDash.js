@@ -18,9 +18,14 @@ import { AuthContext } from "../Context/AuthContext";
 // import { JobContext } from "../Context/JobContext";
 import jobService from "../services/jobService";
 import Loading from "./Loading";
+
+import SocialMedia from "./modals/SocialMedia"; //-Lucas
+//const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
+
 import DocumentUploadModal from "./DocumentUploadModal"; // -Dylan
 import JobDetails from "./modals/JobDetails"; // - EGBAIYELO
 import { useNavigate } from "react-router-dom";
+
 
 
 export default function TalentDash() {
@@ -43,6 +48,7 @@ export default function TalentDash() {
     setTempPortfolios([...portfolios]);
     setIsEditingPortfolio(true);
   };
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false); // Added social media modal state
 
   // -- MONTE
   const [about, setAbout] = useState("");
@@ -1542,48 +1548,63 @@ export default function TalentDash() {
                         </div>
                       </div>
                     </div>
+                    
+
                     <div className="profile-edit-set">
-                      <button className="edit-button">
-                        <svg
+                    <button 
+                      className="edit-button"
+                      onClick={() => setIsSocialModalOpen(true)} // Add onClick to open modal
+                    >
+                      <svg
+                        width="27"
+                        height="27"
+                        viewBox="0 0 27 27"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect
                           width="27"
                           height="27"
-                          viewBox="0 0 27 27"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            width="27"
-                            height="27"
-                            fill="url(#pattern0_1475_1863)"
-                          />
-                          <defs>
-                            <pattern
-                              id="pattern0_1475_1863"
-                              patternContentUnits="objectBoundingBox"
-                              width="1"
-                              height="1"
-                            >
-                              <use
-                                href="#image0_1475_1863"
-                                transform="scale(0.0111111)"
-                              />
-                            </pattern>
-                            <image
-                              id="image0_1475_1863"
-                              width="90"
-                              height="90"
-                              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                          fill="url(#pattern0_1475_1863)"
+                        />
+                        <defs>
+                          <pattern
+                            id="pattern0_1475_1863"
+                            patternContentUnits="objectBoundingBox"
+                            width="1"
+                            height="1"
+                          >
+                            <use
+                              href="#image0_1475_1863"
+                              transform="scale(0.0111111)"
                             />
-                          </defs>
-                        </svg>
-                      </button>
-                      <div className="profile-edit-title">Social Media</div>
-                      <div className="profile-edit-socials">
-                        <Link to="#" className="profile-edit-social-icon">
-                          <img src={linkedIn} alt="Icon " />
-                        </Link>
-                      </div>
+                          </pattern>
+                          <image
+                            id="image0_1475_1863"
+                            width="90"
+                            height="90"
+                            href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACF0lEQVR4nO3cv0rdYBiA8cdBb8YqgpPYoegmXoD34GaRLkK/rVJQcBBHFbVLZzdXR72DQmnr0D9Lx/4BJRChSJRzTpI3PfmeH2Q8mjy8nnw5JxEkSZIkSf+1OeAEuAF+A1+AI+BZ1zvWJy+Bv8BtxfYHWO96B/sgPRL44bbV9Y7mEPnW2HGRjR0Y2diBkY0dGNnYgZHvN5d+QaGLdfb0w1+Wu9RS7MOuDyyX2J+6PqhcYv/q+oByif2564PJJfYxGYZLI7ymTuTiU79ZMpL+OfjI2BtkJFUE2B7yZ7waIfJrMpKeCNFmbCPTfmwj0/5kG5n2YxuZ9mMbmeFWCqMs/YZ9zVhLNS8s6kx2NlKDkY0d/Bmykx0U2diBkbOPnQIjZxs7dRC52FwnY2Qnedwk3y6M3AvJSTZyLyQn2ci9kJxkI/dCcpKN3AtOcgAjBzByACMHMHIAIwcwcoBJYB5YBjbLB2civn5KZG7ByHETXjy26yQH+OEtATE+eN9FjCtPfDEuvIMoxntv04qx4zo5xpIXI/XNDHhV9gJ4C5wB58AlcF2uSJ5a/mV/xXfvTUNBpoGfRq42AXxscPp2neRqzxv+U1/z7aLaQcOPJSzndqf9oB8WfW/4JDbVwn6OvVUfuInxzqebYnzzUbIYNwP+R8O98qstjWj7kbjFCXIfWCzX2appqoxdTPZX4BRYKVcjkiRJkiTG2B2vTLDs0kESkAAAAABJRU5ErkJggg=="
+                          />
+                        </defs>
+                      </svg>
+                    </button>
+
+                    <div className="profile-edit-title">Social Media</div>
+                    <div className="profile-edit-socials">
+                      <Link to="#" className="profile-edit-social-icon">
+                        <img src={linkedIn} alt="Icon " />
+                      </Link>
                     </div>
+
+                    {isSocialModalOpen && (
+                      <SocialMedia 
+                        onClose={() => setIsSocialModalOpen(false)}
+                        user={user}
+                      />
+                    )}
+                  </div>
+                   
+
                   </div>
                 </div>
               </div>
